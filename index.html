@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Certificate Generator Studio</title>
+<title>Creator Studio - Tools & Utilities</title>
 
 <!-- CDN libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
@@ -17,6 +17,57 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=Spline+Sans+Mono:wght@400;500;600&family=Spline+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+/* ===== APP SHELL NAVIGATION ===== */
+.app-navbar {
+  background: linear-gradient(135deg, #1a1714 0%, #2d2620 100%);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 2px solid var(--gold);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.app-navbar-logo {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gold);
+  text-decoration: none;
+  margin-right: auto;
+  letter-spacing: 1px;
+}
+.app-nav-links {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.app-nav-item {
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ccc;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  font-family: 'Spline Sans', sans-serif;
+}
+.app-nav-item:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--gold);
+  border-color: var(--gold);
+}
+.app-nav-item.active {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+}
+
 :root{
   --ink:#1a1714;
   --paper:#f4efe6;
@@ -247,6 +298,15 @@ tr:nth-child(even) td{background:rgba(234,227,212,.35)}
 </style>
 </head>
 <body>
+
+<!-- App Shell Navigation -->
+<nav class="app-navbar">
+  <a href="index.html" class="app-navbar-logo">🎓 CREATOR STUDIO</a>
+  <div class="app-nav-links">
+    <a href="index.html" class="app-nav-item active">📜 Certificates</a>
+    <a href="whatsapp.html" class="app-nav-item">💬 WhatsApp</a>
+  </div>
+</nav>
 
 <header class="app">
   <div class="brand">
