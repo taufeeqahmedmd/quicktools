@@ -254,6 +254,7 @@ let editingRechargeId = null;
 let editingMealId = null;
 let editingCounterId = null;
 let editingCategorySettingId = null;
+let editingPortalEmployeeId = null;
 let replacingCard = false;
 let counterMaximized = false;
 let preservingCounterFullscreen = false;
@@ -313,6 +314,7 @@ function normalizeState(data){
   data.recharges = (data.recharges || []).map(r => normalizeRechargeRecord({remainingAmount:undefined, remainingCoupons:undefined, expired:false, ...r}));
   data.transactions = data.transactions || [];
   data.cardHistory = data.cardHistory || [];
+  data.portalEmployees = (data.portalEmployees || []).map(e => ({id:uid('PE'), name:'', mobile:'', branch:'', role:'Admin', ...e}));
   data.offlineQueue = data.offlineQueue || [];
   data.audit = data.audit || [];
   data.counters = (data.counters || []).map(c => ({assignedUserIds:[], ...c, assignedUserIds:c.assignedUserIds || []}));
@@ -549,6 +551,7 @@ function seedState(){
       {id:'CTR-2', name:'Counter 2', location:'Annex', status:'active', assignedUserIds:[]}
     ],
     cardHistory:[],
+    portalEmployees:[],
     recharges:[],
     transactions:[],
     offlineQueue:[],
@@ -630,7 +633,24 @@ function findUserBySearch(value){
 function counterOwnerNames(counter){
   const ids = counter && counter.assignedUserIds ? counter.assignedUserIds : [];
   if(!ids.length) return 'Not assigned';
-  return ids.map(id => (state.users.find(u=>u.id===id)||{}).name || id).join(', ');
+  return ids.map(counterOwnerName).join(', ');
+}
+function portalEmployeeLabel(emp){
+  return [emp.name, emp.role, emp.mobile, emp.branch].filter(Boolean).join(' / ');
+}
+function counterOwnerName(id){
+  const key = String(id || '');
+  if(key.startsWith('employee:')){
+    const empId = key.slice('employee:'.length);
+    return (state.portalEmployees.find(e=>String(e.id)===empId)||{}).name || key;
+  }
+  return (state.users.find(u=>String(u.id)===key)||{}).name || key;
+}
+function counterOwnerOptionsHTML(editCounter){
+  const selected = (editCounter && editCounter.assignedUserIds || []).map(String);
+  const userOptions = state.users.map(u=>`<option value="${u.id}" ${selected.includes(String(u.id)) ? 'selected' : ''}>${esc(userSearchLabel(u))}</option>`).join('');
+  const employeeOptions = (state.portalEmployees || []).map(e=>`<option value="employee:${e.id}" ${selected.includes('employee:'+e.id) ? 'selected' : ''}>${esc(portalEmployeeLabel(e))}</option>`).join('');
+  return `${userOptions}${employeeOptions ? `<option disabled>-- Portal Employees --</option>${employeeOptions}` : ''}`;
 }
 function selectedValues(select){
   return Array.from(select.selectedOptions || []).map(option => option.value);
@@ -1248,14 +1268,17 @@ function renderSettings(){
   const editMeal = editingMealId && editingMealId !== 'new' ? state.meals.find(m=>m.id===editingMealId) : null;
   const editCounter = editingCounterId && editingCounterId !== 'new' ? state.counters.find(c=>c.id===editingCounterId) : null;
   const editCategorySetting = editingCategorySettingId && editingCategorySettingId !== 'new' ? state.categorySettings.find(s=>s.id===editingCategorySettingId) : null;
+  const editPortalEmployee = editingPortalEmployeeId && editingPortalEmployeeId !== 'new' ? state.portalEmployees.find(e=>e.id===editingPortalEmployeeId) : null;
   const mealModal = editingMealId ? `<div class="modal-backdrop" id="mealModal"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mealModalTitle"><div class="modal-head"><h2 id="mealModalTitle">${editMeal ? 'Edit Meal' : 'Add Meal'}</h2><button class="icon-btn delete" id="closeMealModal" type="button" title="Close" aria-label="Close">&#10005;</button></div><div class="row"><div class="field full"><label>Meal Name</label><input id="mealNameInput" value="${esc(editMeal ? editMeal.name : '')}"></div><div class="field"><label>Start Time</label><input id="mealStartInput" type="time" value="${esc(editMeal ? editMeal.start : '07:00')}"></div><div class="field"><label>End Time</label><input id="mealEndInput" type="time" value="${esc(editMeal ? editMeal.end : '10:00')}"></div><div class="field full"><label>Status</label><select id="mealStatusInput"><option value="active">Active</option><option value="inactive">Inactive</option></select></div><div class="field full"><button class="btn primary" id="saveMeal">${editMeal ? 'Update Meal' : 'Add Meal'}</button><button class="btn" id="cancelMealEdit" type="button">Cancel</button></div></div></div></div>` : '';
   const categorySettingModal = editingCategorySettingId ? `<div class="modal-backdrop" id="categorySettingModal"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="categorySettingModalTitle"><div class="modal-head"><h2 id="categorySettingModalTitle">${editCategorySetting ? 'Edit Category Setting' : 'Add Category Setting'}</h2><button class="icon-btn delete" id="closeCategorySettingModal" type="button" title="Close" aria-label="Close">&#10005;</button></div><div class="row"><div class="field full"><label>Category</label><select id="categorySettingCategory">${state.categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select></div><div class="field"><label>Consumption Model</label><select id="categorySettingModel"><option value="wallet">Wallet Based</option><option value="coupon">Coupon Quantity Based</option></select></div><div class="field"><label>Duplicate Tap Window Seconds</label><input id="categorySettingDuplicate" type="number" min="0" value="${editCategorySetting ? Number(editCategorySetting.duplicateWindow || 0) : 0}"></div><div class="field"><label>Restrict RFID Once Per Meal Session</label><select id="categorySettingRestrict"><option value="no">No</option><option value="yes">Yes</option></select></div><div class="field"><label>Status</label><select id="categorySettingStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div><div class="field full"><button class="btn primary" id="saveCategorySetting">${editCategorySetting ? 'Update Setting' : 'Add Setting'}</button><button class="btn" id="cancelCategorySettingEdit" type="button">Cancel</button></div></div></div></div>` : '';
-  const counterModal = editingCounterId ? `<div class="modal-backdrop" id="counterModal"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="counterModalTitle"><div class="modal-head"><h2 id="counterModalTitle">${editCounter ? 'Edit Counter Device' : 'Add Counter Device'}</h2><button class="icon-btn delete" id="closeCounterModal" type="button" title="Close" aria-label="Close">&#10005;</button></div><div class="row"><div class="field full"><label>Device ID</label><input id="counterIdInput" value="${esc(editCounter ? editCounter.id : uid('CTR'))}" ${editCounter ? 'readonly' : ''}></div><div class="field full"><label>Counter Name</label><input id="counterNameInput" value="${esc(editCounter ? editCounter.name : '')}"></div><div class="field full"><label>Location</label><input id="counterLocationInput" value="${esc(editCounter ? editCounter.location : '')}"></div><div class="field full"><label>Status</label><select id="counterStatusInput"><option value="active">Active</option><option value="inactive">Inactive</option></select></div><div class="field full"><label>Counter Owner / Operator</label><select id="counterUsersInput" multiple size="6">${state.users.map(u=>`<option value="${u.id}" ${editCounter && (editCounter.assignedUserIds||[]).map(String).includes(String(u.id)) ? 'selected' : ''}>${esc(userSearchLabel(u))}</option>`).join('')}</select></div><div class="field full"><button class="btn primary" id="saveCounter">${editCounter ? 'Update Counter' : 'Add Counter'}</button><button class="btn" id="cancelCounterEdit" type="button">Cancel</button></div></div></div></div>` : '';
+  const portalEmployeeModal = editingPortalEmployeeId ? `<div class="modal-backdrop" id="portalEmployeeModal"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="portalEmployeeModalTitle"><div class="modal-head"><h2 id="portalEmployeeModalTitle">${editPortalEmployee ? 'Edit Portal Employee' : 'Add Portal Employee'}</h2><button class="icon-btn delete" id="closePortalEmployeeModal" type="button" title="Close" aria-label="Close">&#10005;</button></div><div class="row"><div class="field full"><label>Name</label><input id="portalEmployeeName" value="${esc(editPortalEmployee ? editPortalEmployee.name : '')}"></div><div class="field"><label>Mobile Number</label><input id="portalEmployeeMobile" inputmode="tel" value="${esc(editPortalEmployee ? editPortalEmployee.mobile : '')}"></div><div class="field"><label>Role</label><select id="portalEmployeeRole">${['Admin','Accountant','Mess Incharge','Management'].map(role=>`<option value="${role}">${role}</option>`).join('')}</select></div><div class="field full"><label>Branch Name</label><input id="portalEmployeeBranch" value="${esc(editPortalEmployee ? editPortalEmployee.branch : '')}"></div><div class="field full"><button class="btn primary" id="savePortalEmployee">${editPortalEmployee ? 'Update Employee' : 'Add Employee'}</button><button class="btn" id="cancelPortalEmployeeEdit" type="button">Cancel</button></div></div></div></div>` : '';
+  const counterModal = editingCounterId ? `<div class="modal-backdrop" id="counterModal"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="counterModalTitle"><div class="modal-head"><h2 id="counterModalTitle">${editCounter ? 'Edit Counter Device' : 'Add Counter Device'}</h2><button class="icon-btn delete" id="closeCounterModal" type="button" title="Close" aria-label="Close">&#10005;</button></div><div class="row"><div class="field full"><label>Device ID</label><input id="counterIdInput" value="${esc(editCounter ? editCounter.id : uid('CTR'))}" ${editCounter ? 'readonly' : ''}></div><div class="field full"><label>Counter Name</label><input id="counterNameInput" value="${esc(editCounter ? editCounter.name : '')}"></div><div class="field full"><label>Location</label><input id="counterLocationInput" value="${esc(editCounter ? editCounter.location : '')}"></div><div class="field full"><label>Status</label><select id="counterStatusInput"><option value="active">Active</option><option value="inactive">Inactive</option></select></div><div class="field full"><label>Counter Owner / Operator</label><select id="counterUsersInput" multiple size="6">${counterOwnerOptionsHTML(editCounter)}</select></div><div class="field full"><button class="btn primary" id="saveCounter">${editCounter ? 'Update Counter' : 'Add Counter'}</button><button class="btn" id="cancelCounterEdit" type="button">Cancel</button></div></div></div></div>` : '';
   $('settings').innerHTML = `<div class="grid">
     <div class="card"><div class="section-title"><h2>System Settings</h2><button class="icon-btn good" id="addCategorySettingBtn" type="button" title="Add category setting" aria-label="Add category setting">&#43;</button></div><div class="table-wrap"><table><thead><tr><th>Category</th><th>Model</th><th>Duplicate Window</th><th>Meal Session</th><th>Status</th><th>Actions</th></tr></thead><tbody>${state.categorySettings.map(s=>`<tr><td><strong>${esc(categoryName(s.categoryId))}</strong></td><td>${s.model === 'coupon' ? 'Coupon Quantity Based' : 'Wallet Based'}</td><td>${Number(s.duplicateWindow || 0)}s</td><td>${s.restrictMealSession ? 'Restrict once' : 'Allow repeat'}</td><td><span class="status-${s.status === 'active' ? 'active' : 'inactive'}">${esc(s.status)}</span></td><td><div class="icon-actions"><button class="icon-btn edit" data-edit-category-setting="${s.id}" title="Edit category setting" aria-label="Edit category setting">&#9998;</button><button class="icon-btn delete" data-delete-category-setting="${s.id}" title="Delete category setting" aria-label="Delete category setting">&#128465;</button></div></td></tr>`).join('')}</tbody></table></div></div>
+    <div class="card span-6"><div class="section-title"><h2>Portal Employees</h2><button class="icon-btn good" id="addPortalEmployeeBtn" type="button" title="Add portal employee" aria-label="Add portal employee">&#43;</button></div><div class="table-wrap"><table><thead><tr><th>Name</th><th>Mobile / Username</th><th>Role</th><th>Branch</th><th>Actions</th></tr></thead><tbody>${(state.portalEmployees || []).map(e=>`<tr><td><strong>${esc(e.name)}</strong><br><span class="mono">${esc(e.id)}</span></td><td>${esc(e.mobile)}</td><td>${esc(e.role)}</td><td>${esc(e.branch || '-')}</td><td><div class="icon-actions"><button class="icon-btn edit" data-edit-portal-employee="${e.id}" title="Edit employee" aria-label="Edit employee">&#9998;</button><button class="icon-btn delete" data-delete-portal-employee="${e.id}" title="Delete employee" aria-label="Delete employee">&#128465;</button></div></td></tr>`).join('') || '<tr><td colspan="5">No portal employees added</td></tr>'}</tbody></table></div></div>
+    <div class="card span-6"><div class="section-title"><h2>Counter Device Management</h2><button class="icon-btn good" id="addCounterBtn" type="button" title="Add counter device" aria-label="Add counter device">&#43;</button></div><div class="table-wrap"><table><thead><tr><th>Device</th><th>Location</th><th>Status</th><th>Counter Owner</th><th>Actions</th></tr></thead><tbody>${state.counters.map(c=>`<tr><td><strong>${esc(c.name)}</strong><br><span class="mono">${esc(c.id)}</span></td><td>${esc(c.location)}</td><td><span class="status-${c.status === 'active' ? 'active' : 'inactive'}">${esc(c.status)}</span></td><td>${esc(counterOwnerNames(c))}</td><td><div class="icon-actions"><button class="icon-btn edit" data-edit-counter="${c.id}" title="Edit counter" aria-label="Edit counter">&#9998;</button><button class="icon-btn delete" data-delete-counter="${c.id}" title="Delete counter" aria-label="Delete counter">&#128465;</button></div></td></tr>`).join('')}</tbody></table></div></div>
     <div class="card"><div class="section-title"><h2>Meal Timings & Category Rates</h2><button class="icon-btn good" id="addMealBtn" type="button" title="Add meal" aria-label="Add meal">&#43;</button></div><div class="table-wrap"><table><thead><tr><th>Meal</th><th>Timing</th>${state.categories.map(c=>`<th>${esc(c.name)}</th>`).join('')}<th>Actions</th></tr></thead><tbody>${state.meals.map(m=>`<tr><td><strong>${esc(m.name)}</strong><br><span class="pill">${esc(m.status)}</span></td><td>${m.start} to ${m.end}</td>${state.categories.map(c=>`<td><div class="rate-pair"><label>Charge</label><input data-rate="${m.id}:${c.id}" type="number" value="${rateFor({categoryId:c.id},m.id)}"><label>Vendor</label><input data-vendor-rate="${m.id}:${c.id}" type="number" value="${vendorRateFor({categoryId:c.id},m.id)}"></div></td>`).join('')}<td><div class="icon-actions"><button class="icon-btn edit" data-edit-meal="${m.id}" title="Edit meal" aria-label="Edit meal">&#9998;</button><button class="icon-btn delete" data-delete-meal="${m.id}" title="Delete meal" aria-label="Delete meal">&#128465;</button></div></td></tr>`).join('')}</tbody></table></div><p><button class="btn primary" id="saveRates">Save Rates</button></p></div>
-    <div class="card"><div class="section-title"><h2>Counter Device Management</h2><button class="icon-btn good" id="addCounterBtn" type="button" title="Add counter device" aria-label="Add counter device">&#43;</button></div><div class="table-wrap"><table><thead><tr><th>Device</th><th>Location</th><th>Status</th><th>Counter Owner</th><th>Actions</th></tr></thead><tbody>${state.counters.map(c=>`<tr><td><strong>${esc(c.name)}</strong><br><span class="mono">${esc(c.id)}</span></td><td>${esc(c.location)}</td><td><span class="status-${c.status === 'active' ? 'active' : 'inactive'}">${esc(c.status)}</span></td><td>${esc(counterOwnerNames(c))}</td><td><div class="icon-actions"><button class="icon-btn edit" data-edit-counter="${c.id}" title="Edit counter" aria-label="Edit counter">&#9998;</button><button class="icon-btn delete" data-delete-counter="${c.id}" title="Delete counter" aria-label="Delete counter">&#128465;</button></div></td></tr>`).join('')}</tbody></table></div></div>
-  </div>${mealModal}${categorySettingModal}${counterModal}`;
+  </div>${mealModal}${categorySettingModal}${portalEmployeeModal}${counterModal}`;
   if(editingMealId) $('mealStatusInput').value = editMeal ? editMeal.status : 'active';
   if(editingCategorySettingId){
     $('categorySettingCategory').value = editCategorySetting ? editCategorySetting.categoryId : (state.categories[0] || {}).id || '';
@@ -1263,6 +1286,7 @@ function renderSettings(){
     $('categorySettingRestrict').value = editCategorySetting && editCategorySetting.restrictMealSession ? 'yes' : 'no';
     $('categorySettingStatus').value = editCategorySetting ? editCategorySetting.status : 'active';
   }
+  if(editingPortalEmployeeId) $('portalEmployeeRole').value = editPortalEmployee ? editPortalEmployee.role : 'Admin';
   if(editingCounterId) $('counterStatusInput').value = editCounter ? editCounter.status : 'active';
   $('saveRates').onclick = () => {
     document.querySelectorAll('[data-rate]').forEach(i=>{ const [mealId,catId]=i.dataset.rate.split(':'); state.rates[mealId] = state.rates[mealId] || {}; state.rates[mealId][catId] = Number(i.value || 0); });
@@ -1339,6 +1363,32 @@ function renderSettings(){
     delete state.vendorRates[meal.id];
     state.users.forEach(u=>{ if(u.coupons) delete u.coupons[meal.id]; });
     audit('Deleted meal '+meal.name); save(); toast('Meal deleted');
+  });
+  $('addPortalEmployeeBtn').onclick = () => { editingPortalEmployeeId = 'new'; render(); };
+  if(editingPortalEmployeeId) $('savePortalEmployee').onclick = () => {
+    const name = $('portalEmployeeName').value.trim();
+    const mobile = $('portalEmployeeMobile').value.trim();
+    if(!name || !mobile) return toast('Name and mobile number are required');
+    const duplicate = state.portalEmployees.some(e=>e !== editPortalEmployee && e.mobile === mobile);
+    if(duplicate) return toast('Mobile number already exists');
+    const payload = {id:editPortalEmployee ? editPortalEmployee.id : uid('PE'), name, mobile, role:$('portalEmployeeRole').value, branch:$('portalEmployeeBranch').value.trim()};
+    if(editPortalEmployee){ Object.assign(editPortalEmployee, payload); audit('Updated portal employee '+name); }
+    else{ state.portalEmployees.push(payload); audit('Added portal employee '+name); }
+    editingPortalEmployeeId = null;
+    save(); toast('Portal employee saved');
+  };
+  if(editingPortalEmployeeId){
+    $('cancelPortalEmployeeEdit').onclick = () => { editingPortalEmployeeId = null; render(); };
+    $('closePortalEmployeeModal').onclick = () => { editingPortalEmployeeId = null; render(); };
+  }
+  document.querySelectorAll('[data-edit-portal-employee]').forEach(b=>b.onclick=()=>{ editingPortalEmployeeId = b.dataset.editPortalEmployee; render(); });
+  document.querySelectorAll('[data-delete-portal-employee]').forEach(b=>b.onclick=()=>{
+    const emp = state.portalEmployees.find(e=>e.id===b.dataset.deletePortalEmployee);
+    if(!emp || !confirm('Delete portal employee '+emp.name+'?')) return;
+    state.portalEmployees = state.portalEmployees.filter(e=>e.id!==emp.id);
+    state.counters.forEach(c=>{ c.assignedUserIds = (c.assignedUserIds || []).filter(id=>id !== 'employee:'+emp.id); });
+    audit('Deleted portal employee '+emp.name);
+    save(); toast('Portal employee deleted');
   });
   $('addCounterBtn').onclick = () => { editingCounterId = 'new'; render(); };
   if(editingCounterId) $('saveCounter').onclick = () => {
