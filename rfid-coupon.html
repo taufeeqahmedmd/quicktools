@@ -109,6 +109,27 @@ textarea{min-height:78px;resize:vertical}
 .toolbar input,.toolbar select{max-width:260px}
 .section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
 .section-title h2{margin:0}
+.range-shell{position:relative;margin:0;margin-left:auto}
+.range-trigger{width:100%;min-width:280px;min-height:42px;border:1px solid var(--line-strong);border-radius:9px;background:var(--panel-2);color:var(--muted);display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;font-weight:700;text-align:left}
+.range-trigger strong{color:var(--ink);font-weight:800}
+.range-popover{position:absolute;right:0;top:48px;width:min(700px,calc(100vw - 320px));min-width:640px;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 30px 80px -38px rgba(0,0,0,.7);z-index:1200;display:grid;grid-template-columns:114px 1fr}
+.range-presets{border-right:1px solid var(--line);display:grid;align-content:start}
+.range-presets strong{padding:18px 12px 10px;text-align:center;font-size:13px}
+.range-presets button{border:0;border-top:1px solid var(--line);background:transparent;color:var(--ink);padding:12px 10px;font-weight:800;cursor:pointer;text-align:center}
+.range-presets button:hover{background:var(--panel-2)}
+.range-calendars{display:grid;grid-template-columns:1fr 1fr}
+.range-month{padding:14px 16px;border-right:1px solid var(--line)}
+.range-month:last-child{border-right:0}
+.range-month-head{display:grid;grid-template-columns:32px 1fr 1fr 32px;gap:8px;align-items:center;margin-bottom:12px}
+.range-month:first-child .range-next,.range-month:last-child .range-prev{visibility:hidden}
+.range-month-head select{padding:7px 8px}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.dow{color:#8fa0b6;font-size:12px;font-weight:800}
+.day-cell{height:34px;border:1px solid transparent;border-radius:999px;background:transparent;color:var(--ink);cursor:pointer;font-weight:700}
+.day-cell:hover{border-color:var(--line-strong);background:var(--panel-2)}
+.day-cell.today{border-color:var(--line-strong)}
+.day-cell.in-range{border-radius:8px;background:rgba(22,163,74,.12)}
+.day-cell.selected{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.58);display:grid;place-items:center;padding:18px;z-index:5000}
 .modal{width:min(620px,100%);max-height:calc(100vh - 36px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 30px 80px -30px rgba(0,0,0,.65);padding:18px}
 .modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
@@ -127,12 +148,19 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute
 .result .small{margin-top:10px;font-size:18px;font-weight:800;color:var(--muted)}
 .approved{background:rgba(22,163,74,.14);border-color:var(--accent-2)}.rejected{background:rgba(185,28,28,.13);border-color:var(--danger)}.blocked{background:rgba(180,83,9,.14);border-color:var(--warn)}
 .list{display:grid;gap:8px}.list-item{border:1px solid var(--line);background:var(--panel-2);border-radius:10px;padding:10px;display:flex;justify-content:space-between;gap:12px}
+.report-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
+.report-block{display:grid;gap:10px;min-width:0}
+.report-block h3{margin:0;font-size:18px}
+.summary-rows{display:grid;gap:8px}
+.summary-row{border:1px solid var(--line);background:var(--panel-2);border-radius:10px;padding:10px;display:grid;gap:7px}
+.summary-row strong{font-size:15px}
+.summary-meta{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:13px;font-weight:800}
 .hidden{display:none!important}
 .view{display:none}.view.active{display:block}
 .toast{position:fixed;left:calc(50% + 116px);bottom:22px;transform:translate(-50%,20px);opacity:0;pointer-events:none;transition:.2s;background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:10px;z-index:9999;font-weight:900;box-shadow:var(--shadow)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:1100px){.span-3,.span-4,.span-5,.span-6,.span-7,.span-8{grid-column:span 12}.counter-screen{grid-template-columns:1fr}}
-@media(max-width:760px){body{padding-left:0;padding-top:72px}.app-sidebar{inset:0 0 auto 0;width:100%;height:72px;padding:8px 10px;flex-direction:row;align-items:center;border-right:0;border-bottom:2px solid var(--accent-2);overflow-x:auto}.app-navbar-logo{min-width:max-content}.app-nav-links{display:flex;gap:4px}.app-nav-item{min-width:max-content}.app-shell-footer{margin-top:0;padding-top:0;border-top:0;margin-left:auto;min-width:126px}header,.wrap{padding-left:16px;padding-right:16px}.brand{align-items:flex-start}.top-actions{width:100%;margin-left:0}.row{grid-template-columns:1fr}.field,.field.third{grid-column:1/-1}.toast{left:50%}}
+@media(max-width:1100px){.span-3,.span-4,.span-5,.span-6,.span-7,.span-8{grid-column:span 12}.counter-screen{grid-template-columns:1fr}.report-grid{grid-template-columns:1fr}}
+@media(max-width:760px){body{padding-left:0;padding-top:72px;font-size:14px}.app-sidebar{inset:0 0 auto 0;width:100%;height:72px;padding:8px 10px;flex-direction:row;align-items:center;border-right:0;border-bottom:2px solid var(--accent-2);overflow-x:auto}.app-navbar-logo{min-width:max-content}.app-nav-links{display:flex;gap:4px}.app-nav-item{min-width:max-content;padding:8px 10px;font-size:13px}.app-nav-icon{width:24px;height:24px}.app-shell-footer{margin-top:0;padding-top:0;border-top:0;margin-left:auto;min-width:118px}header,.wrap{padding-left:12px;padding-right:12px}.wrap{padding-top:14px;gap:12px}.brand{align-items:flex-start}.seal{width:42px;height:42px;border-radius:11px}h1{font-size:25px}.sub{font-size:13px}.top-actions{width:100%;margin-left:0}.tabs{gap:6px}.tab{padding:8px 10px;font-size:13px}.grid{gap:10px}.card{padding:12px;border-radius:10px}.card h2,.card h3{font-size:19px}.metric .k{font-size:11px}.metric .v{font-size:24px}.section-title{align-items:flex-start;flex-direction:column}.range-shell{width:100%;margin-left:0}.range-trigger{min-width:0}.range-popover{position:static;width:100%;min-width:0;margin-top:8px;grid-template-columns:1fr}.range-presets{border-right:0;border-bottom:1px solid var(--line)}.range-calendars{grid-template-columns:1fr}.range-month{border-right:0;border-bottom:1px solid var(--line)}.row{grid-template-columns:1fr}.field,.field.third{grid-column:1/-1}input,select,textarea{font-size:13px;padding:9px 10px}.btn{min-height:36px;padding:8px 10px;font-size:13px}.icon-btn{width:34px;height:34px}.table-wrap{border-radius:9px}table{font-size:12px;min-width:640px}th,td{padding:8px}.pill{font-size:10px;padding:3px 7px}.list-item{padding:9px;font-size:13px}.summary-row{padding:9px}.summary-row strong{font-size:14px}.summary-meta{font-size:12px}.counter-screen{min-height:auto;gap:10px}.tap-box{padding:12px}.result{padding:16px}.result .big{font-size:34px}.result .small{font-size:15px}.toast{left:50%;width:calc(100% - 24px);text-align:center}}
 </style>
 <link rel="stylesheet" href="base-theme.css">
 <script src="base-theme.js"></script>
@@ -206,10 +234,23 @@ let editingUserId = null;
 let editingRechargeId = null;
 let editingMealId = null;
 let editingCounterId = null;
+let dashboardDateFrom = today();
+let dashboardDateTo = today();
+let dashboardPickerOpen = false;
+let dashboardDraftStart = null;
+let dashboardPickerMonth = today().slice(0,7) + '-01';
 
 function uid(prefix){ return prefix + '-' + Math.random().toString(36).slice(2,8).toUpperCase(); }
 function nowISO(){ return new Date().toISOString(); }
 function today(){ return new Date().toISOString().slice(0,10); }
+function dateISO(date){
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+function addDays(dateValue, days){ const d = new Date(dateValue + 'T00:00:00'); d.setDate(d.getDate() + days); return dateISO(d); }
+function addMonths(dateValue, months){ const d = new Date(dateValue + 'T00:00:00'); d.setMonth(d.getMonth() + months, 1); return dateISO(d); }
 function money(n){ return 'Rs. ' + Number(n || 0).toFixed(2); }
 function esc(v){ return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function toast(msg){
@@ -349,6 +390,10 @@ function seedState(){
 }
 function categoryName(id){ return (state.categories.find(c=>c.id===id)||{}).name || 'Unknown'; }
 function mealName(id){ return (state.meals.find(m=>m.id===id)||{}).name || 'Unknown'; }
+function counterLocation(id){
+  const counter = state.counters.find(c=>c.id===id);
+  return counter ? (counter.location || counter.name) : (id ? 'Unknown location' : 'No counter');
+}
 function rateFor(user, mealId){ return Number((state.rates[mealId] || {})[user.categoryId] || 0); }
 function activeMeal(date = new Date()){
   const minutes = date.getHours() * 60 + date.getMinutes();
@@ -391,6 +436,62 @@ function counterOwnerNames(counter){
 }
 function selectedValues(select){
   return Array.from(select.selectedOptions || []).map(option => option.value);
+}
+function formatDateLabel(dateValue){
+  return new Date(dateValue + 'T00:00:00').toLocaleDateString('en-IN', {day:'2-digit', month:'2-digit', year:'numeric'});
+}
+function rangeLabel(start, end){
+  return start === end ? formatDateLabel(start) : formatDateLabel(start) + ' to ' + formatDateLabel(end);
+}
+function setDashboardRange(start, end){
+  dashboardDateFrom = start <= end ? start : end;
+  dashboardDateTo = start <= end ? end : start;
+  dashboardDraftStart = null;
+}
+function applyDashboardPreset(preset){
+  const t = today();
+  const d = new Date(t + 'T00:00:00');
+  const weekday = d.getDay();
+  if(preset === 'today') setDashboardRange(t, t);
+  if(preset === 'yesterday'){ const y = addDays(t, -1); setDashboardRange(y, y); }
+  if(preset === 'this-week') setDashboardRange(addDays(t, -weekday), t);
+  if(preset === 'last-week') setDashboardRange(addDays(t, -weekday - 7), addDays(t, -weekday - 1));
+  if(preset === 'last-30') setDashboardRange(addDays(t, -29), t);
+  if(preset === 'last-90') setDashboardRange(addDays(t, -89), t);
+  dashboardPickerMonth = dashboardDateFrom.slice(0,7) + '-01';
+}
+function chooseDashboardDate(dateValue){
+  if(!dashboardDraftStart || dashboardDateFrom !== dashboardDateTo){
+    dashboardDraftStart = dateValue;
+    setDashboardRange(dateValue, dateValue);
+    dashboardDraftStart = dateValue;
+  }else{
+    setDashboardRange(dashboardDraftStart, dateValue);
+    dashboardPickerOpen = false;
+  }
+}
+function dashboardRangePickerHTML(start, end){
+  return `<div class="range-shell"><button class="range-trigger" id="dashboardRangeBtn" type="button" aria-haspopup="dialog" aria-expanded="${dashboardPickerOpen ? 'true' : 'false'}"><span aria-hidden="true">&#128197;</span><strong>${esc(rangeLabel(start, end))}</strong></button>${dashboardPickerOpen ? `<div class="range-popover" role="dialog" aria-label="Usage reports date range"><div class="range-presets"><strong>Choose a Period</strong>${[['today','Today'],['yesterday','Yesterday'],['this-week','This Week'],['last-week','Last Week'],['last-30','Last 30 Days'],['last-90','Last 90 Days']].map(([id,label])=>`<button type="button" data-range-preset="${id}">${label}</button>`).join('')}</div><div class="range-calendars">${calendarMonthHTML(dashboardPickerMonth, 0, start, end)}${calendarMonthHTML(dashboardPickerMonth, 1, start, end)}</div></div>` : ''}</div>`;
+}
+function calendarMonthHTML(baseMonth, offset, start, end){
+  const monthDate = new Date(addMonths(baseMonth, offset) + 'T00:00:00');
+  const year = monthDate.getFullYear();
+  const month = monthDate.getMonth();
+  const first = new Date(year, month, 1);
+  const days = new Date(year, month + 1, 0).getDate();
+  const blanks = Array.from({length:first.getDay()},()=>'<span></span>').join('');
+  const years = Array.from({length:7},(_,i)=>year - 3 + i);
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const dayButtons = Array.from({length:days},(_,i)=>{
+    const day = i + 1;
+    const iso = dateISO(new Date(year, month, day));
+    const cls = ['day-cell'];
+    if(iso === today()) cls.push('today');
+    if(iso > start && iso < end) cls.push('in-range');
+    if(iso === start || iso === end) cls.push('selected');
+    return `<button type="button" class="${cls.join(' ')}" data-range-date="${iso}">${day}</button>`;
+  }).join('');
+  return `<div class="range-month"><div class="range-month-head"><button class="icon-btn range-prev" type="button" data-range-shift="-1" title="Previous month" aria-label="Previous month">&#8249;</button><select data-range-year="${offset}">${years.map(y=>`<option value="${y}" ${y===year?'selected':''}>${y}</option>`).join('')}</select><select data-range-month="${offset}">${months.map((m,i)=>`<option value="${i}" ${i===month?'selected':''}>${m}</option>`).join('')}</select><button class="icon-btn range-next" type="button" data-range-shift="1" title="Next month" aria-label="Next month">&#8250;</button></div><div class="calendar-grid">${['Su','Mo','Tu','We','Th','Fr','Sa'].map(d=>`<span class="dow">${d}</span>`).join('')}${blanks}${dayButtons}</div></div>`;
 }
 function csvEscape(value){
   return '"' + String(value == null ? '' : value).replace(/"/g,'""') + '"';
@@ -503,6 +604,27 @@ function render(){
 function renderDashboard(){
   const todayTx = state.transactions.filter(t=>t.at.slice(0,10) === today());
   const approved = todayTx.filter(t=>t.status === 'approved');
+  const from = dashboardDateFrom || today();
+  const to = dashboardDateTo || from;
+  const rangeStart = from <= to ? from : to;
+  const rangeEnd = from <= to ? to : from;
+  const rangeApproved = state.transactions.filter(t=>t.status === 'approved' && t.at.slice(0,10) >= rangeStart && t.at.slice(0,10) <= rangeEnd);
+  const categoryUsage = state.categories.map(c=>{
+    const txs = rangeApproved.filter(t=>{ const u=state.users.find(x=>x.id===t.userId); return u && u.categoryId===c.id; });
+    return {name:c.name, count:txs.length, amount:txs.reduce((s,t)=>s+Number(t.amount||0),0)};
+  });
+  const mealUsage = state.meals.map(m=>{
+    const txs = rangeApproved.filter(t=>t.mealId===m.id);
+    return {name:m.name, count:txs.length, amount:txs.reduce((s,t)=>s+Number(t.amount||0),0)};
+  });
+  const locationMap = {};
+  rangeApproved.forEach(t=>{
+    const name = counterLocation(t.counterId);
+    locationMap[name] = locationMap[name] || {name, count:0, amount:0};
+    locationMap[name].count += 1;
+    locationMap[name].amount += Number(t.amount || 0);
+  });
+  const locationUsage = Object.values(locationMap).sort((a,b)=>b.count-a.count || b.amount-a.amount);
   const collections = state.recharges.reduce((s,r)=>s+Number(r.amount||0),0);
   const mealCards = state.meals.map(m=>`<div class="card span-3 metric"><div class="k">Today's ${esc(m.name)}</div><div class="v">${approved.filter(t=>t.mealId===m.id).length}</div></div>`).join('');
   $('dashboard').innerHTML = `<div class="grid">
@@ -511,9 +633,20 @@ function renderDashboard(){
     <div class="card span-3 metric"><div class="k">Today's Consumption</div><div class="v">${approved.length}</div></div>
     <div class="card span-3 metric"><div class="k">Collections</div><div class="v">${money(collections)}</div></div>
     ${mealCards}
-    <div class="card span-6"><h2>Recent Consumption</h2>${transactionTable(state.transactions.slice(0,8))}</div>
-    <div class="card span-6"><h2>Category Usage</h2><div class="list">${state.categories.map(c=>`<div class="list-item"><strong>${esc(c.name)}</strong><span>${approved.filter(t=>{const u=state.users.find(x=>x.id===t.userId);return u&&u.categoryId===c.id}).length} today</span></div>`).join('')}</div></div>
+    <div class="card span-6"><div class="section-title"><h2>Usage Reports</h2>${dashboardRangePickerHTML(rangeStart, rangeEnd)}</div><div class="report-grid"><div class="report-block"><h3>Category Usage</h3>${usageSummaryHTML(categoryUsage)}</div><div class="report-block"><h3>Meal Wise Usage</h3>${usageSummaryHTML(mealUsage)}</div><div class="report-block"><h3>Counter Location Usage</h3>${usageSummaryHTML(locationUsage)}</div></div></div>
   </div>`;
+  $('dashboardRangeBtn').onclick = () => { dashboardPickerOpen = !dashboardPickerOpen; render(); };
+  document.querySelectorAll('[data-range-preset]').forEach(b=>b.onclick=()=>{ applyDashboardPreset(b.dataset.rangePreset); dashboardPickerOpen = false; render(); });
+  document.querySelectorAll('[data-range-date]').forEach(b=>b.onclick=()=>{ chooseDashboardDate(b.dataset.rangeDate); render(); });
+  document.querySelectorAll('[data-range-shift]').forEach(b=>b.onclick=()=>{ dashboardPickerMonth = addMonths(dashboardPickerMonth, Number(b.dataset.rangeShift)); render(); });
+  document.querySelectorAll('[data-range-year],[data-range-month]').forEach(s=>s.onchange=()=>{
+    const offset = Number(s.dataset.rangeYear || s.dataset.rangeMonth || 0);
+    const yearSelect = document.querySelector(`[data-range-year="${offset}"]`);
+    const monthSelect = document.querySelector(`[data-range-month="${offset}"]`);
+    const nextPanel = dateISO(new Date(Number(yearSelect.value), Number(monthSelect.value), 1));
+    dashboardPickerMonth = addMonths(nextPanel, -offset);
+    render();
+  });
 }
 function renderCounter(){
   const result = lastCounterResult;
@@ -528,9 +661,9 @@ function renderCounter(){
           <div class="field full"><label>RFID Input</label><input id="rfidInput" placeholder="Tap card or type RFID, e.g. RF1001" autofocus></div>
           <button class="btn primary" id="tapBtn" type="button" ${activeCounters.length ? '' : 'disabled'}>Process Tap</button>
           <div class="pill">Current meal: ${activeMeal() ? esc(activeMeal().name) : 'No active meal'}</div>
-          <div class="pill">Duplicate window: ${state.duplicateWindow}s</div>
+          <!-- <div class="pill">Duplicate window: ${state.duplicateWindow}s</div>
           <div class="pill">Session restriction: ${state.preventPerMealSession ? 'Once per meal' : 'Window only'}</div>
-          <div class="pill">Mode: ${state.model === 'wallet' ? 'Wallet Based' : 'Coupon Quantity Based'}</div>
+          <div class="pill">Mode: ${state.model === 'wallet' ? 'Wallet Based' : 'Coupon Quantity Based'}</div> -->
         </div>
         <div class="result ${result ? result.css : ''}">
           <div>
@@ -541,6 +674,7 @@ function renderCounter(){
         </div>
       </div>
     </div>
+    <div class="card"><h2>Recent Consumption</h2>${transactionTable(state.transactions.slice(0,8))}</div>
   </div>`;
   $('counterDevice').onchange = () => {
     const counter = state.counters.find(c=>c.id===$('counterDevice').value);
@@ -799,6 +933,10 @@ function renderDocs(){
 }
 function transactionTable(rows){
   return `<div class="table-wrap"><table><thead><tr><th>Time</th><th>User</th><th>RFID</th><th>Meal</th><th>Amount</th><th>Status</th><th>Reason</th></tr></thead><tbody>${rows.map(t=>`<tr><td>${new Date(t.at).toLocaleString()}</td><td>${esc((state.users.find(u=>u.id===t.userId)||{}).name || t.userId || '-')}</td><td>${esc(t.rfid)}</td><td>${esc(mealName(t.mealId))}</td><td>${money(t.amount)}</td><td>${esc(t.status)}</td><td>${esc(t.reason)}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function usageSummaryHTML(rows){
+  const data = rows.length ? rows : [{name:'No data', count:0, amount:0}];
+  return `<div class="summary-rows">${data.map(r=>`<div class="summary-row"><strong>${esc(r.name)}</strong><div class="summary-meta"><span>${Number(r.count||0)} used</span><span>${money(r.amount)}</span></div></div>`).join('')}</div>`;
 }
 function rechargeTable(){
   return `<div class="table-wrap"><table><thead><tr><th>Receipt</th><th>User</th><th>Amount</th><th>Coupons</th><th>Validity</th><th>Balance After</th><th>Date</th><th>Action</th></tr></thead><tbody>${state.recharges.map(r=>`<tr><td>${r.id}</td><td>${esc((state.users.find(u=>u.id===r.userId)||{}).name)}</td><td>${money(r.amount)}<br><span class="pill">left ${money(recRemainingAmount(r))}</span></td><td>${r.coupons || 0} ${r.mealId ? mealName(r.mealId) : ''}<br><span class="pill">left ${recRemainingCoupons(r)}</span></td><td>${r.validTill ? esc(r.validTill) : 'No expiry'}<br><span class="pill">${r.expired ? 'expired' : 'active'}</span></td><td>${money(r.afterWallet)}</td><td>${new Date(r.at).toLocaleString()}${r.editedAt ? '<br><span class="pill">edited</span>' : ''}</td><td><div class="icon-actions"><button class="icon-btn edit" data-edit-recharge="${r.id}" title="Edit recharge" aria-label="Edit recharge">&#9998;</button><button class="icon-btn delete" data-delete-recharge="${r.id}" title="Delete recharge" aria-label="Delete recharge">&#128465;</button></div></td></tr>`).join('')}</tbody></table></div>`;
