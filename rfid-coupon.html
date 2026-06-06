@@ -140,13 +140,13 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute
 .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px}
 .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 9px;font-size:11px;color:var(--muted);background:var(--panel-2);white-space:nowrap}
 .status-active{color:var(--accent-2);font-weight:900}.status-blocked,.status-inactive{color:var(--danger);font-weight:900}
-.counter-screen{min-height:430px;display:grid;grid-template-columns:minmax(260px,360px) 1fr;gap:16px}
+.counter-screen{min-height:430px;display:grid;grid-template-columns:1fr minmax(260px,360px);gap:16px}
 .tap-box{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:12px}
 .photo{width:126px;height:126px;border-radius:16px;object-fit:cover;border:1px solid var(--line);background:var(--panel);display:block}
 .result{border-radius:14px;padding:22px;display:grid;place-items:center;text-align:center;border:1px solid var(--line);background:var(--panel-2)}
 .result .big{font-size:clamp(34px,6vw,72px);font-weight:900;line-height:1;font-family:"Fraunces",serif}
 .result .small{margin-top:10px;font-size:18px;font-weight:800;color:var(--muted)}
-.approved{background:rgba(22,163,74,.14);border-color:var(--accent-2)}.rejected{background:rgba(185,28,28,.13);border-color:var(--danger)}.blocked{background:rgba(180,83,9,.14);border-color:var(--warn)}
+.approved{background:rgba(22,163,74,.18);border-color:var(--accent-2)}.rejected,.blocked{background:#7f1d1d;border-color:#450a0a;color:#fff}.rejected *,.blocked *{color:#fff!important}.rejected .pill,.blocked .pill{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28)}
 .list{display:grid;gap:8px}.list-item{border:1px solid var(--line);background:var(--panel-2);border-radius:10px;padding:10px;display:flex;justify-content:space-between;gap:12px}
 .report-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
 .report-block{display:grid;gap:10px;min-width:0}
@@ -155,14 +155,27 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute
 .summary-row{border:1px solid var(--line);background:var(--panel-2);border-radius:10px;padding:10px;display:grid;gap:7px}
 .summary-row strong{font-size:15px}
 .summary-meta{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:13px;font-weight:800}
+.rate-pair{display:grid;gap:6px;min-width:140px}
+.rate-pair label{font-size:10px;text-transform:none;letter-spacing:0;color:var(--muted)}
+.rate-pair input{padding:7px 8px}
+.category-rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:12px}
+.category-rule{border:1px solid var(--line);background:var(--panel-2);border-radius:10px;padding:10px;display:grid;gap:7px}
+.category-rule strong{font-size:14px}
+.category-rule select{padding:7px 8px}
+.profit{color:var(--accent-2);font-weight:900}
+.loss{color:var(--danger);font-weight:900}
 .hidden{display:none!important}
 .view{display:none}.view.active{display:block}
 .toast{position:fixed;left:calc(50% + 116px);bottom:22px;transform:translate(-50%,20px);opacity:0;pointer-events:none;transition:.2s;background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:10px;z-index:9999;font-weight:900;box-shadow:var(--shadow)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:1100px){.span-3,.span-4,.span-5,.span-6,.span-7,.span-8{grid-column:span 12}.counter-screen{grid-template-columns:1fr}.report-grid{grid-template-columns:1fr}}
-@media(max-width:760px){body{padding-left:0;padding-top:72px;font-size:14px}.app-sidebar{inset:0 0 auto 0;width:100%;height:72px;padding:8px 10px;flex-direction:row;align-items:center;border-right:0;border-bottom:2px solid var(--accent-2);overflow-x:auto}.app-navbar-logo{min-width:max-content}.app-nav-links{display:flex;gap:4px}.app-nav-item{min-width:max-content;padding:8px 10px;font-size:13px}.app-nav-icon{width:24px;height:24px}.app-shell-footer{margin-top:0;padding-top:0;border-top:0;margin-left:auto;min-width:118px}header,.wrap{padding-left:12px;padding-right:12px}.wrap{padding-top:14px;gap:12px}.brand{align-items:flex-start}.seal{width:42px;height:42px;border-radius:11px}h1{font-size:25px}.sub{font-size:13px}.top-actions{width:100%;margin-left:0}.tabs{gap:6px}.tab{padding:8px 10px;font-size:13px}.grid{gap:10px}.card{padding:12px;border-radius:10px}.card h2,.card h3{font-size:19px}.metric .k{font-size:11px}.metric .v{font-size:24px}.section-title{align-items:flex-start;flex-direction:column}.range-shell{width:100%;margin-left:0}.range-trigger{min-width:0}.range-popover{position:static;width:100%;min-width:0;margin-top:8px;grid-template-columns:1fr}.range-presets{border-right:0;border-bottom:1px solid var(--line)}.range-calendars{grid-template-columns:1fr}.range-month{border-right:0;border-bottom:1px solid var(--line)}.row{grid-template-columns:1fr}.field,.field.third{grid-column:1/-1}input,select,textarea{font-size:13px;padding:9px 10px}.btn{min-height:36px;padding:8px 10px;font-size:13px}.icon-btn{width:34px;height:34px}.table-wrap{border-radius:9px}table{font-size:12px;min-width:640px}th,td{padding:8px}.pill{font-size:10px;padding:3px 7px}.list-item{padding:9px;font-size:13px}.summary-row{padding:9px}.summary-row strong{font-size:14px}.summary-meta{font-size:12px}.counter-screen{min-height:auto;gap:10px}.tap-box{padding:12px}.result{padding:16px}.result .big{font-size:34px}.result .small{font-size:15px}.toast{left:50%;width:calc(100% - 24px);text-align:center}}
+@media(max-width:760px){body{padding-left:0;padding-top:72px;font-size:14px}.app-sidebar{inset:0 0 auto 0;width:100%;height:72px;padding:8px 10px;flex-direction:row;align-items:center;border-right:0;border-bottom:2px solid var(--accent-2);overflow-x:auto}.app-navbar-logo{min-width:max-content}.app-nav-links{display:flex;gap:4px}.app-nav-item{min-width:max-content;padding:8px 10px;font-size:13px}.app-nav-icon{width:24px;height:24px}.app-shell-footer{margin-top:0;padding-top:0;border-top:0;margin-left:auto;min-width:118px}header,.wrap{padding-left:12px;padding-right:12px}.wrap{padding-top:14px;gap:12px}.brand{align-items:flex-start}.seal{width:42px;height:42px;border-radius:11px}h1{font-size:25px}.sub{font-size:13px}.top-actions{width:100%;margin-left:0}.tabs{gap:6px}.tab{padding:8px 10px;font-size:13px}.grid{gap:10px}.card{padding:12px;border-radius:10px}.card h2,.card h3{font-size:19px}.metric .k{font-size:11px}.metric .v{font-size:24px}.section-title{align-items:flex-start;flex-direction:column}.range-shell{width:100%;margin-left:0}.range-trigger{min-width:0}.range-popover{position:static;width:100%;min-width:0;margin-top:8px;grid-template-columns:1fr}.range-presets{border-right:0;border-bottom:1px solid var(--line)}.range-calendars{grid-template-columns:1fr}.range-month{border-right:0;border-bottom:1px solid var(--line)}.row{grid-template-columns:1fr}.field,.field.third{grid-column:1/-1}input,select,textarea{font-size:13px;padding:9px 10px}.btn{min-height:36px;padding:8px 10px;font-size:13px}.icon-btn{width:34px;height:34px}.table-wrap{border-radius:9px}table{font-size:12px;min-width:640px}th,td{padding:8px}.pill{font-size:10px;padding:3px 7px}.list-item{padding:9px;font-size:13px}.summary-row{padding:9px}.summary-row strong{font-size:14px}.summary-meta{font-size:12px}.counter-screen{min-height:auto;gap:10px}.tap-box{padding:12px}.result{min-height:190px;min-height:5cm;padding:22px 16px}.result .big{font-size:40px}.result .small{font-size:15px}.toast{left:50%;width:calc(100% - 24px);text-align:center}}
 </style>
 <link rel="stylesheet" href="base-theme.css">
+<style>
+.result.rejected, .result.blocked, .result.rejected *, .result.blocked *{color:#fff!important}
+.result.rejected .pill, .result.blocked .pill{color:#fff!important;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28)}
+</style>
 <script src="base-theme.js"></script>
 </head>
 <body>
@@ -234,6 +247,8 @@ let editingUserId = null;
 let editingRechargeId = null;
 let editingMealId = null;
 let editingCounterId = null;
+let editingCategorySettingId = null;
+let replacingCard = false;
 let dashboardDateFrom = today();
 let dashboardDateTo = today();
 let dashboardPickerOpen = false;
@@ -269,11 +284,17 @@ function loadState(){
   return normalizeState(seedState());
 }
 function normalizeState(data){
-  data.preventPerMealSession = data.preventPerMealSession !== false;
   data.duplicateWindow = Number(data.duplicateWindow || 120);
   data.categories = data.categories || [];
   data.meals = data.meals || [];
   data.rates = data.rates || {};
+  data.vendorRates = data.vendorRates || {};
+  data.categoryModels = data.categoryModels || {};
+  data.categoryDuplicateWindows = data.categoryDuplicateWindows || {};
+  data.categorySessionRestrictions = data.categorySessionRestrictions || {};
+  data.categorySettings = data.categorySettings || [];
+  normalizeRateTables(data);
+  normalizeCategorySystemSettings(data);
   data.users = (data.users || []).map(u => ({coupons:{}, wallet:0, ...u, coupons:u.coupons || {}}));
   data.recharges = (data.recharges || []).map(r => ({remainingAmount:undefined, remainingCoupons:undefined, expired:false, ...r}));
   data.transactions = data.transactions || [];
@@ -283,6 +304,46 @@ function normalizeState(data){
   data.counters = (data.counters || []).map(c => ({assignedUserIds:[], ...c, assignedUserIds:c.assignedUserIds || []}));
   migrateUserIdsToIntegers(data);
   return data;
+}
+function normalizeCategorySystemSettings(data){
+  const defaultModel = data.model || 'wallet';
+  const defaultWindow = Number(data.duplicateWindow || 120);
+  if(!data.categorySettings.length){
+    data.categories.forEach(c=>{
+      const restrict = data.categorySessionRestrictions[c.id] != null ? data.categorySessionRestrictions[c.id] !== false : data.preventPerMealSession !== false;
+      const enabled = c.id === 'cat-student';
+      data.categorySettings.push({
+        id: uid('CS'),
+        categoryId: c.id,
+        model: data.categoryModels[c.id] || defaultModel,
+        duplicateWindow: enabled ? Number(data.categoryDuplicateWindows[c.id] == null ? defaultWindow : data.categoryDuplicateWindows[c.id]) : 0,
+        restrictMealSession: enabled ? restrict : false,
+        status: enabled ? 'active' : 'inactive'
+      });
+    });
+  }
+  data.categorySettings = data.categorySettings.map(s=>({
+    id: s.id || uid('CS'),
+    categoryId: s.categoryId || (data.categories[0] || {}).id || '',
+    model: s.model === 'coupon' ? 'coupon' : 'wallet',
+    duplicateWindow: Number(s.duplicateWindow == null ? defaultWindow : s.duplicateWindow),
+    restrictMealSession: s.restrictMealSession === true,
+    status: s.status === 'inactive' ? 'inactive' : 'active'
+  }));
+  data.categories.forEach(c=>{
+    if(data.categorySettings.some(s=>s.categoryId === c.id)) return;
+    data.categorySettings.push({id:uid('CS'), categoryId:c.id, model:defaultModel, duplicateWindow:0, restrictMealSession:false, status:'inactive'});
+  });
+}
+function normalizeRateTables(data){
+  data.meals.forEach(m=>{
+    data.rates[m.id] = data.rates[m.id] || {};
+    data.vendorRates[m.id] = data.vendorRates[m.id] || {};
+    data.categories.forEach(c=>{
+      if(data.rates[m.id][c.id] == null) data.rates[m.id][c.id] = 0;
+      if(data.vendorRates[m.id][c.id] == null) data.vendorRates[m.id][c.id] = Number(data.rates[m.id][c.id] || 0);
+    });
+  });
 }
 function migrateUserIdsToIntegers(data){
   const idMap = {};
@@ -346,6 +407,30 @@ function expireRecharges(){
     localStorage.setItem(DB_KEY, JSON.stringify(state));
   }
 }
+function isUserValidityExpired(user){
+  return user && isExpiredDate(user.cardExpiryDate);
+}
+function zeroExpiredUserBalance(user){
+  if(!user || !isUserValidityExpired(user)) return false;
+  const hadWallet = Number(user.wallet || 0) !== 0;
+  const hadCoupons = Object.values(user.coupons || {}).some(v=>Number(v || 0) !== 0);
+  if(!hadWallet && !hadCoupons && user.validityExpired) return false;
+  user.wallet = 0;
+  user.coupons = {};
+  user.validityExpired = true;
+  user.validityExpiredAt = user.validityExpiredAt || nowISO();
+  return true;
+}
+function expireUserValidities(){
+  let changed = false;
+  state.users.forEach(user=>{
+    if(zeroExpiredUserBalance(user)){
+      audit('Expired user validity balance '+user.id);
+      changed = true;
+    }
+  });
+  if(changed) localStorage.setItem(DB_KEY, JSON.stringify(state));
+}
 function seedState(){
   const categories = [
     {id:'cat-student', name:'Student', status:'active'},
@@ -366,6 +451,15 @@ function seedState(){
     'meal-snacks': {'cat-student':25,'cat-employee':35,'cat-contractor':30,'cat-guest':45,'cat-visitor':55},
     'meal-dinner': {'cat-student':55,'cat-employee':90,'cat-contractor':75,'cat-guest':110,'cat-visitor':140}
   };
+  const vendorRate = {
+    'meal-breakfast': {'cat-student':25,'cat-employee':42,'cat-contractor':34,'cat-guest':52,'cat-visitor':64},
+    'meal-lunch': {'cat-student':52,'cat-employee':88,'cat-contractor':70,'cat-guest':105,'cat-visitor':132},
+    'meal-snacks': {'cat-student':20,'cat-employee':30,'cat-contractor':25,'cat-guest':39,'cat-visitor':48},
+    'meal-dinner': {'cat-student':48,'cat-employee':78,'cat-contractor':65,'cat-guest':96,'cat-visitor':122}
+  };
+  const categorySettings = [
+    {id:'CS-STUDENT', categoryId:'cat-student', model:'coupon', duplicateWindow:120, restrictMealSession:true, status:'active'}
+  ];
   const users = [
     {id:1, rfid:'RF1001', empNo:'STU-001', name:'Aarav Kumar', mobile:'9000000001', email:'aarav@example.com', categoryId:'cat-student', department:'Science', branch:'Main Campus', photo:'', status:'active', joinDate:today(), cardIssueDate:today(), cardExpiryDate:'2027-12-31', wallet:500, coupons:{'meal-breakfast':5,'meal-lunch':4,'meal-snacks':2,'meal-dinner':3}, createdBy:'Super Admin', createdAt:nowISO()},
     {id:2, rfid:'RF1002', empNo:'EMP-014', name:'Meera Rao', mobile:'9000000002', email:'meera@example.com', categoryId:'cat-employee', department:'Accounts', branch:'Block A', photo:'', status:'active', joinDate:today(), cardIssueDate:today(), cardExpiryDate:'2027-12-31', wallet:900, coupons:{'meal-breakfast':3,'meal-lunch':6,'meal-snacks':4,'meal-dinner':2}, createdBy:'Super Admin', createdAt:nowISO()},
@@ -374,8 +468,7 @@ function seedState(){
   return {
     model:'wallet',
     duplicateWindow:120,
-    preventPerMealSession:true,
-    categories, meals, rates:rate, users,
+    categories, meals, rates:rate, vendorRates:vendorRate, categorySettings, users,
     counters:[
       {id:'CTR-1', name:'Counter 1', location:'Main Cafeteria', status:'active', assignedUserIds:[2]},
       {id:'CTR-2', name:'Counter 2', location:'Annex', status:'active', assignedUserIds:[]}
@@ -395,6 +488,31 @@ function counterLocation(id){
   return counter ? (counter.location || counter.name) : (id ? 'Unknown location' : 'No counter');
 }
 function rateFor(user, mealId){ return Number((state.rates[mealId] || {})[user.categoryId] || 0); }
+function vendorRateFor(user, mealId){
+  const rates = state.vendorRates[mealId] || {};
+  return rates[user.categoryId] == null ? rateFor(user, mealId) : Number(rates[user.categoryId] || 0);
+}
+function txVendorAmount(tx){
+  if(tx.vendorAmount != null) return Number(tx.vendorAmount || 0);
+  const u = state.users.find(x=>x.id===tx.userId);
+  return u ? vendorRateFor(u, tx.mealId) : 0;
+}
+function profitClass(n){ return Number(n || 0) < 0 ? 'loss' : 'profit'; }
+function categorySettingFor(categoryId){
+  return (state.categorySettings || []).find(s=>s.categoryId === categoryId && s.status === 'active') || null;
+}
+function categoryModel(categoryId){
+  const setting = categorySettingFor(categoryId);
+  return setting ? setting.model : 'wallet';
+}
+function categoryDuplicateWindow(categoryId){
+  const setting = categorySettingFor(categoryId);
+  return setting ? Number(setting.duplicateWindow || 0) : 0;
+}
+function categoryRestrictsMealSession(categoryId){
+  const setting = categorySettingFor(categoryId);
+  return setting ? setting.restrictMealSession === true : false;
+}
 function activeMeal(date = new Date()){
   const minutes = date.getHours() * 60 + date.getMinutes();
   return state.meals.find(m=>{
@@ -404,10 +522,12 @@ function activeMeal(date = new Date()){
   }) || null;
 }
 function toMinutes(t){ const p = String(t||'00:00').split(':').map(Number); return p[0]*60 + p[1]; }
-function recentDuplicate(userId, mealId){
-  const windowMs = Number(state.duplicateWindow || 120) * 1000;
+function recentDuplicate(user, mealId){
+  const seconds = categoryDuplicateWindow(user.categoryId);
+  if(seconds <= 0) return false;
+  const windowMs = seconds * 1000;
   const cutoff = Date.now() - windowMs;
-  return state.transactions.find(tx => tx.userId === userId && tx.mealId === mealId && tx.status === 'approved' && new Date(tx.at).getTime() >= cutoff);
+  return state.transactions.find(tx => tx.userId === user.id && tx.mealId === mealId && tx.status === 'approved' && new Date(tx.at).getTime() >= cutoff);
 }
 function sameMealSession(tx, meal){
   if(!meal || !tx || tx.mealId !== meal.id || tx.status !== 'approved') return false;
@@ -418,8 +538,8 @@ function sameMealSession(tx, meal){
   const s = toMinutes(meal.start), e = toMinutes(meal.end);
   return s <= e ? mins >= s && mins <= e : mins >= s || mins <= e;
 }
-function alreadyUsedMealSession(userId, meal){
-  return state.preventPerMealSession && state.transactions.find(tx => tx.userId === userId && sameMealSession(tx, meal));
+function alreadyUsedMealSession(user, meal){
+  return categoryRestrictsMealSession(user.categoryId) && state.transactions.find(tx => tx.userId === user.id && sameMealSession(tx, meal));
 }
 function userSearchLabel(u){
   return u ? [u.name, u.id, u.rfid, u.mobile, u.empNo].filter(Boolean).join(' / ') : '';
@@ -526,10 +646,11 @@ function fileText(file){
 function audit(action){ state.audit.unshift({at:nowISO(), actor:'Admin', action}); }
 function consumeRFID(rfid, counterId){
   expireRecharges();
+  expireUserValidities();
   const clean = String(rfid||'').trim();
   const user = state.users.find(u=>u.rfid.toLowerCase() === clean.toLowerCase());
   const meal = activeMeal();
-  const tx = {id:uid('TX'), at:nowISO(), rfid:clean, counterId, userId:user ? user.id : '', mealId:meal ? meal.id : '', amount:0, status:'failed', reason:''};
+  const tx = {id:uid('TX'), at:nowISO(), rfid:clean, counterId, userId:user ? user.id : '', mealId:meal ? meal.id : '', amount:0, vendorAmount:0, status:'failed', reason:''};
   if(!navigator.onLine){
     tx.reason = 'Offline queued';
     state.offlineQueue.push(tx);
@@ -540,12 +661,15 @@ function consumeRFID(rfid, counterId){
   if(!user){ tx.reason = 'Unknown RFID'; state.transactions.unshift(tx); audit('Rejected unknown RFID '+clean); save(); return {...tx, user:null, meal, display:'UNKNOWN CARD', css:'rejected'}; }
   if(user.status === 'blocked'){ tx.reason = 'Card blocked'; state.transactions.unshift(tx); audit('Rejected blocked card '+clean); save(); return {...tx, user, meal, display:'CARD BLOCKED', css:'blocked'}; }
   if(user.status !== 'active'){ tx.reason = 'Inactive user'; state.transactions.unshift(tx); save(); return {...tx, user, meal, display:'USER INACTIVE', css:'rejected'}; }
+  if(isUserValidityExpired(user)){ zeroExpiredUserBalance(user); tx.reason = 'User validity expired'; state.transactions.unshift(tx); audit('Rejected expired user '+clean); save(); return {...tx, user, meal, display:'VALIDITY EXPIRED', css:'blocked'}; }
   if(!meal){ tx.reason = 'No active meal window'; state.transactions.unshift(tx); save(); return {...tx, user, meal:null, display:'NO MEAL WINDOW', css:'rejected'}; }
-  if(recentDuplicate(user.id, meal.id)){ tx.reason = 'Already utilized'; state.transactions.unshift(tx); save(); return {...tx, user, meal, display:'ALREADY UTILIZED', css:'blocked'}; }
-  if(alreadyUsedMealSession(user.id, meal)){ tx.reason = 'Already utilized in this meal session'; state.transactions.unshift(tx); save(); return {...tx, user, meal, display:'SESSION USED', css:'blocked'}; }
+  if(recentDuplicate(user, meal.id)){ tx.reason = 'Already utilized'; state.transactions.unshift(tx); save(); return {...tx, user, meal, display:'ALREADY UTILIZED', css:'blocked'}; }
+  if(alreadyUsedMealSession(user, meal)){ tx.reason = 'Already utilized in this meal session'; state.transactions.unshift(tx); save(); return {...tx, user, meal, display:'SESSION USED', css:'blocked'}; }
   const amount = rateFor(user, meal.id);
+  const vendorAmount = vendorRateFor(user, meal.id);
   tx.amount = amount;
-  if(state.model === 'coupon'){
+  tx.vendorAmount = vendorAmount;
+  if(categoryModel(user.categoryId) === 'coupon'){
     const current = Number((user.coupons || {})[meal.id] || 0);
     if(current < 1){ tx.reason = 'Insufficient coupons'; state.transactions.unshift(tx); save(); return {...tx, user, meal, display:'INSUFFICIENT COUPON', css:'rejected'}; }
     user.coupons[meal.id] = current - 1;
@@ -574,6 +698,17 @@ function beep(type){
     osc.start(); setTimeout(()=>{ osc.stop(); ctx.close(); }, 120);
   }catch(error){}
 }
+function speakRFIDResult(result){
+  if(!result || !('speechSynthesis' in window)) return;
+  try{
+    window.speechSynthesis.cancel();
+    const msg = new SpeechSynthesisUtterance(result.css === 'approved' ? 'Accepted' : 'Rejected');
+    msg.rate = 1;
+    msg.pitch = 1;
+    msg.volume = 1;
+    window.speechSynthesis.speak(msg);
+  }catch(error){}
+}
 function rowsToCSV(rows, filename){
   const csv = rows.map(row => row.map(v => '"' + String(v == null ? '' : v).replace(/"/g,'""') + '"').join(',')).join('\r\n');
   const blob = new Blob(['\ufeff' + csv], {type:'text/csv;charset=utf-8'});
@@ -597,6 +732,7 @@ function consumeRechargeCoupon(userId, mealId){
 }
 function render(){
   expireRecharges();
+  expireUserValidities();
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.id === activeView));
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.view === activeView));
   renderDashboard(); renderCounter(); renderUsers(); renderCards(); renderRecharge(); renderSettings(); renderReports(); renderDocs();
@@ -611,27 +747,39 @@ function renderDashboard(){
   const rangeApproved = state.transactions.filter(t=>t.status === 'approved' && t.at.slice(0,10) >= rangeStart && t.at.slice(0,10) <= rangeEnd);
   const categoryUsage = state.categories.map(c=>{
     const txs = rangeApproved.filter(t=>{ const u=state.users.find(x=>x.id===t.userId); return u && u.categoryId===c.id; });
-    return {name:c.name, count:txs.length, amount:txs.reduce((s,t)=>s+Number(t.amount||0),0)};
+    const amount = txs.reduce((s,t)=>s+Number(t.amount||0),0);
+    const vendor = txs.reduce((s,t)=>s+txVendorAmount(t),0);
+    return {name:c.name, count:txs.length, amount, vendor, profit:amount - vendor};
   });
   const mealUsage = state.meals.map(m=>{
     const txs = rangeApproved.filter(t=>t.mealId===m.id);
-    return {name:m.name, count:txs.length, amount:txs.reduce((s,t)=>s+Number(t.amount||0),0)};
+    const amount = txs.reduce((s,t)=>s+Number(t.amount||0),0);
+    const vendor = txs.reduce((s,t)=>s+txVendorAmount(t),0);
+    return {name:m.name, count:txs.length, amount, vendor, profit:amount - vendor};
   });
   const locationMap = {};
   rangeApproved.forEach(t=>{
     const name = counterLocation(t.counterId);
-    locationMap[name] = locationMap[name] || {name, count:0, amount:0};
+    locationMap[name] = locationMap[name] || {name, count:0, amount:0, vendor:0, profit:0};
     locationMap[name].count += 1;
     locationMap[name].amount += Number(t.amount || 0);
+    locationMap[name].vendor += txVendorAmount(t);
+    locationMap[name].profit = locationMap[name].amount - locationMap[name].vendor;
   });
   const locationUsage = Object.values(locationMap).sort((a,b)=>b.count-a.count || b.amount-a.amount);
   const collections = state.recharges.reduce((s,r)=>s+Number(r.amount||0),0);
+  const rangeSales = rangeApproved.reduce((s,t)=>s+Number(t.amount||0),0);
+  const rangeVendorCost = rangeApproved.reduce((s,t)=>s+txVendorAmount(t),0);
+  const rangeProfit = rangeSales - rangeVendorCost;
   const mealCards = state.meals.map(m=>`<div class="card span-3 metric"><div class="k">Today's ${esc(m.name)}</div><div class="v">${approved.filter(t=>t.mealId===m.id).length}</div></div>`).join('');
   $('dashboard').innerHTML = `<div class="grid">
     <div class="card span-3 metric"><div class="k">Total Users</div><div class="v">${state.users.length}</div></div>
     <div class="card span-3 metric"><div class="k">Active Users</div><div class="v">${state.users.filter(u=>u.status==='active').length}</div></div>
     <div class="card span-3 metric"><div class="k">Today's Consumption</div><div class="v">${approved.length}</div></div>
     <div class="card span-3 metric"><div class="k">Collections</div><div class="v">${money(collections)}</div></div>
+    <div class="card span-3 metric"><div class="k">Range Sales</div><div class="v">${money(rangeSales)}</div></div>
+    <div class="card span-3 metric"><div class="k">Vendor Cost</div><div class="v">${money(rangeVendorCost)}</div></div>
+    <div class="card span-3 metric"><div class="k">Profit / Loss</div><div class="v ${profitClass(rangeProfit)}">${money(rangeProfit)}</div></div>
     ${mealCards}
     <div class="card span-6"><div class="section-title"><h2>Usage Reports</h2>${dashboardRangePickerHTML(rangeStart, rangeEnd)}</div><div class="report-grid"><div class="report-block"><h3>Category Usage</h3>${usageSummaryHTML(categoryUsage)}</div><div class="report-block"><h3>Meal Wise Usage</h3>${usageSummaryHTML(mealUsage)}</div><div class="report-block"><h3>Counter Location Usage</h3>${usageSummaryHTML(locationUsage)}</div></div></div>
   </div>`;
@@ -655,22 +803,22 @@ function renderCounter(){
     <div class="card">
       <h2>Full Screen RFID Counter</h2>
       <div class="counter-screen">
-        <div class="tap-box">
-          <div class="field full"><label>Counter Device</label><select id="counterDevice">${activeCounters.map(c=>`<option value="${c.id}">${esc(c.name)} - ${esc(c.location)}</option>`).join('')}</select></div>
-          <div class="pill" id="counterAccessPill">Counter owner: ${activeCounters[0] ? esc(counterOwnerNames(activeCounters[0])) : 'No active counters'}</div>
-          <div class="field full"><label>RFID Input</label><input id="rfidInput" placeholder="Tap card or type RFID, e.g. RF1001" autofocus></div>
-          <button class="btn primary" id="tapBtn" type="button" ${activeCounters.length ? '' : 'disabled'}>Process Tap</button>
-          <div class="pill">Current meal: ${activeMeal() ? esc(activeMeal().name) : 'No active meal'}</div>
-          <!-- <div class="pill">Duplicate window: ${state.duplicateWindow}s</div>
-          <div class="pill">Session restriction: ${state.preventPerMealSession ? 'Once per meal' : 'Window only'}</div>
-          <div class="pill">Mode: ${state.model === 'wallet' ? 'Wallet Based' : 'Coupon Quantity Based'}</div> -->
-        </div>
         <div class="result ${result ? result.css : ''}">
           <div>
             <div class="big">${result ? esc(result.display) : 'READY'}</div>
             <div class="small">${result && result.user ? esc(result.user.name)+' / '+esc(categoryName(result.user.categoryId)) : 'Waiting for RFID tap'}</div>
             ${result && result.user ? `<p><span class="pill">Wallet ${money(result.user.wallet)}</span> <span class="pill">Meal ${result.meal ? esc(result.meal.name) : '-'}</span></p>` : ''}
           </div>
+        </div>
+        <div class="tap-box">
+          <div class="field full"><label>RFID Input</label><input id="rfidInput" placeholder="Tap card or type RFID, e.g. RF1001" autofocus></div>
+          <button class="btn primary" id="tapBtn" type="button" ${activeCounters.length ? '' : 'disabled'}>Process Tap</button>
+          <div class="pill">Current meal: ${activeMeal() ? esc(activeMeal().name) : 'No active meal'}</div>
+          <div class="field full"><label>Counter Device</label><select id="counterDevice">${activeCounters.map(c=>`<option value="${c.id}">${esc(c.name)} - ${esc(c.location)}</option>`).join('')}</select></div>
+          <div class="pill" id="counterAccessPill">Counter owner: ${activeCounters[0] ? esc(counterOwnerNames(activeCounters[0])) : 'No active counters'}</div>
+          <!-- <div class="pill">Duplicate window: By category</div>
+          <div class="pill">Session restriction: By category</div>
+          <div class="pill">Mode: By category</div> -->
         </div>
       </div>
     </div>
@@ -682,14 +830,15 @@ function renderCounter(){
   };
   $('tapBtn').onclick = () => {
     lastCounterResult = consumeRFID($('rfidInput').value, $('counterDevice').value);
+    speakRFIDResult(lastCounterResult);
     render();
   };
   $('rfidInput').onkeydown = e => { if(e.key === 'Enter') $('tapBtn').click(); };
 }
 function renderUsers(){
-  const edit = editingUserId ? state.users.find(u=>String(u.id)===String(editingUserId)) : null;
-  $('users').innerHTML = `<div class="grid">
-    <div class="card span-5"><h2>${edit ? 'Edit User' : 'Add User'}</h2>
+  const userModalOpen = editingUserId != null;
+  const edit = editingUserId && editingUserId !== 'new' ? state.users.find(u=>String(u.id)===String(editingUserId)) : null;
+  const userModal = userModalOpen ? `<div class="modal-backdrop" id="userModal"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="userModalTitle"><div class="modal-head"><h2 id="userModalTitle">${edit ? 'Edit User' : 'Add User'}</h2><button class="icon-btn delete" id="closeUserModal" type="button" title="Close" aria-label="Close">&#10005;</button></div>
       <div class="row">
         <div class="field"><label>Name</label><input id="uName" value="${esc(edit ? edit.name : '')}"></div>
         <div class="field"><label>RFID Card</label><input id="uRfid" value="${esc(edit ? edit.rfid : '')}"></div>
@@ -702,37 +851,36 @@ function renderUsers(){
         <div class="field"><label>Branch/Location</label><input id="uBranch" value="${esc(edit ? edit.branch : '')}"></div>
         <div class="field"><label>Expiry</label><input id="uExpiry" type="date" value="${esc(edit ? edit.cardExpiryDate : '2027-12-31')}"></div>
         <div class="field full"><label>Photo URL</label><input id="uPhoto" placeholder="Optional image URL" value="${esc(edit ? edit.photo : '')}"></div>
-        <div class="field full"><button class="btn primary" id="saveUser" type="button">${edit ? 'Update User' : 'Save User'}</button>${edit ? ' <button class="btn" id="cancelUserEdit" type="button">Cancel Edit</button>' : ''}</div>
+        <div class="field full"><button class="btn primary" id="saveUser" type="button">${edit ? 'Update User' : 'Save User'}</button><button class="btn" id="cancelUserEdit" type="button">Cancel</button></div>
       </div>
-      <hr>
-      <h3>Bulk Upload Users</h3>
-      <div class="toolbar">
-        <button class="btn" id="sampleUsers" type="button">Download Sample CSV</button>
-        <button class="btn" id="bulkUserBtn" type="button">Upload CSV</button>
-        <input id="bulkUserFile" class="hidden" type="file" accept=".csv,text/csv">
-      </div>
-    </div>
-    <div class="card span-7"><div class="toolbar"><input id="userSearch" placeholder="Search users"><button class="btn" id="exportUsers" type="button">Export Users CSV</button></div><div id="userTable"></div></div>
-  </div>`;
-  if(edit) $('uCat').value = edit.categoryId;
-  $('saveUser').onclick = () => {
-    const id = edit ? Number(edit.id) : nextUserId();
-    if(!$('uName').value.trim() || !$('uRfid').value.trim()){ toast('Name and RFID are required'); return; }
-    const payload = {id, rfid:$('uRfid').value.trim(), empNo:$('uEmp').value, name:$('uName').value, mobile:$('uMobile').value, email:$('uEmail').value, categoryId:$('uCat').value, department:$('uDept').value, branch:$('uBranch').value, photo:$('uPhoto').value, status:edit ? edit.status : 'active', joinDate:edit ? edit.joinDate : today(), cardIssueDate:edit ? edit.cardIssueDate : today(), cardExpiryDate:$('uExpiry').value, wallet:edit ? Number(edit.wallet||0) : 0, coupons:edit ? (edit.coupons||{}) : {}, createdBy:edit ? edit.createdBy : 'Admin', createdAt:edit ? edit.createdAt : nowISO()};
-    if(edit){ Object.assign(edit, payload); audit('Updated user '+payload.name); editingUserId = null; }
-    else{
-      if(state.users.some(u=>u.rfid.toLowerCase() === payload.rfid.toLowerCase())) return toast('RFID already exists');
-      state.users.push(payload); audit('Created user '+payload.name);
-    }
-    save(); toast('User saved');
-  };
-  if(edit) $('cancelUserEdit').onclick = () => { editingUserId = null; render(); };
+    </div></div>` : '';
+  $('users').innerHTML = `<div class="grid">
+    <div class="card"><div class="section-title"><h2>Registered Users</h2><div class="icon-actions"><button class="icon-btn good" id="addUserBtn" type="button" title="Add user" aria-label="Add user">&#43;</button><button class="btn" id="sampleUsers" type="button">Sample CSV</button><button class="btn" id="bulkUserBtn" type="button">Upload CSV</button><button class="btn" id="exportUsers" type="button">Export CSV</button></div></div><div class="toolbar"><input id="userSearch" placeholder="Search users"><select id="userCategoryFilter"><option value="">All Categories</option>${state.categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select><select id="userStatusFilter"><option value="">All Status</option><option value="active">Active</option><option value="blocked">Blocked</option><option value="inactive">Inactive</option><option value="expired">Expired</option></select><input id="bulkUserFile" class="hidden" type="file" accept=".csv,text/csv"></div><div id="userTable"></div></div>
+  </div>${userModal}`;
+  if(userModalOpen){
+    if(edit) $('uCat').value = edit.categoryId;
+    $('saveUser').onclick = () => {
+      const id = edit ? Number(edit.id) : nextUserId();
+      if(!$('uName').value.trim() || !$('uRfid').value.trim()){ toast('Name and RFID are required'); return; }
+      const payload = {id, rfid:$('uRfid').value.trim(), empNo:$('uEmp').value, name:$('uName').value, mobile:$('uMobile').value, email:$('uEmail').value, categoryId:$('uCat').value, department:$('uDept').value, branch:$('uBranch').value, photo:$('uPhoto').value, status:edit ? edit.status : 'active', joinDate:edit ? edit.joinDate : today(), cardIssueDate:edit ? edit.cardIssueDate : today(), cardExpiryDate:$('uExpiry').value, wallet:edit ? Number(edit.wallet||0) : 0, coupons:edit ? (edit.coupons||{}) : {}, createdBy:edit ? edit.createdBy : 'Admin', createdAt:edit ? edit.createdAt : nowISO()};
+      if(!isExpiredDate(payload.cardExpiryDate)){ payload.validityExpired = false; payload.validityExpiredAt = ''; }
+      if(edit){ Object.assign(edit, payload); audit('Updated user '+payload.name); editingUserId = null; }
+      else{
+        if(state.users.some(u=>u.rfid.toLowerCase() === payload.rfid.toLowerCase())) return toast('RFID already exists');
+        state.users.push(payload); audit('Created user '+payload.name); editingUserId = null;
+      }
+      save(); toast('User saved');
+    };
+    $('cancelUserEdit').onclick = () => { editingUserId = null; render(); };
+    $('closeUserModal').onclick = () => { editingUserId = null; render(); };
+  }
+  $('addUserBtn').onclick = () => { editingUserId = 'new'; render(); };
   $('sampleUsers').onclick = () => rowsToCSV([['rfid','emp_no','name','mobile','email','category','department','branch','expiry_date'],['RF2001','STU-2001','Sample User','9000000999','sample@example.com','Student','Science','Main Campus','2027-12-31']], 'rfid-users-sample.csv');
   $('bulkUserBtn').onclick = () => $('bulkUserFile').click();
   $('bulkUserFile').onchange = async e => { if(e.target.files[0]) await importUsersCSV(e.target.files[0]); e.target.value=''; };
-  $('exportUsers').onclick = () => rowsToCSV([['User ID','RFID','Name','Mobile','Category','Status']].concat(state.users.map(u=>[u.id,u.rfid,u.name,u.mobile,categoryName(u.categoryId),u.status])), 'rfid-users.csv');
-  $('userSearch').oninput = () => drawUserTable($('userSearch').value);
-  drawUserTable('');
+  $('exportUsers').onclick = () => rowsToCSV([['User ID','RFID','Name','Employee/Student No.','Mobile','Email','Category','Department','Branch','Wallet','Status','Expiry']].concat(filteredUsers().map(u=>[u.id,u.rfid,u.name,u.empNo,u.mobile,u.email,categoryName(u.categoryId),u.department,u.branch,u.wallet,userValidityStatus(u).label,u.cardExpiryDate])), 'rfid-users.csv');
+  ['userSearch','userCategoryFilter','userStatusFilter'].forEach(id=>$(id).oninput = () => drawUserTable());
+  drawUserTable();
 }
 async function importUsersCSV(file){
   const rows = parseCSV(await fileText(file));
@@ -757,65 +905,99 @@ async function importUsersCSV(file){
   audit('Bulk uploaded users: '+added);
   save(); toast('Imported '+added+' users. Skipped '+skipped+'.');
 }
-function drawUserTable(query){
-  query = String(query||'').toLowerCase();
-  const users = state.users.filter(u => [u.id,u.rfid,u.name,u.mobile,u.empNo].join(' ').toLowerCase().includes(query));
-  $('userTable').innerHTML = `<div class="table-wrap"><table><thead><tr><th>User</th><th>RFID</th><th>Category</th><th>Balance</th><th>Status</th><th>Actions</th></tr></thead><tbody>${users.map(u=>`<tr><td><strong>${esc(u.name)}</strong><br><span class="mono">${esc(u.id)}</span></td><td>${esc(u.rfid)}</td><td>${esc(categoryName(u.categoryId))}</td><td>${money(u.wallet)}</td><td><span class="status-${u.status}">${esc(u.status)}</span></td><td><div class="icon-actions"><button class="icon-btn edit" data-edit-user="${u.id}" title="Edit user" aria-label="Edit user">&#9998;</button><button class="icon-btn ${u.status === 'blocked' ? 'good' : 'warn'}" data-block-user="${u.id}" title="${u.status === 'blocked' ? 'Unblock user' : 'Block user'}" aria-label="${u.status === 'blocked' ? 'Unblock user' : 'Block user'}">${u.status === 'blocked' ? '&#128275;' : '&#128274;'}</button></div></td></tr>`).join('')}</tbody></table></div>`;
+function filteredUsers(){
+  const query = String($('userSearch') ? $('userSearch').value : '').toLowerCase();
+  const category = $('userCategoryFilter') ? $('userCategoryFilter').value : '';
+  const status = $('userStatusFilter') ? $('userStatusFilter').value : '';
+  return state.users.filter(u=>{
+    const validity = userValidityStatus(u);
+    const haystack = [u.id,u.rfid,u.name,u.mobile,u.empNo,u.email,u.department,u.branch,categoryName(u.categoryId),u.status,validity.label].join(' ').toLowerCase();
+    return (!query || haystack.includes(query)) && (!category || u.categoryId === category) && (!status || validity.value === status);
+  });
+}
+function userValidityStatus(user){
+  if(isUserValidityExpired(user)) return {value:'expired', label:'expired', css:'blocked'};
+  return {value:user.status, label:user.status, css:user.status};
+}
+function drawUserTable(){
+  const users = filteredUsers();
+  $('userTable').innerHTML = `<div class="table-wrap"><table><thead><tr><th>User</th><th>RFID</th><th>Contact</th><th>Category</th><th>Department</th><th>Branch</th><th>Balance</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead><tbody>${users.map(u=>{ const validity = userValidityStatus(u); return `<tr><td><strong>${esc(u.name)}</strong><br><span class="mono">${esc(u.id)}</span><br><span class="mono">${esc(u.empNo || '-')}</span></td><td>${esc(u.rfid)}</td><td>${esc(u.mobile || '-')}<br>${esc(u.email || '-')}</td><td>${esc(categoryName(u.categoryId))}</td><td>${esc(u.department || '-')}</td><td>${esc(u.branch || '-')}</td><td>${money(u.wallet)}</td><td>${esc(u.cardExpiryDate || '-')}</td><td><span class="status-${validity.css}">${esc(validity.label)}</span></td><td><div class="icon-actions"><button class="icon-btn edit" data-edit-user="${u.id}" title="Edit user" aria-label="Edit user">&#9998;</button><button class="icon-btn ${u.status === 'blocked' ? 'good' : 'warn'}" data-block-user="${u.id}" title="${u.status === 'blocked' ? 'Unblock user' : 'Block user'}" aria-label="${u.status === 'blocked' ? 'Unblock user' : 'Block user'}">${u.status === 'blocked' ? '&#128275;' : '&#128274;'}</button></div></td></tr>`; }).join('')}</tbody></table></div>`;
   document.querySelectorAll('[data-edit-user]').forEach(b=>b.onclick=()=>{ editingUserId = b.dataset.editUser; render(); });
   document.querySelectorAll('[data-block-user]').forEach(b=>b.onclick=()=>{ const u=state.users.find(x=>String(x.id)===String(b.dataset.blockUser)); u.status = u.status === 'blocked' ? 'active' : 'blocked'; audit('Changed card block status '+u.id); save(); });
 }
 function renderCards(){
+  const replaceModal = replacingCard ? `<div class="modal-backdrop" id="cardModal"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="cardModalTitle"><div class="modal-head"><h2 id="cardModalTitle">Replace RFID Card</h2><button class="icon-btn delete" id="closeCardModal" type="button" title="Close" aria-label="Close">&#10005;</button></div><div class="row"><div class="field full"><label>Search User</label><input id="cardUserSearch" list="userSearchList" placeholder="Name, RFID, mobile, or user ID"><datalist id="userSearchList">${state.users.map(u=>`<option value="${esc(userSearchLabel(u))}"></option>`).join('')}</datalist></div><div class="field full"><label>New RFID</label><input id="newRfid"></div><div class="field full"><label>Reason</label><input id="cardReason" placeholder="Lost, damaged, renewal"></div><div class="field full"><button class="btn primary" id="replaceCard">Replace Card</button><button class="btn" id="cancelCardReplace" type="button">Cancel</button></div></div></div></div>` : '';
   $('cards').innerHTML = `<div class="grid">
-    <div class="card span-4"><h2>Replace RFID Card</h2><div class="row"><div class="field full"><label>Search User</label><input id="cardUserSearch" list="userSearchList" placeholder="Name, RFID, mobile, or user ID"><datalist id="userSearchList">${state.users.map(u=>`<option value="${esc(userSearchLabel(u))}"></option>`).join('')}</datalist></div><div class="field full"><label>New RFID</label><input id="newRfid"></div><div class="field full"><label>Reason</label><input id="cardReason" placeholder="Lost, damaged, renewal"></div><div class="field full"><button class="btn primary" id="replaceCard">Replace Card</button></div></div></div>
-    <div class="card span-8"><h2>Card History</h2><div class="table-wrap"><table><thead><tr><th>User</th><th>Old RFID</th><th>New RFID</th><th>Reason</th><th>Date</th></tr></thead><tbody>${state.cardHistory.map(h=>`<tr><td>${esc(h.userId)}</td><td>${esc(h.oldRfid)}</td><td>${esc(h.newRfid)}</td><td>${esc(h.reason)}</td><td>${new Date(h.at).toLocaleString()}</td></tr>`).join('')}</tbody></table></div></div>
-  </div>`;
-  $('replaceCard').onclick = () => {
-    const u = findUserBySearch($('cardUserSearch').value);
-    if(!u || !$('newRfid').value.trim()) return toast('Choose user and new RFID');
-    state.cardHistory.unshift({userId:u.id, oldRfid:u.rfid, newRfid:$('newRfid').value.trim(), reason:$('cardReason').value, at:nowISO()});
-    u.rfid = $('newRfid').value.trim();
-    audit('Replaced RFID for '+u.id); save(); toast('RFID replaced');
-  };
+    <div class="card"><div class="section-title"><h2>RFID Card History</h2><div class="icon-actions"><button class="icon-btn good" id="replaceCardBtn" type="button" title="Replace RFID card" aria-label="Replace RFID card">&#43;</button><button class="btn" id="exportCards" type="button">Export CSV</button></div></div><div class="toolbar"><input id="cardSearch" placeholder="Search cards, users, or reason"><select id="cardUserFilter"><option value="">All Users</option>${state.users.map(u=>`<option value="${u.id}">${esc(userSearchLabel(u))}</option>`).join('')}</select></div><div id="cardHistoryTable"></div></div>
+  </div>${replaceModal}`;
+  $('replaceCardBtn').onclick = () => { replacingCard = true; render(); };
+  $('exportCards').onclick = () => rowsToCSV([['User ID','User','Old RFID','New RFID','Reason','Date']].concat(filteredCardHistory().map(h=>[h.userId,(state.users.find(u=>u.id===h.userId)||{}).name || '',h.oldRfid,h.newRfid,h.reason,h.at])), 'rfid-card-history.csv');
+  ['cardSearch','cardUserFilter'].forEach(id=>$(id).oninput = () => drawCardHistoryTable());
+  if(replacingCard){
+    $('replaceCard').onclick = () => {
+      const u = findUserBySearch($('cardUserSearch').value);
+      if(!u || !$('newRfid').value.trim()) return toast('Choose user and new RFID');
+      state.cardHistory.unshift({userId:u.id, oldRfid:u.rfid, newRfid:$('newRfid').value.trim(), reason:$('cardReason').value, at:nowISO()});
+      u.rfid = $('newRfid').value.trim();
+      replacingCard = false;
+      audit('Replaced RFID for '+u.id); save(); toast('RFID replaced');
+    };
+    $('cancelCardReplace').onclick = () => { replacingCard = false; render(); };
+    $('closeCardModal').onclick = () => { replacingCard = false; render(); };
+  }
+  drawCardHistoryTable();
+}
+function filteredCardHistory(){
+  const query = String($('cardSearch') ? $('cardSearch').value : '').toLowerCase();
+  const userFilter = $('cardUserFilter') ? $('cardUserFilter').value : '';
+  return state.cardHistory.filter(h=>{
+    const u = state.users.find(x=>x.id===h.userId) || {};
+    const haystack = [h.userId,u.name,u.rfid,h.oldRfid,h.newRfid,h.reason,h.at].join(' ').toLowerCase();
+    return (!query || haystack.includes(query)) && (!userFilter || String(h.userId) === String(userFilter));
+  });
+}
+function drawCardHistoryTable(){
+  const rows = filteredCardHistory();
+  $('cardHistoryTable').innerHTML = `<div class="table-wrap"><table><thead><tr><th>User</th><th>Old RFID</th><th>New RFID</th><th>Reason</th><th>Date</th></tr></thead><tbody>${rows.map(h=>`<tr><td>${esc((state.users.find(u=>u.id===h.userId)||{}).name || h.userId)}<br><span class="mono">${esc(h.userId)}</span></td><td>${esc(h.oldRfid)}</td><td>${esc(h.newRfid)}</td><td>${esc(h.reason || '-')}</td><td>${new Date(h.at).toLocaleString()}</td></tr>`).join('')}</tbody></table></div>`;
 }
 function renderRecharge(){
-  const edit = editingRechargeId ? state.recharges.find(r=>r.id===editingRechargeId) : null;
+  const rechargeModalOpen = editingRechargeId != null;
+  const edit = editingRechargeId && editingRechargeId !== 'new' ? state.recharges.find(r=>r.id===editingRechargeId) : null;
   const editUser = edit ? state.users.find(u=>u.id===edit.userId) : null;
+  const rechargeModal = rechargeModalOpen ? `<div class="modal-backdrop" id="rechargeModal"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="rechargeModalTitle"><div class="modal-head"><h2 id="rechargeModalTitle">${edit ? 'Edit Recharge' : 'Recharge'}</h2><button class="icon-btn delete" id="closeRechargeModal" type="button" title="Close" aria-label="Close">&#10005;</button></div><div class="row"><div class="field full"><label>Search User</label><input id="rUserSearch" list="rechargeUserList" placeholder="Name, RFID, mobile, or user ID" value="${esc(userSearchLabel(editUser))}"><datalist id="rechargeUserList">${state.users.map(u=>`<option value="${esc(userSearchLabel(u))}"></option>`).join('')}</datalist></div><div class="field"><label>Amount</label><input id="rAmount" type="number" value="${edit ? edit.amount : 500}"></div><div class="field"><label>Meal Coupon</label><select id="rMeal"><option value="">Wallet Only</option>${state.meals.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('')}</select></div><div class="field"><label>Coupons</label><input id="rCoupons" type="number" value="${edit ? edit.coupons : 0}"></div><div class="field"><label>Valid Till</label><input id="rValidTill" type="date" value="${esc(edit ? (edit.validTill || '') : '')}"></div><div class="field full"><label>Remarks</label><textarea id="rRemarks">${esc(edit ? edit.remarks : '')}</textarea></div><div class="field full"><button class="btn primary" id="doRecharge">${edit ? 'Update Recharge' : 'Recharge'}</button><button class="btn" id="cancelRechargeEdit" type="button">Cancel</button></div></div></div></div>` : '';
   $('recharge').innerHTML = `<div class="grid">
-    <div class="card span-4"><h2>${edit ? 'Edit Recharge' : 'Recharge'}</h2><div class="row"><div class="field full"><label>Search User</label><input id="rUserSearch" list="rechargeUserList" placeholder="Name, RFID, mobile, or user ID" value="${esc(userSearchLabel(editUser))}"><datalist id="rechargeUserList">${state.users.map(u=>`<option value="${esc(userSearchLabel(u))}"></option>`).join('')}</datalist></div><div class="field"><label>Amount</label><input id="rAmount" type="number" value="${edit ? edit.amount : 500}"></div><div class="field"><label>Meal Coupon</label><select id="rMeal"><option value="">Wallet Only</option>${state.meals.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('')}</select></div><div class="field"><label>Coupons</label><input id="rCoupons" type="number" value="${edit ? edit.coupons : 0}"></div><div class="field"><label>Valid Till</label><input id="rValidTill" type="date" value="${esc(edit ? (edit.validTill || '') : '')}"></div><div class="field full"><label>Remarks</label><textarea id="rRemarks">${esc(edit ? edit.remarks : '')}</textarea></div><div class="field full"><button class="btn primary" id="doRecharge">${edit ? 'Update Recharge' : 'Recharge'}</button>${edit ? ' <button class="btn" id="cancelRechargeEdit" type="button">Cancel Edit</button>' : ''}</div></div></div>
-    <div class="card span-8"><h2>Recharge History</h2>${rechargeTable()}</div>
-  </div>`;
-  if(edit) $('rMeal').value = edit.mealId || '';
-  $('doRecharge').onclick = () => {
-    const u = findUserBySearch($('rUserSearch').value);
-    const amount = Number($('rAmount').value || 0);
-    const mealId = $('rMeal').value;
-    const coupons = Number($('rCoupons').value || 0);
-    if(!u) return toast('Select a valid user');
-    if(edit){
-      reverseRecharge(edit);
-      edit.userId = u.id; edit.amount = amount; edit.mealId = mealId; edit.coupons = coupons; edit.validTill = $('rValidTill').value; edit.remarks = $('rRemarks').value; edit.editedAt = nowISO(); edit.expired = false; edit.expiredAt = '';
-      applyRecharge(edit);
-      editingRechargeId = null;
-      audit('Edited recharge '+edit.id);
-      save(); toast('Recharge updated');
-    }else{
-      const rec = {id:uid('RC'), userId:u.id, amount, mealId, coupons, validTill:$('rValidTill').value, remainingAmount:amount, remainingCoupons:coupons, expired:false, afterWallet:0, operator:'Admin', remarks:$('rRemarks').value, at:nowISO()};
-      applyRecharge(rec);
-      state.recharges.unshift(rec);
-      audit('Recharge for '+u.name); save(); toast('Recharge complete. Receipt generated in history.');
-    }
-  };
-  if(edit) $('cancelRechargeEdit').onclick = () => { editingRechargeId = null; render(); };
-  document.querySelectorAll('[data-edit-recharge]').forEach(b=>b.onclick=()=>{ editingRechargeId = b.dataset.editRecharge; render(); });
-  document.querySelectorAll('[data-delete-recharge]').forEach(b=>b.onclick=()=>{
-    const rec = state.recharges.find(r=>r.id===b.dataset.deleteRecharge);
-    if(!rec || !confirm('Delete recharge '+rec.id+'?')) return;
-    reverseRecharge(rec);
-    state.recharges = state.recharges.filter(r=>r.id!==rec.id);
-    if(editingRechargeId === rec.id) editingRechargeId = null;
-    audit('Deleted recharge '+rec.id);
-    save(); toast('Recharge deleted');
-  });
+    <div class="card"><div class="section-title"><h2>Recharge History</h2><div class="icon-actions"><button class="icon-btn good" id="addRechargeBtn" type="button" title="Add recharge" aria-label="Add recharge">&#43;</button><button class="btn" id="exportRechargeHistory" type="button">Export CSV</button></div></div><div class="toolbar"><input id="rechargeSearch" placeholder="Search receipt, user, remarks"><select id="rechargeStatusFilter"><option value="">All Status</option><option value="active">Active</option><option value="expired">Expired</option></select><select id="rechargeMealFilter"><option value="">All Types</option><option value="wallet">Wallet Only</option>${state.meals.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('')}</select></div><div id="rechargeTable"></div></div>
+  </div>${rechargeModal}`;
+  $('addRechargeBtn').onclick = () => { editingRechargeId = 'new'; render(); };
+  $('exportRechargeHistory').onclick = () => rowsToCSV([['Receipt','Date','User','Amount','Remaining Amount','Coupons','Remaining Coupons','Meal','Valid Till','Status','Wallet After','Operator','Remarks']].concat(filteredRecharges().map(r=>[r.id,r.at,r.userId,r.amount,recRemainingAmount(r),r.coupons,recRemainingCoupons(r),r.mealId ? mealName(r.mealId) : 'Wallet Only',r.validTill || '',r.expired ? 'Expired' : 'Active',r.afterWallet,r.operator,r.remarks || ''])), 'recharge-history.csv');
+  ['rechargeSearch','rechargeStatusFilter','rechargeMealFilter'].forEach(id=>$(id).oninput = () => drawRechargeTable());
+  if(rechargeModalOpen){
+    if(edit) $('rMeal').value = edit.mealId || '';
+    $('doRecharge').onclick = () => {
+      const u = findUserBySearch($('rUserSearch').value);
+      const amount = Number($('rAmount').value || 0);
+      const mealId = $('rMeal').value;
+      const coupons = Number($('rCoupons').value || 0);
+      if(!u) return toast('Select a valid user');
+      if(edit){
+        reverseRecharge(edit);
+        edit.userId = u.id; edit.amount = amount; edit.mealId = mealId; edit.coupons = coupons; edit.validTill = $('rValidTill').value; edit.remarks = $('rRemarks').value; edit.editedAt = nowISO(); edit.expired = false; edit.expiredAt = '';
+        applyRecharge(edit);
+        editingRechargeId = null;
+        audit('Edited recharge '+edit.id);
+        save(); toast('Recharge updated');
+      }else{
+        const rec = {id:uid('RC'), userId:u.id, amount, mealId, coupons, validTill:$('rValidTill').value, remainingAmount:amount, remainingCoupons:coupons, expired:false, afterWallet:0, operator:'Admin', remarks:$('rRemarks').value, at:nowISO()};
+        applyRecharge(rec);
+        state.recharges.unshift(rec);
+        editingRechargeId = null;
+        audit('Recharge for '+u.name); save(); toast('Recharge complete. Receipt generated in history.');
+      }
+    };
+    $('cancelRechargeEdit').onclick = () => { editingRechargeId = null; render(); };
+    $('closeRechargeModal').onclick = () => { editingRechargeId = null; render(); };
+  }
+  drawRechargeTable();
 }
 function applyRecharge(rec){
   const u = state.users.find(x=>x.id===rec.userId);
@@ -841,19 +1023,68 @@ function reverseRecharge(rec){
 function renderSettings(){
   const editMeal = editingMealId && editingMealId !== 'new' ? state.meals.find(m=>m.id===editingMealId) : null;
   const editCounter = editingCounterId && editingCounterId !== 'new' ? state.counters.find(c=>c.id===editingCounterId) : null;
+  const editCategorySetting = editingCategorySettingId && editingCategorySettingId !== 'new' ? state.categorySettings.find(s=>s.id===editingCategorySettingId) : null;
   const mealModal = editingMealId ? `<div class="modal-backdrop" id="mealModal"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mealModalTitle"><div class="modal-head"><h2 id="mealModalTitle">${editMeal ? 'Edit Meal' : 'Add Meal'}</h2><button class="icon-btn delete" id="closeMealModal" type="button" title="Close" aria-label="Close">&#10005;</button></div><div class="row"><div class="field full"><label>Meal Name</label><input id="mealNameInput" value="${esc(editMeal ? editMeal.name : '')}"></div><div class="field"><label>Start Time</label><input id="mealStartInput" type="time" value="${esc(editMeal ? editMeal.start : '07:00')}"></div><div class="field"><label>End Time</label><input id="mealEndInput" type="time" value="${esc(editMeal ? editMeal.end : '10:00')}"></div><div class="field full"><label>Status</label><select id="mealStatusInput"><option value="active">Active</option><option value="inactive">Inactive</option></select></div><div class="field full"><button class="btn primary" id="saveMeal">${editMeal ? 'Update Meal' : 'Add Meal'}</button><button class="btn" id="cancelMealEdit" type="button">Cancel</button></div></div></div></div>` : '';
+  const categorySettingModal = editingCategorySettingId ? `<div class="modal-backdrop" id="categorySettingModal"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="categorySettingModalTitle"><div class="modal-head"><h2 id="categorySettingModalTitle">${editCategorySetting ? 'Edit Category Setting' : 'Add Category Setting'}</h2><button class="icon-btn delete" id="closeCategorySettingModal" type="button" title="Close" aria-label="Close">&#10005;</button></div><div class="row"><div class="field full"><label>Category</label><select id="categorySettingCategory">${state.categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select></div><div class="field"><label>Consumption Model</label><select id="categorySettingModel"><option value="wallet">Wallet Based</option><option value="coupon">Coupon Quantity Based</option></select></div><div class="field"><label>Duplicate Tap Window Seconds</label><input id="categorySettingDuplicate" type="number" min="0" value="${editCategorySetting ? Number(editCategorySetting.duplicateWindow || 0) : 0}"></div><div class="field"><label>Restrict RFID Once Per Meal Session</label><select id="categorySettingRestrict"><option value="no">No</option><option value="yes">Yes</option></select></div><div class="field"><label>Status</label><select id="categorySettingStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div><div class="field full"><button class="btn primary" id="saveCategorySetting">${editCategorySetting ? 'Update Setting' : 'Add Setting'}</button><button class="btn" id="cancelCategorySettingEdit" type="button">Cancel</button></div></div></div></div>` : '';
   const counterModal = editingCounterId ? `<div class="modal-backdrop" id="counterModal"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="counterModalTitle"><div class="modal-head"><h2 id="counterModalTitle">${editCounter ? 'Edit Counter Device' : 'Add Counter Device'}</h2><button class="icon-btn delete" id="closeCounterModal" type="button" title="Close" aria-label="Close">&#10005;</button></div><div class="row"><div class="field full"><label>Device ID</label><input id="counterIdInput" value="${esc(editCounter ? editCounter.id : uid('CTR'))}" ${editCounter ? 'readonly' : ''}></div><div class="field full"><label>Counter Name</label><input id="counterNameInput" value="${esc(editCounter ? editCounter.name : '')}"></div><div class="field full"><label>Location</label><input id="counterLocationInput" value="${esc(editCounter ? editCounter.location : '')}"></div><div class="field full"><label>Status</label><select id="counterStatusInput"><option value="active">Active</option><option value="inactive">Inactive</option></select></div><div class="field full"><label>Counter Owner / Operator</label><select id="counterUsersInput" multiple size="6">${state.users.map(u=>`<option value="${u.id}" ${editCounter && (editCounter.assignedUserIds||[]).map(String).includes(String(u.id)) ? 'selected' : ''}>${esc(userSearchLabel(u))}</option>`).join('')}</select></div><div class="field full"><button class="btn primary" id="saveCounter">${editCounter ? 'Update Counter' : 'Add Counter'}</button><button class="btn" id="cancelCounterEdit" type="button">Cancel</button></div></div></div></div>` : '';
   $('settings').innerHTML = `<div class="grid">
-    <div class="card"><h2>System Settings</h2><div class="row"><div class="field third"><label>Consumption Model</label><select id="model"><option value="wallet">Wallet Based</option><option value="coupon">Coupon Quantity Based</option></select></div><div class="field third"><label>Duplicate Tap Window Seconds</label><input id="dup" type="number" value="${state.duplicateWindow}"></div><div class="field third"><label>Restrict RFID Once Per Meal Session</label><select id="onceSession"><option value="yes">Yes</option><option value="no">No</option></select></div><div class="field full"><button class="btn primary" id="saveSettings">Save Settings</button></div></div></div>
-    <div class="card"><div class="section-title"><h2>Meal Timings & Category Rates</h2><button class="icon-btn good" id="addMealBtn" type="button" title="Add meal" aria-label="Add meal">&#43;</button></div><div class="table-wrap"><table><thead><tr><th>Meal</th><th>Timing</th>${state.categories.map(c=>`<th>${esc(c.name)}</th>`).join('')}<th>Actions</th></tr></thead><tbody>${state.meals.map(m=>`<tr><td><strong>${esc(m.name)}</strong><br><span class="pill">${esc(m.status)}</span></td><td>${m.start} to ${m.end}</td>${state.categories.map(c=>`<td><input data-rate="${m.id}:${c.id}" type="number" value="${rateFor({categoryId:c.id},m.id)}"></td>`).join('')}<td><div class="icon-actions"><button class="icon-btn edit" data-edit-meal="${m.id}" title="Edit meal" aria-label="Edit meal">&#9998;</button><button class="icon-btn delete" data-delete-meal="${m.id}" title="Delete meal" aria-label="Delete meal">&#128465;</button></div></td></tr>`).join('')}</tbody></table></div><p><button class="btn primary" id="saveRates">Save Rates</button></p></div>
+    <div class="card"><div class="section-title"><h2>System Settings</h2><button class="icon-btn good" id="addCategorySettingBtn" type="button" title="Add category setting" aria-label="Add category setting">&#43;</button></div><div class="table-wrap"><table><thead><tr><th>Category</th><th>Model</th><th>Duplicate Window</th><th>Meal Session</th><th>Status</th><th>Actions</th></tr></thead><tbody>${state.categorySettings.map(s=>`<tr><td><strong>${esc(categoryName(s.categoryId))}</strong></td><td>${s.model === 'coupon' ? 'Coupon Quantity Based' : 'Wallet Based'}</td><td>${Number(s.duplicateWindow || 0)}s</td><td>${s.restrictMealSession ? 'Restrict once' : 'Allow repeat'}</td><td><span class="status-${s.status === 'active' ? 'active' : 'inactive'}">${esc(s.status)}</span></td><td><div class="icon-actions"><button class="icon-btn edit" data-edit-category-setting="${s.id}" title="Edit category setting" aria-label="Edit category setting">&#9998;</button><button class="icon-btn delete" data-delete-category-setting="${s.id}" title="Delete category setting" aria-label="Delete category setting">&#128465;</button></div></td></tr>`).join('')}</tbody></table></div></div>
+    <div class="card"><div class="section-title"><h2>Meal Timings & Category Rates</h2><button class="icon-btn good" id="addMealBtn" type="button" title="Add meal" aria-label="Add meal">&#43;</button></div><div class="table-wrap"><table><thead><tr><th>Meal</th><th>Timing</th>${state.categories.map(c=>`<th>${esc(c.name)}</th>`).join('')}<th>Actions</th></tr></thead><tbody>${state.meals.map(m=>`<tr><td><strong>${esc(m.name)}</strong><br><span class="pill">${esc(m.status)}</span></td><td>${m.start} to ${m.end}</td>${state.categories.map(c=>`<td><div class="rate-pair"><label>Charge</label><input data-rate="${m.id}:${c.id}" type="number" value="${rateFor({categoryId:c.id},m.id)}"><label>Vendor</label><input data-vendor-rate="${m.id}:${c.id}" type="number" value="${vendorRateFor({categoryId:c.id},m.id)}"></div></td>`).join('')}<td><div class="icon-actions"><button class="icon-btn edit" data-edit-meal="${m.id}" title="Edit meal" aria-label="Edit meal">&#9998;</button><button class="icon-btn delete" data-delete-meal="${m.id}" title="Delete meal" aria-label="Delete meal">&#128465;</button></div></td></tr>`).join('')}</tbody></table></div><p><button class="btn primary" id="saveRates">Save Rates</button></p></div>
     <div class="card"><div class="section-title"><h2>Counter Device Management</h2><button class="icon-btn good" id="addCounterBtn" type="button" title="Add counter device" aria-label="Add counter device">&#43;</button></div><div class="table-wrap"><table><thead><tr><th>Device</th><th>Location</th><th>Status</th><th>Counter Owner</th><th>Actions</th></tr></thead><tbody>${state.counters.map(c=>`<tr><td><strong>${esc(c.name)}</strong><br><span class="mono">${esc(c.id)}</span></td><td>${esc(c.location)}</td><td><span class="status-${c.status === 'active' ? 'active' : 'inactive'}">${esc(c.status)}</span></td><td>${esc(counterOwnerNames(c))}</td><td><div class="icon-actions"><button class="icon-btn edit" data-edit-counter="${c.id}" title="Edit counter" aria-label="Edit counter">&#9998;</button><button class="icon-btn delete" data-delete-counter="${c.id}" title="Delete counter" aria-label="Delete counter">&#128465;</button></div></td></tr>`).join('')}</tbody></table></div></div>
-  </div>${mealModal}${counterModal}`;
-  $('model').value = state.model;
-  $('onceSession').value = state.preventPerMealSession ? 'yes' : 'no';
+  </div>${mealModal}${categorySettingModal}${counterModal}`;
   if(editingMealId) $('mealStatusInput').value = editMeal ? editMeal.status : 'active';
+  if(editingCategorySettingId){
+    $('categorySettingCategory').value = editCategorySetting ? editCategorySetting.categoryId : (state.categories[0] || {}).id || '';
+    $('categorySettingModel').value = editCategorySetting ? editCategorySetting.model : 'wallet';
+    $('categorySettingRestrict').value = editCategorySetting && editCategorySetting.restrictMealSession ? 'yes' : 'no';
+    $('categorySettingStatus').value = editCategorySetting ? editCategorySetting.status : 'active';
+  }
   if(editingCounterId) $('counterStatusInput').value = editCounter ? editCounter.status : 'active';
-  $('saveSettings').onclick = () => { state.model = $('model').value; state.duplicateWindow = Number($('dup').value || 120); state.preventPerMealSession = $('onceSession').value === 'yes'; audit('Updated settings'); save(); toast('Settings saved'); };
-  $('saveRates').onclick = () => { document.querySelectorAll('[data-rate]').forEach(i=>{ const [mealId,catId]=i.dataset.rate.split(':'); state.rates[mealId] = state.rates[mealId] || {}; state.rates[mealId][catId] = Number(i.value || 0); }); audit('Updated rates'); save(); toast('Rates saved'); };
+  $('saveRates').onclick = () => {
+    document.querySelectorAll('[data-rate]').forEach(i=>{ const [mealId,catId]=i.dataset.rate.split(':'); state.rates[mealId] = state.rates[mealId] || {}; state.rates[mealId][catId] = Number(i.value || 0); });
+    document.querySelectorAll('[data-vendor-rate]').forEach(i=>{ const [mealId,catId]=i.dataset.vendorRate.split(':'); state.vendorRates[mealId] = state.vendorRates[mealId] || {}; state.vendorRates[mealId][catId] = Number(i.value || 0); });
+    audit('Updated rates');
+    save();
+    toast('Rates saved');
+  };
+  $('addCategorySettingBtn').onclick = () => { editingCategorySettingId = 'new'; render(); };
+  if(editingCategorySettingId) $('saveCategorySetting').onclick = () => {
+    const categoryId = $('categorySettingCategory').value;
+    if(!categoryId) return toast('Category is required');
+    const payload = {
+      id: editCategorySetting ? editCategorySetting.id : uid('CS'),
+      categoryId,
+      model: $('categorySettingModel').value,
+      duplicateWindow: Number($('categorySettingDuplicate').value || 0),
+      restrictMealSession: $('categorySettingRestrict').value === 'yes',
+      status: $('categorySettingStatus').value
+    };
+    if(payload.status === 'active') state.categorySettings.forEach(s=>{ if(s.id !== payload.id && s.categoryId === payload.categoryId) s.status = 'inactive'; });
+    if(editCategorySetting){
+      Object.assign(editCategorySetting, payload);
+      audit('Updated category setting for '+categoryName(categoryId));
+    }else{
+      state.categorySettings.push(payload);
+      audit('Added category setting for '+categoryName(categoryId));
+    }
+    editingCategorySettingId = null;
+    save();
+    toast('Category setting saved');
+  };
+  if(editingCategorySettingId){
+    $('cancelCategorySettingEdit').onclick = () => { editingCategorySettingId = null; render(); };
+    $('closeCategorySettingModal').onclick = () => { editingCategorySettingId = null; render(); };
+  }
+  document.querySelectorAll('[data-edit-category-setting]').forEach(b=>b.onclick=()=>{ editingCategorySettingId = b.dataset.editCategorySetting; render(); });
+  document.querySelectorAll('[data-delete-category-setting]').forEach(b=>b.onclick=()=>{
+    const setting = state.categorySettings.find(s=>s.id===b.dataset.deleteCategorySetting);
+    if(!setting || !confirm('Delete setting for '+categoryName(setting.categoryId)+'?')) return;
+    state.categorySettings = state.categorySettings.filter(s=>s.id!==setting.id);
+    if(editingCategorySettingId === setting.id) editingCategorySettingId = null;
+    audit('Deleted category setting for '+categoryName(setting.categoryId));
+    save();
+    toast('Category setting deleted');
+  });
   $('addMealBtn').onclick = () => { editingMealId = 'new'; render(); };
   if(editingMealId) $('saveMeal').onclick = () => {
     const name = $('mealNameInput').value.trim();
@@ -864,7 +1095,8 @@ function renderSettings(){
       const id = uid('meal').toLowerCase();
       state.meals.push({id, name, start:$('mealStartInput').value, end:$('mealEndInput').value, status:$('mealStatusInput').value});
       state.rates[id] = {};
-      state.categories.forEach(c=>state.rates[id][c.id]=0);
+      state.vendorRates[id] = {};
+      state.categories.forEach(c=>{ state.rates[id][c.id]=0; state.vendorRates[id][c.id]=0; });
       editingMealId = null;
       audit('Added meal '+name);
     }
@@ -880,6 +1112,7 @@ function renderSettings(){
     if(!meal || !confirm('Delete meal '+meal.name+'?')) return;
     state.meals = state.meals.filter(m=>m.id!==meal.id);
     delete state.rates[meal.id];
+    delete state.vendorRates[meal.id];
     state.users.forEach(u=>{ if(u.coupons) delete u.coupons[meal.id]; });
     audit('Deleted meal '+meal.name); save(); toast('Meal deleted');
   });
@@ -920,7 +1153,11 @@ function renderReports(){
     <div class="card span-6"><h2>Balance Report</h2><div class="table-wrap"><table><thead><tr><th>User</th><th>Wallet</th><th>Coupons</th></tr></thead><tbody>${state.users.map(u=>`<tr><td>${esc(u.name)}</td><td>${money(u.wallet)}</td><td>${state.meals.map(m=>esc(m.name)+': '+Number((u.coupons||{})[m.id]||0)).join('<br>')}</td></tr>`).join('')}</tbody></table></div></div>
     <div class="card span-6"><h2>Audit Log</h2><div class="list">${state.audit.slice(0,20).map(a=>`<div class="list-item"><span>${esc(a.action)}</span><span>${new Date(a.at).toLocaleString()}</span></div>`).join('')}</div></div>
   </div>`;
-  $('exportTx').onclick = () => rowsToCSV([['TX','Date','User','RFID','Meal','Amount','Status','Reason']].concat(state.transactions.map(t=>[t.id,t.at,t.userId,t.rfid,mealName(t.mealId),t.amount,t.status,t.reason])), 'consumption-report.csv');
+  $('exportTx').onclick = () => rowsToCSV([['TX','Date','User','RFID','Meal','Amount','Vendor Amount','Profit / Loss','Status','Reason']].concat(state.transactions.map(t=>{
+    const amount = Number(t.amount || 0);
+    const vendor = txVendorAmount(t);
+    return [t.id,t.at,t.userId,t.rfid,mealName(t.mealId),amount,vendor,amount - vendor,t.status,t.reason];
+  })), 'consumption-report.csv');
   $('exportRecharge').onclick = () => rowsToCSV([['Receipt','Date','User','Amount','Remaining Amount','Coupons','Remaining Coupons','Valid Till','Status','Wallet After','Operator']].concat(state.recharges.map(r=>[r.id,r.at,r.userId,r.amount,recRemainingAmount(r),r.coupons,recRemainingCoupons(r),r.validTill || '',r.expired ? 'Expired' : 'Active',r.afterWallet,r.operator])), 'recharge-report.csv');
   $('syncOffline').onclick = () => { state.transactions.unshift(...state.offlineQueue.map(q=>({...q, reason:'Synced from local queue'}))); state.offlineQueue=[]; audit('Synced offline queue'); save(); toast('Offline queue synced'); };
 }
@@ -932,11 +1169,45 @@ function renderDocs(){
   </div>`;
 }
 function transactionTable(rows){
-  return `<div class="table-wrap"><table><thead><tr><th>Time</th><th>User</th><th>RFID</th><th>Meal</th><th>Amount</th><th>Status</th><th>Reason</th></tr></thead><tbody>${rows.map(t=>`<tr><td>${new Date(t.at).toLocaleString()}</td><td>${esc((state.users.find(u=>u.id===t.userId)||{}).name || t.userId || '-')}</td><td>${esc(t.rfid)}</td><td>${esc(mealName(t.mealId))}</td><td>${money(t.amount)}</td><td>${esc(t.status)}</td><td>${esc(t.reason)}</td></tr>`).join('')}</tbody></table></div>`;
+  return `<div class="table-wrap"><table><thead><tr><th>Time</th><th>User</th><th>RFID</th><th>Meal</th><th>Amount</th><th>Vendor</th><th>P/L</th><th>Status</th><th>Reason</th></tr></thead><tbody>${rows.map(t=>{
+    const amount = Number(t.amount || 0);
+    const vendor = txVendorAmount(t);
+    const profit = amount - vendor;
+    return `<tr><td>${new Date(t.at).toLocaleString()}</td><td>${esc((state.users.find(u=>u.id===t.userId)||{}).name || t.userId || '-')}</td><td>${esc(t.rfid)}</td><td>${esc(mealName(t.mealId))}</td><td>${money(amount)}</td><td>${money(vendor)}</td><td><span class="${profitClass(profit)}">${money(profit)}</span></td><td>${esc(t.status)}</td><td>${esc(t.reason)}</td></tr>`;
+  }).join('')}</tbody></table></div>`;
 }
 function usageSummaryHTML(rows){
-  const data = rows.length ? rows : [{name:'No data', count:0, amount:0}];
-  return `<div class="summary-rows">${data.map(r=>`<div class="summary-row"><strong>${esc(r.name)}</strong><div class="summary-meta"><span>${Number(r.count||0)} used</span><span>${money(r.amount)}</span></div></div>`).join('')}</div>`;
+  const data = rows.length ? rows : [{name:'No data', count:0, amount:0, vendor:0, profit:0}];
+  return `<div class="summary-rows">${data.map(r=>{
+    const profit = Number(r.profit || 0);
+    return `<div class="summary-row"><strong>${esc(r.name)}</strong><div class="summary-meta"><span>${Number(r.count||0)} used</span><span>Sale ${money(r.amount)}</span></div><div class="summary-meta"><span>Vendor ${money(r.vendor)}</span><span class="${profitClass(profit)}">P/L ${money(profit)}</span></div></div>`;
+  }).join('')}</div>`;
+}
+function filteredRecharges(){
+  const query = String($('rechargeSearch') ? $('rechargeSearch').value : '').toLowerCase();
+  const status = $('rechargeStatusFilter') ? $('rechargeStatusFilter').value : '';
+  const meal = $('rechargeMealFilter') ? $('rechargeMealFilter').value : '';
+  return state.recharges.filter(r=>{
+    const u = state.users.find(x=>x.id===r.userId) || {};
+    const activeStatus = r.expired ? 'expired' : 'active';
+    const mealType = r.mealId || 'wallet';
+    const haystack = [r.id,r.at,r.userId,u.name,u.rfid,u.mobile,r.amount,r.coupons,r.validTill,r.operator,r.remarks,mealName(r.mealId),activeStatus].join(' ').toLowerCase();
+    return (!query || haystack.includes(query)) && (!status || activeStatus === status) && (!meal || mealType === meal);
+  });
+}
+function drawRechargeTable(){
+  const rows = filteredRecharges();
+  $('rechargeTable').innerHTML = `<div class="table-wrap"><table><thead><tr><th>Receipt</th><th>User</th><th>Amount</th><th>Coupons</th><th>Validity</th><th>Balance After</th><th>Date</th><th>Action</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.id}</td><td>${esc((state.users.find(u=>u.id===r.userId)||{}).name)}<br><span class="mono">${esc(r.userId)}</span></td><td>${money(r.amount)}<br><span class="pill">left ${money(recRemainingAmount(r))}</span></td><td>${r.coupons || 0} ${r.mealId ? mealName(r.mealId) : 'Wallet Only'}<br><span class="pill">left ${recRemainingCoupons(r)}</span></td><td>${r.validTill ? esc(r.validTill) : 'No expiry'}<br><span class="pill">${r.expired ? 'expired' : 'active'}</span></td><td>${money(r.afterWallet)}</td><td>${new Date(r.at).toLocaleString()}${r.editedAt ? '<br><span class="pill">edited</span>' : ''}</td><td><div class="icon-actions"><button class="icon-btn edit" data-edit-recharge="${r.id}" title="Edit recharge" aria-label="Edit recharge">&#9998;</button><button class="icon-btn delete" data-delete-recharge="${r.id}" title="Delete recharge" aria-label="Delete recharge">&#128465;</button></div></td></tr>`).join('')}</tbody></table></div>`;
+  document.querySelectorAll('[data-edit-recharge]').forEach(b=>b.onclick=()=>{ editingRechargeId = b.dataset.editRecharge; render(); });
+  document.querySelectorAll('[data-delete-recharge]').forEach(b=>b.onclick=()=>{
+    const rec = state.recharges.find(r=>r.id===b.dataset.deleteRecharge);
+    if(!rec || !confirm('Delete recharge '+rec.id+'?')) return;
+    reverseRecharge(rec);
+    state.recharges = state.recharges.filter(r=>r.id!==rec.id);
+    if(editingRechargeId === rec.id) editingRechargeId = null;
+    audit('Deleted recharge '+rec.id);
+    save(); toast('Recharge deleted');
+  });
 }
 function rechargeTable(){
   return `<div class="table-wrap"><table><thead><tr><th>Receipt</th><th>User</th><th>Amount</th><th>Coupons</th><th>Validity</th><th>Balance After</th><th>Date</th><th>Action</th></tr></thead><tbody>${state.recharges.map(r=>`<tr><td>${r.id}</td><td>${esc((state.users.find(u=>u.id===r.userId)||{}).name)}</td><td>${money(r.amount)}<br><span class="pill">left ${money(recRemainingAmount(r))}</span></td><td>${r.coupons || 0} ${r.mealId ? mealName(r.mealId) : ''}<br><span class="pill">left ${recRemainingCoupons(r)}</span></td><td>${r.validTill ? esc(r.validTill) : 'No expiry'}<br><span class="pill">${r.expired ? 'expired' : 'active'}</span></td><td>${money(r.afterWallet)}</td><td>${new Date(r.at).toLocaleString()}${r.editedAt ? '<br><span class="pill">edited</span>' : ''}</td><td><div class="icon-actions"><button class="icon-btn edit" data-edit-recharge="${r.id}" title="Edit recharge" aria-label="Edit recharge">&#9998;</button><button class="icon-btn delete" data-delete-recharge="${r.id}" title="Delete recharge" aria-label="Delete recharge">&#128465;</button></div></td></tr>`).join('')}</tbody></table></div>`;

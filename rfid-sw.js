@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rfid-coupon-pwa-v21';
+const CACHE_NAME = 'rfid-coupon-pwa-v34';
 const APP_SHELL = [
   './',
   './rfid-coupon.html',
@@ -26,6 +26,17 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
+  const isPageRequest = event.request.mode === 'navigate' || event.request.headers.get('accept')?.includes('text/html');
+  if(isPageRequest){
+    event.respondWith(
+      fetch(event.request).then(response => {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
+        return response;
+      }).catch(() => caches.match(event.request).then(cached => cached || caches.match('./rfid-coupon.html')))
+    );
+    return;
+  }
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;
