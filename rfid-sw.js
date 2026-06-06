@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rfid-coupon-pwa-v34';
+const CACHE_NAME = 'rfid-coupon-pwa-v36';
 const APP_SHELL = [
   './',
   './rfid-coupon.html',
