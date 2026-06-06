@@ -383,6 +383,7 @@ tr:nth-child(even) td{background:rgba(234,227,212,.35)}
   <a href="index.html" class="app-navbar-logo"><span class="app-logo-mark">KS</span><span> Tools </span></a>
   <nav class="app-nav-links">
     <a href="index.html" class="app-nav-item active"><span class="app-nav-icon app-icon-cert" aria-hidden="true"></span><span>Certificates</span></a>
+    <a href="image-url-generator.html" class="app-nav-item"><span class="app-nav-icon app-icon-image" aria-hidden="true"></span><span>Image URLs</span></a>
     <a href="whatsapp.html" class="app-nav-item"><span class="app-nav-icon app-icon-whatsapp" aria-hidden="true"></span><span>WhatsApp</span></a>
     <a href="excel-merger.html" class="app-nav-item"><span class="app-nav-icon app-icon-excel" aria-hidden="true"></span><span>Excel Merger</span></a>
   </nav>
@@ -1021,7 +1022,42 @@ function qrDataURL(text, sizePx){
     },60);
   });
 }
-function loadImg(url){ return new Promise(res=>{ const i=new Image(); i.crossOrigin='anonymous'; i.onload=()=>res(i); i.onerror=()=>res(null); i.src=url; }); }
+function normalizeImageUrl(value){
+  return String(value||'').trim().replace(/^["']|["']$/g,'');
+}
+function imageProxyCandidates(url){
+  if(!/^https?:\/\//i.test(url)) return [];
+  const noProtocol = url.replace(/^https?:\/\//i,'');
+  return [
+    'https://images.weserv.nl/?url='+encodeURIComponent(noProtocol)
+  ];
+}
+function loadImg(url, opts){
+  opts = opts || {};
+  url = normalizeImageUrl(url);
+  if(!url) return Promise.resolve(null);
+  return new Promise(res=>{
+    const i=new Image();
+    if(opts.crossOrigin !== false) i.crossOrigin='anonymous';
+    i.onload=()=>res(i);
+    i.onerror=()=>res(null);
+    i.src=url;
+  });
+}
+async function loadPreviewImg(url){
+  const corsImg = await loadImg(url, {crossOrigin:true});
+  if(corsImg) return corsImg;
+  return loadImg(url, {crossOrigin:false});
+}
+async function loadExportImg(url){
+  const cleanUrl = normalizeImageUrl(url);
+  const urls = [cleanUrl].concat(imageProxyCandidates(cleanUrl));
+  for(const candidate of urls){
+    const img = await loadImg(candidate, {crossOrigin:true});
+    if(img) return img;
+  }
+  throw new Error('Image could not be loaded for export. Try a public direct image URL, or use an image host that allows CORS.');
+}
 
 /* Render one row to a full-resolution PNG dataURL */
 async function renderRow(row){
@@ -1051,7 +1087,8 @@ async function renderRow(row){
       if(url){ const im=await loadImg(url); if(im){ const fi=new fabric.Image(im,{left:X,top:Y,originX:'center',originY:'center',angle:o.angle||0}); fi.scaleToWidth(boxW); off.add(fi);} }
     } else if(f.type==='photo'){
       const boxW=Math.round((o.width*o.scaleX)/displayScale);
-      if(String(val).trim()){ const im=await loadImg(String(val).trim()); if(im){ const fi=new fabric.Image(im,{left:X,top:Y,originX:'center',originY:'center',angle:o.angle||0}); fi.scaleToWidth(boxW); off.add(fi);} }
+      const photoUrl = normalizeImageUrl(val);
+      if(photoUrl){ const im=await loadExportImg(photoUrl); const fi=new fabric.Image(im,{left:X,top:Y,originX:'center',originY:'center',angle:o.angle||0}); fi.scaleToWidth(boxW); off.add(fi); }
     }
   }
   off.renderAll();
@@ -1085,7 +1122,12 @@ async function renderPreview(){
       if(url){ const im=await loadImg(url); if(im){ const fi=new fabric.Image(im,{left:c.x,top:c.y,originX:'center',originY:'center',angle:o.angle||0,selectable:false,evented:false}); fi.scaleToWidth(boxW); fi._cgPrev=true; canvas.add(fi); previewObjs.push(fi);} }
     } else {
       const boxW=o.width*o.scaleX;
-      if(String(val).trim()){ const im=await loadImg(String(val).trim()); if(im){ const fi=new fabric.Image(im,{left:c.x,top:c.y,originX:'center',originY:'center',angle:o.angle||0,selectable:false,evented:false}); fi.scaleToWidth(boxW); fi._cgPrev=true; canvas.add(fi); previewObjs.push(fi);} } }
+      const photoUrl = normalizeImageUrl(val);
+      if(photoUrl){
+        const im=await loadPreviewImg(photoUrl);
+        if(im){ const fi=new fabric.Image(im,{left:c.x,top:c.y,originX:'center',originY:'center',angle:o.angle||0,selectable:false,evented:false}); fi.scaleToWidth(boxW); fi._cgPrev=true; canvas.add(fi); previewObjs.push(fi); }
+        else toast('Could not load image for row '+(previewRowIndex+1), true);
+      } }
   }
   canvas.requestRenderAll();
   previewOn=true; $('previewPill').textContent='preview: row '+(previewRowIndex+1);
@@ -1113,7 +1155,15 @@ async function generateAll(){
   const used={};
   for(let i=0;i<excelRows.length;i++){
     const row=excelRows[i];
-    const url=await renderRow(row);
+    let url;
+    try{
+      url=await renderRow(row);
+    }catch(err){
+      txt.textContent='Stopped at row '+(i+1)+': '+err.message;
+      $('genBtn').disabled=false; $('zipBtn').disabled=!generated.length;
+      toast('Image failed on row '+(i+1)+'. Use a public direct image URL, or a CORS-friendly image host.', true);
+      return;
+    }
     let nm = nameCol && row[nameCol]!=='' ? safeName(row[nameCol]) : 'certificate_'+(i+1);
     if(used[nm]!=null){ used[nm]++; nm=nm+'_'+used[nm]; } else { used[nm]=0; }
     generated.push({name:nm+'.png', dataURL:url});

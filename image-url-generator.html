@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creator Studio - Image URLs</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+.app-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 232px;
+  z-index: 1000;
+  background: linear-gradient(180deg, #1a1714 0%, #2d2620 100%);
+  border-right: 2px solid var(--gold);
+  box-shadow: 2px 0 16px rgba(0,0,0,0.18);
+  padding: 18px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.app-navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 10px;
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .7px;
+}
+.app-logo-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--gold);
+  color: #1a1714;
+  font-size: 13px;
+  font-weight: 800;
+}
+.app-nav-links { display: grid; gap: 4px; }
+.app-nav-item {
+  min-height: 44px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ddd5c9;
+  transition: all 0.2s;
+}
+.app-nav-icon {
+  width: 22px;
+  flex: none;
+  text-align: center;
+  font-size: 17px;
+}
+.app-nav-item:hover { background: rgba(255,255,255,0.1); color: var(--gold); }
+.app-nav-item.active { background: rgba(176,132,49,0.22); color: #fff6df; }
+
+:root{
+  --ink:#1a1714;
+  --paper:#f4efe6;
+  --paper-2:#eae3d4;
+  --card:#fffdf8;
+  --gold:#b08431;
+  --gold-deep:#8a6420;
+  --accent:#7a2e2e;
+  --accent-soft:#a84848;
+  --line:#d8cdb8;
+  --line-strong:#bba883;
+  --muted:#7d7160;
+  --good:#3f6b3a;
+  --shadow:0 1px 2px rgba(40,30,15,.06),0 8px 28px rgba(40,30,15,.10);
+  --shadow-lg:0 30px 70px -28px rgba(40,30,15,.45);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Inter Tight',sans-serif;
+  background:
+    radial-gradient(1100px 560px at 85% -10%, #faf8f4 0%, transparent 62%),
+    radial-gradient(800px 440px at -10% 110%, #f0ede6 0%, transparent 56%),
+    #f5f3f0;
+  color:var(--ink);
+  line-height:1.5;
+  padding-left:232px;
+}
+h1,h2,h3,.stage-head .lbl{font-family:'Fraunces',serif}
+button,input,select,textarea{font-family:'Inter Tight',sans-serif}
+code,.pill,.hint,.urlbox,.meta{font-family:'JetBrains Mono',monospace}
+
+header.app{
+  position:relative;
+  padding:34px 40px 26px;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(255,253,248,0.95),rgba(255,253,248,0.5));
+  overflow:hidden;
+}
+header.app::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background-image:repeating-linear-gradient(135deg,rgba(176,132,49,.05) 0 2px,transparent 2px 9px);
+}
+.brand{display:flex;align-items:center;gap:16px;position:relative}
+.seal{
+  width:54px;height:54px;border-radius:50%;flex:none;
+  display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 30%,#d8ad55,var(--gold-deep));
+  color:#fff8e6;font-family:'Fraunces',serif;font-weight:900;font-size:24px;
+}
+.brand h1{margin:0;font-size:clamp(28px,4vw,52px);line-height:.95;letter-spacing:0}
+.brand .sub{margin-top:6px;color:var(--muted);font-size:15px}
+
+.wrap{padding:24px 40px 44px;display:grid;gap:18px}
+.tool-grid{display:grid;grid-template-columns:minmax(260px,380px) minmax(0,1fr);gap:18px;align-items:start}
+.panel{
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--card);
+  box-shadow:var(--shadow);
+  padding:18px;
+}
+.stage-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.stage-head .lbl{font-size:22px;font-weight:800}
+.spacer{flex:1}
+.pill{
+  font-size:11px;
+  letter-spacing:1px;
+  color:var(--muted);
+  border:1px solid var(--line);
+  padding:4px 10px;
+  border-radius:20px;
+  background:var(--card);
+  white-space:nowrap;
+}
+.drop{
+  min-height:180px;
+  border:2px dashed var(--line-strong);
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  padding:22px;
+  cursor:pointer;
+  background:rgba(255,253,248,.5);
+  transition:.16s;
+}
+.drop:hover,.drop.over{border-color:var(--gold);background:#fff}
+.drop .big{
+  width:54px;height:38px;margin:0 auto 12px;border-radius:10px;
+  display:grid;place-items:center;background:var(--paper-2);
+  border:1px solid var(--line-strong);color:var(--gold-deep);
+  font-weight:900;letter-spacing:0;font-size:12px;
+}
+.drop .t{font-weight:800;font-size:17px}
+.drop .s{font-size:13px;color:var(--muted);margin-top:4px}
+#fileInput{display:none}
+.controls{display:grid;gap:12px;margin-top:14px}
+.control-row{display:grid;gap:6px}
+.control-row label{
+  font-size:11px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--muted);
+  font-family:'JetBrains Mono',monospace;
+}
+.control-row input,.control-row select{
+  width:100%;
+  border:1px solid var(--line-strong);
+  border-radius:8px;
+  background:#fff;
+  color:var(--ink);
+  padding:10px 11px;
+  font-size:14px;
+}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.btn{
+  min-height:42px;
+  border:1px solid var(--line-strong);
+  border-radius:9px;
+  background:var(--card);
+  color:var(--ink);
+  font-weight:800;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  transition:.16s;
+}
+.btn:hover{border-color:var(--gold);color:var(--gold-deep);transform:translateY(-1px)}
+.btn.dark{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.accent{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn:disabled{opacity:.48;cursor:not-allowed;transform:none}
+.empty{
+  min-height:360px;
+  border:1px dashed var(--line-strong);
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  color:var(--muted);
+  background:repeating-linear-gradient(45deg,#fff 0 14px,#fbf7ee 14px 28px);
+  text-align:center;
+  padding:26px;
+}
+.results{display:grid;gap:10px}
+.item{
+  display:grid;
+  grid-template-columns:92px minmax(0,1fr);
+  gap:12px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:10px;
+  background:#fff;
+}
+.thumb{
+  width:92px;
+  aspect-ratio:1;
+  border:1px solid var(--line);
+  border-radius:8px;
+  object-fit:cover;
+  background:var(--paper-2);
+}
+.item-main{min-width:0;display:grid;gap:8px}
+.item-title{display:flex;gap:8px;align-items:center;min-width:0}
+.name{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta{font-size:11px;color:var(--muted)}
+.urlbox{
+  width:100%;
+  min-height:44px;
+  max-height:76px;
+  resize:vertical;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:8px;
+  font-size:11px;
+  color:var(--ink);
+  background:var(--paper);
+}
+.item-actions{display:flex;gap:8px;flex-wrap:wrap}
+.mini{
+  border:1px solid var(--line-strong);
+  border-radius:8px;
+  background:var(--card);
+  color:var(--ink);
+  padding:7px 10px;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+}
+.mini:hover{border-color:var(--gold);color:var(--gold-deep)}
+.toast{
+  position:fixed;
+  left:calc(50% + 116px);
+  bottom:22px;
+  transform:translate(-50%,20px);
+  opacity:0;
+  pointer-events:none;
+  transition:.22s;
+  background:var(--ink);
+  color:var(--paper);
+  padding:12px 18px;
+  border-radius:10px;
+  box-shadow:var(--shadow-lg);
+  z-index:9999;
+  font-weight:800;
+  max-width:min(560px,calc(100vw - 32px));
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.err{background:var(--accent)}
+
+@media(max-width:980px){
+  .tool-grid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  body{padding-left:0;padding-top:72px}
+  .app-sidebar{
+    inset:0 0 auto 0;
+    width:100%;
+    height:72px;
+    padding:8px 10px;
+    flex-direction:row;
+    align-items:center;
+    border-right:0;
+    border-bottom:2px solid var(--gold);
+    overflow-x:auto;
+  }
+  .app-navbar-logo{min-width:max-content}
+  .app-nav-links{display:flex;gap:4px}
+  .app-nav-item{min-width:max-content}
+  header.app,.wrap{padding-left:18px;padding-right:18px}
+  .item{grid-template-columns:72px minmax(0,1fr)}
+  .thumb{width:72px}
+  .actions{grid-template-columns:1fr}
+  .toast{left:50%}
+}
+</style>
+<link rel="stylesheet" href="base-theme.css">
+<script src="base-theme.js"></script>
+</head>
+<body>
+
+<aside class="app-sidebar" aria-label="Creator Studio apps">
+  <a href="index.html" class="app-navbar-logo"><span class="app-logo-mark">KS</span><span>Tools</span></a>
+  <nav class="app-nav-links">
+    <a href="index.html" class="app-nav-item"><span class="app-nav-icon app-icon-cert" aria-hidden="true"></span><span>Certificates</span></a>
+    <a href="image-url-generator.html" class="app-nav-item active"><span class="app-nav-icon app-icon-image" aria-hidden="true"></span><span>Image URLs</span></a>
+    <a href="whatsapp.html" class="app-nav-item"><span class="app-nav-icon app-icon-whatsapp" aria-hidden="true"></span><span>WhatsApp</span></a>
+    <a href="excel-merger.html" class="app-nav-item"><span class="app-nav-icon app-icon-excel" aria-hidden="true"></span><span>Excel Merger</span></a>
+  </nav>
+  <div class="app-shell-footer">
+    <button class="app-theme-toggle" type="button" data-theme-toggle aria-label="Toggle color theme">
+      <span class="app-theme-icon" data-theme-icon aria-hidden="true">L</span>
+      <span data-theme-label>Light mode</span>
+    </button>
+  </div>
+</aside>
+
+<header class="app">
+  <div class="brand">
+    <div class="seal">IM</div>
+    <div>
+      <h1>Image URL Generator</h1>
+      <div class="sub">Create browser-safe image data URLs for spreadsheet image columns</div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="tool-grid">
+    <section class="panel">
+      <div class="stage-head">
+        <span class="lbl">Images</span>
+        <span class="spacer"></span>
+        <span class="pill" id="countPill">0 URLs</span>
+      </div>
+
+      <div class="drop" id="drop">
+        <div>
+          <div class="big">IMG</div>
+          <div class="t">Drop images here</div>
+          <div class="s">PNG, JPG, WebP, or GIF</div>
+        </div>
+      </div>
+      <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple>
+
+      <div class="controls">
+        <div class="control-row">
+          <label for="format">Output</label>
+          <select id="format">
+            <option value="image/jpeg">JPEG</option>
+            <option value="original">Original file</option>
+            <option value="image/png">PNG</option>
+            <option value="image/webp">WebP</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label for="maxDim">Max side</label>
+          <input id="maxDim" type="number" min="0" step="50" value="420">
+        </div>
+        <div class="control-row">
+          <label for="quality">Quality</label>
+          <input id="quality" type="number" min="0.1" max="1" step="0.05" value="0.72">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn dark" id="copyAllBtn" disabled type="button">Copy All</button>
+        <button class="btn accent" id="csvBtn" disabled type="button">Download CSV</button>
+        <button class="btn" id="clearBtn" disabled type="button">Clear</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="stage-head">
+        <span class="lbl">Generated URLs</span>
+        <span class="spacer"></span>
+        <span class="pill" id="sizePill">0 KB</span>
+      </div>
+      <div class="empty" id="emptyState">
+        <div>
+          <strong>No images loaded</strong>
+          <div class="hint">Generated URLs will appear here.</div>
+        </div>
+      </div>
+      <div class="results" id="results"></div>
+    </section>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+let items = [];
+let toastTimer = null;
+
+function toast(message, isError){
+  const t = $('toast');
+  t.textContent = message;
+  t.classList.toggle('err', !!isError);
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+function safeName(name){
+  return String(name || 'image')
+    .replace(/[\\/:*?"<>|]+/g, '_')
+    .trim() || 'image';
+}
+
+function esc(value){
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function fileToDataURL(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('Could not read '+file.name));
+    reader.readAsDataURL(file);
+  });
+}
+
+function loadImage(src){
+  return new Promise((resolve, reject)=>{
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error('Could not decode image'));
+    img.src = src;
+  });
+}
+
+async function makeDataURL(file){
+  const original = await fileToDataURL(file);
+  const format = $('format').value;
+  const maxDim = Math.max(0, parseInt($('maxDim').value || '0', 10));
+  const quality = Math.min(1, Math.max(0.1, parseFloat($('quality').value || '0.82')));
+
+  if(format === 'original'){
+    return { dataURL: original, width: null, height: null, outputType: file.type || 'image' };
+  }
+
+  const img = await loadImage(original);
+  const naturalW = img.naturalWidth || img.width;
+  const naturalH = img.naturalHeight || img.height;
+  const ratio = maxDim && Math.max(naturalW, naturalH) > maxDim ? maxDim / Math.max(naturalW, naturalH) : 1;
+  const width = Math.max(1, Math.round(naturalW * ratio));
+  const height = Math.max(1, Math.round(naturalH * ratio));
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  if(format === 'image/jpeg'){
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, width, height);
+  }
+  ctx.drawImage(img, 0, 0, width, height);
+  return {
+    dataURL: canvas.toDataURL(format, quality),
+    width,
+    height,
+    outputType: format
+  };
+}
+
+function formatBytes(bytes){
+  if(bytes < 1024) return bytes + ' B';
+  if(bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+}
+
+function csvEscape(value){
+  const clean = String(value == null ? '' : value).replace(/[\r\n]+/g, '');
+  return '"' + clean.replace(/"/g, '""') + '"';
+}
+
+function allRowsText(){
+  return items.map(item => item.imageName + '\t' + item.dataURL).join('\n');
+}
+
+async function copyText(text){
+  if(!text) return;
+  try{
+    await navigator.clipboard.writeText(text);
+  }catch(error){
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.style.position = 'fixed';
+    area.style.left = '-9999px';
+    document.body.appendChild(area);
+    area.focus();
+    area.select();
+    document.execCommand('copy');
+    document.body.removeChild(area);
+  }
+}
+
+function render(){
+  const results = $('results');
+  const empty = $('emptyState');
+  const totalChars = items.reduce((sum, item)=>sum + item.dataURL.length, 0);
+
+  $('countPill').textContent = items.length + ' URL' + (items.length === 1 ? '' : 's');
+  $('sizePill').textContent = formatBytes(totalChars);
+  $('copyAllBtn').disabled = !items.length;
+  $('csvBtn').disabled = !items.length;
+  $('clearBtn').disabled = !items.length;
+  empty.style.display = items.length ? 'none' : 'grid';
+
+  results.innerHTML = items.map((item, index)=>`
+    <article class="item">
+      <img class="thumb" src="${item.dataURL}" alt="">
+      <div class="item-main">
+        <div class="item-title">
+          <div class="name" title="${esc(item.imageName)}">${esc(item.imageName)}</div>
+          <div class="meta">${esc(item.outputType)} / ${formatBytes(item.dataURL.length)}</div>
+        </div>
+        <textarea class="urlbox" readonly data-index="${index}">${item.dataURL}</textarea>
+        <div class="item-actions">
+          <button class="mini" type="button" data-copy="${index}">Copy URL</button>
+          <button class="mini" type="button" data-row="${index}">Copy Row</button>
+        </div>
+      </div>
+    </article>
+  `).join('');
+}
+
+async function handleFiles(fileList){
+  const files = Array.from(fileList || []).filter(file => /^image\//.test(file.type));
+  if(!files.length){ toast('Choose image files first', true); return; }
+
+  toast('Generating '+files.length+' URL'+(files.length === 1 ? '' : 's')+'...');
+  for(const file of files){
+    try{
+      const made = await makeDataURL(file);
+      items.push({
+        imageName: safeName(file.name),
+        originalName: file.name,
+        dataURL: made.dataURL,
+        outputType: made.outputType,
+        width: made.width,
+        height: made.height
+      });
+      render();
+      await new Promise(resolve=>setTimeout(resolve, 0));
+    }catch(error){
+      toast(file.name + ' could not be converted', true);
+    }
+  }
+  toast(items.length+' URL'+(items.length === 1 ? '' : 's')+' ready');
+}
+
+function downloadCSV(){
+  if(!items.length) return;
+  const longUrls = items.filter(item => item.dataURL.length > 32000).length;
+  const rows = [['image_name','image_url']].concat(items.map(item => [item.imageName, item.dataURL]));
+  const csv = '\ufeff' + rows.map(row => row.map(csvEscape).join(',')).join('\r\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'image-urls.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  if(longUrls){
+    toast(longUrls+' URL'+(longUrls === 1 ? ' is' : 's are')+' very long for Excel. Reduce Max side or choose JPEG/WebP.', true);
+  }else{
+    toast('CSV downloaded with image_name and image_url columns');
+  }
+}
+
+$('drop').addEventListener('click', ()=>$('fileInput').click());
+$('fileInput').addEventListener('change', event=>{
+  handleFiles(event.target.files);
+  event.target.value = '';
+});
+['dragenter','dragover'].forEach(type=>$('drop').addEventListener(type, event=>{
+  event.preventDefault();
+  $('drop').classList.add('over');
+}));
+['dragleave','drop'].forEach(type=>$('drop').addEventListener(type, event=>{
+  event.preventDefault();
+  $('drop').classList.remove('over');
+}));
+$('drop').addEventListener('drop', event=>handleFiles(event.dataTransfer.files));
+
+$('results').addEventListener('click', async event=>{
+  const copyIndex = event.target.closest('[data-copy]');
+  const rowIndex = event.target.closest('[data-row]');
+  if(copyIndex){
+    const item = items[Number(copyIndex.dataset.copy)];
+    await copyText(item.dataURL);
+    toast('URL copied');
+  }
+  if(rowIndex){
+    const item = items[Number(rowIndex.dataset.row)];
+    await copyText(item.imageName + '\t' + item.dataURL);
+    toast('Row copied');
+  }
+});
+
+$('copyAllBtn').addEventListener('click', async ()=>{
+  await copyText(allRowsText());
+  toast('All rows copied');
+});
+$('csvBtn').addEventListener('click', downloadCSV);
+$('clearBtn').addEventListener('click', ()=>{
+  items = [];
+  render();
+  toast('Cleared');
+});
+
+render();
+</script>
+</body>
+</html>
