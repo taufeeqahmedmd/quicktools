@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificate Generator</title>
+
+<!-- CDN libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../../core/base-theme.css">
+<script src="../../core/base-theme.js"></script>
+
+<style>
+:root{
+  --ink:#1a1714;
+  --paper:#f4efe6;
+  --paper-2:#eae3d4;
+  --card:#fffdf8;
+  --gold:#b08431;
+  --gold-deep:#8a6420;
+  --accent:#7a2e2e;
+  --accent-soft:#a84848;
+  --line:#d8cdb8;
+  --line-strong:#bba883;
+  --muted:#7d7160;
+  --good:#3f6b3a;
+  --shadow:0 1px 2px rgba(40,30,15,.06),0 8px 28px rgba(40,30,15,.10);
+  --shadow-lg:0 30px 70px -28px rgba(40,30,15,.45);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Inter Tight',sans-serif;
+  background:
+    radial-gradient(1200px 600px at 85% -10%, #faf8f4 0%, transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, #f0ede6 0%, transparent 55%),
+    #f5f3f0;
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+}
+::selection{background:var(--gold);color:#fff}
+
+/* ---------- Header ---------- */
+header.app{
+  position:relative;
+  padding:34px 40px 26px;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(255,253,248,0.95),rgba(255,253,248,0.5));
+  overflow:hidden;
+}
+header.app::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(135deg,rgba(176,132,49,.05) 0 2px,transparent 2px 9px);
+}
+.brand{display:flex;align-items:center;gap:16px;position:relative}
+.seal{
+  width:54px;height:54px;border-radius:50%;flex:none;
+  display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 30%,#d8ad55,var(--gold-deep));
+  color:#fff8e6;font-family:'Fraunces',serif;font-weight:900;font-size:24px;
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.35), inset 0 0 0 5px var(--gold-deep), var(--shadow);
+  position:relative;
+}
+.seal::after{
+  content:"";position:absolute;inset:-7px;border-radius:50%;
+  border:1.5px dashed var(--gold);opacity:.5;
+}
+.brand h1{
+  font-family:'Fraunces',serif;font-weight:900;font-size:30px;letter-spacing:-.5px;
+  margin:0;line-height:1;
+}
+.brand .sub{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--gold-deep);margin-top:6px;
+}
+
+/* ---------- Layout ---------- */
+.shell{display:grid;grid-template-columns:330px 1fr;gap:0;min-height:calc(100vh - 130px)}
+.rail{
+  border-right:1px solid var(--line);
+  padding:24px 22px 60px;
+  background:linear-gradient(180deg,rgba(255,253,248,.75),rgba(250,248,244,.45));
+  overflow-y:auto;max-height:calc(100vh - 130px);
+}
+.stage{padding:28px 34px 80px;overflow-y:auto;max-height:calc(100vh - 130px)}
+
+/* ---------- Step blocks ---------- */
+.step{margin-bottom:22px}
+.step-h{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+.step-n{
+  width:24px;height:24px;border-radius:6px;flex:none;display:grid;place-items:center;
+  background:var(--ink);color:var(--paper);font-family:'JetBrains Mono',monospace;
+  font-size:12px;font-weight:600;
+}
+.step-h h3{margin:0;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink);font-weight:600}
+
+/* ---------- Controls ---------- */
+.btn{
+  font-family:'Inter Tight',sans-serif;font-size:13.5px;font-weight:600;
+  border:1px solid var(--line-strong);background:var(--card);color:var(--ink);
+  padding:10px 14px;border-radius:9px;cursor:pointer;width:100%;text-align:left;
+  display:flex;align-items:center;gap:9px;transition:.16s;box-shadow:0 1px 0 rgba(40,30,15,.04);
+}
+.btn:hover{border-color:var(--gold);background:#fff;transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn:active{transform:translateY(0)}
+.btn .ic{font-family:'JetBrains Mono',monospace;color:var(--gold-deep);font-size:15px;width:16px;text-align:center}
+.btn.dark{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.dark:hover{background:#000;color:#fff}
+.btn.dark .ic{color:var(--gold)}
+.btn.accent{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.accent:hover{background:var(--accent-soft)}
+.btn.accent .ic{color:#ffe1c9}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none}
+.btn-row{display:flex;gap:8px}
+.btn-row .btn{text-align:center;justify-content:center}
+
+.drop{
+  border:1.5px dashed var(--line-strong);border-radius:11px;padding:18px 14px;text-align:center;
+  cursor:pointer;transition:.16s;background:rgba(255,253,248,.5);
+}
+.drop:hover,.drop.over{border-color:var(--gold);background:#fff}
+.drop .big{font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--gold-deep)}
+.drop .t{font-weight:600;font-size:13.5px;margin-top:4px}
+.drop .s{font-size:11.5px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace;letter-spacing:1px}
+
+.hint{font-size:12px;color:var(--muted);margin:8px 2px 0;line-height:1.45}
+
+/* ---------- Properties panel ---------- */
+.props{
+  margin-top:10px;border:1px solid var(--line);border-radius:11px;background:var(--card);
+  padding:14px;display:none;
+}
+.props.show{display:block;animation:rise .25s ease}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.field-list{display:grid;gap:8px;margin:12px 0}
+.field-list:empty{display:none}
+.field-row{border:1px solid var(--line);border-radius:9px;background:var(--card);padding:8px;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+.field-row.active{border-color:var(--gold);background:var(--paper-2)}
+.field-meta{min-width:0}
+.field-name{font-weight:700;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.field-type{margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.field-edit{border:1px solid var(--line-strong);background:var(--paper-2);color:var(--ink);border-radius:7px;padding:6px 9px;cursor:pointer;font-family:'Inter Tight',sans-serif;font-weight:700;font-size:12px}
+.field-edit:hover{border-color:var(--gold);color:var(--gold)}
+.props .ptitle{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.field-tag{background:var(--paper-2);border-radius:5px;padding:2px 7px;font-size:11px;color:var(--ink)}
+.prow{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.prow label{font-size:11.5px;color:var(--muted);width:62px;flex:none}
+.prow select,.prow input[type=number],.prow input[type=text]{
+  flex:1;font-family:'Inter Tight',sans-serif;font-size:13px;padding:6px 8px;
+  border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink);min-width:0;
+}
+.prow input[type=color]{width:34px;height:30px;padding:2px;border:1px solid var(--line);border-radius:7px;background:#fff;cursor:pointer}
+.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;flex:1}
+.seg button{flex:1;border:none;background:#fff;padding:6px;cursor:pointer;font-size:13px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.seg button.on{background:var(--ink);color:var(--paper)}
+.del-field{width:100%;margin-top:4px;border:1px solid #e3c9c9;background:#fbf1f1;color:var(--accent);font-size:12px;font-weight:600;padding:7px;border-radius:7px;cursor:pointer}
+.del-field:hover{background:#f6e4e4}
+
+/* ---------- Stage / canvas ---------- */
+.stage-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.stage-head .lbl{font-family:'Fraunces',serif;font-size:20px;font-weight:600}
+.pill{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--muted);border:1px solid var(--line);padding:4px 10px;border-radius:20px;background:var(--card)}
+.spacer{flex:1}
+.generate-panel{
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--card);
+  padding:clamp(12px,1.5vw,16px);
+  margin:0 0 16px;
+  width:100%;
+  max-width:100%;
+  overflow:hidden;
+}
+.generate-panel .step-h{margin-bottom:12px}
+.generate-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:10px;width:100%;max-width:100%}
+.generate-actions .btn{min-height:52px;height:auto;justify-content:center;text-align:center;min-width:0;white-space:normal;line-height:1.2}
+.generate-actions .btn .ic{flex:0 0 42px}
+.generate-panel .progress{grid-column:1/-1;margin-top:2px}
+
+.canvas-wrap{
+  position:relative;border-radius:14px;padding:22px;
+  background:
+    linear-gradient(var(--card),var(--card)) padding-box,
+    repeating-linear-gradient(45deg,var(--line) 0 1px,transparent 1px 11px);
+  border:1px solid var(--line);box-shadow:var(--shadow-lg);
+  display:block;width:100%;max-width:100%;overflow:auto;
+}
+.canvas-wrap.has-template{display:flex;justify-content:center;align-items:flex-start}
+.canvas-frame{
+  position:relative;display:inline-block;
+  box-shadow:0 0 0 1px var(--line-strong), 0 18px 40px -18px rgba(40,30,15,.4);
+  background:#fff;
+  max-width:100%;
+}
+#cv{display:block;border-radius:2px}
+.empty-canvas{
+  width:100%;aspect-ratio:1.414/1;border-radius:10px;min-height:360px;
+  border:2px dashed var(--line-strong);display:grid;place-items:center;text-align:center;
+  background:repeating-linear-gradient(45deg,#fff 0 14px,#fbf7ee 14px 28px);color:var(--muted);
+}
+.empty-canvas .e1{font-family:'Fraunces',serif;font-size:26px;color:var(--line-strong);margin-bottom:6px}
+.empty-canvas .e2{font-size:13px;max-width:320px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px}
+
+/* ---------- Excel preview ---------- */
+.tablewrap{margin-top:14px;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--card);max-height:330px;overflow-y:auto}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th{position:sticky;top:0;background:var(--ink);color:var(--paper);text-align:left;padding:9px 12px;font-weight:600;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.5px;white-space:nowrap}
+td{padding:8px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even) td{background:rgba(234,227,212,.35)}
+.rowsel{cursor:pointer}
+.rowsel:hover td{background:var(--paper-2)!important}
+.rowsel.active td{background:#fbecd2!important;box-shadow:inset 3px 0 0 var(--gold)}
+
+/* ---------- Mapping ---------- */
+.maprow{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13px}
+.maprow .col{flex:1;font-family:'JetBrains Mono',monospace;background:var(--paper-2);padding:6px 9px;border-radius:6px;font-size:12px;overflow:hidden;text-overflow:ellipsis}
+.maprow .arrow{color:var(--gold-deep);font-family:'JetBrains Mono',monospace}
+.maprow select{flex:1;font-size:12.5px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink)}
+
+/* ---------- Progress / toast ---------- */
+.progress{margin-top:12px;display:none}
+.progress.show{display:block}
+.bar{height:9px;background:var(--paper-2);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
+.bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-deep));transition:width .15s}
+.progress .ptxt{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);margin-top:6px}
+
+.toast{
+  position:fixed;bottom:26px;left:50%;transform:translate(-50%,30px);opacity:0;
+  background:var(--ink);color:var(--paper);padding:12px 20px;border-radius:11px;
+  font-size:13.5px;box-shadow:var(--shadow-lg);z-index:9000;transition:.3s;pointer-events:none;
+  border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:9px;max-width:80vw;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast .ic{color:var(--gold)}
+.toast.err{background:var(--accent)}
+.toast.err .ic{color:#ffd9c9}
+
+/* ---------- Modal ---------- */
+.modal-bg{position:fixed;inset:0;background:rgba(26,23,20,.5);backdrop-filter:blur(3px);z-index:8000;display:none;place-items:center;padding:20px}
+.modal-bg.show{display:grid;animation:fade .2s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal{background:var(--card);border-radius:16px;padding:26px;width:min(420px,92vw);box-shadow:var(--shadow-lg);border:1px solid var(--line-strong);animation:rise .25s}
+.modal h4{font-family:'Fraunces',serif;font-size:21px;margin:0 0 6px}
+.modal p{font-size:13px;color:var(--muted);margin:0 0 16px}
+.modal input,.modal select{width:100%;font-family:'Inter Tight',sans-serif;font-size:15px;padding:11px 13px;border:1px solid var(--line-strong);border-radius:9px;background:#fff;color:var(--ink);margin-bottom:12px}
+.field-type-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 12px}
+.field-type-option{border:1px solid var(--line-strong);border-radius:9px;background:var(--card);padding:10px 8px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:.16s;min-width:0;text-align:center}
+.field-type-option:hover{border-color:var(--gold)}
+.field-type-option input{width:auto;margin:0;accent-color:var(--gold);flex:none}
+.field-type-option span{display:block;font-weight:700;font-size:14px;line-height:1.2;color:var(--ink);min-width:0}
+.field-type-option:has(input:checked){border-color:var(--gold);background:var(--paper-2)}
+.modal .quick{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.modal .quick span{font-size:11.5px;font-family:'JetBrains Mono',monospace;background:var(--paper-2);padding:5px 9px;border-radius:6px;cursor:pointer;border:1px solid var(--line);transition:.14s}
+.modal .quick span:hover{background:var(--gold);color:#fff;border-color:var(--gold)}
+.modal .mbtns{display:flex;gap:10px;flex-wrap:wrap}
+.modal .mbtns .btn{justify-content:center;text-align:center}
+.modal .mbtns .btn{min-width:min(100%,120px);flex:1}
+
+.divider{height:1px;background:var(--line);margin:20px 0;border:none}
+.kbd{font-family:'JetBrains Mono',monospace;background:var(--paper-2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:11px}
+
+@media(max-width:920px){
+  .shell{grid-template-columns:1fr}
+  .rail{border-right:none;border-bottom:1px solid var(--line);max-height:none}
+  .stage{max-height:none}
+  .empty-canvas{min-height:280px}
+}
+@media(max-width:760px){
+  body{padding-top:0}
+  .shell{grid-template-columns:1fr}
+  .canvas-wrap{padding:14px}
+  .empty-canvas{min-height:240px}
+  .field-type-options{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="app">
+  <div class="brand">
+    <div class="seal">CG</div>
+    <div>
+      <h1>Certificate Generator</h1>
+      <div class="sub">Design / Merge / Export - entirely in your browser</div>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+
+  <!-- ============ LEFT RAIL ============ -->
+  <aside class="rail">
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">1</span><h3>Upload Template</h3></div>
+      <div class="drop" id="tplDrop">
+        <div class="big">IMG</div>
+        <div class="t">Drop or click to upload</div>
+        <div class="s">PNG / JPG / JPEG</div>
+      </div>
+      <input type="file" id="tplInput" accept="image/png,image/jpeg" hidden>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">2</span><h3>Dynamic Fields</h3></div>
+      <button class="btn dark" id="addFieldBtn" disabled><span class="ic">+</span> Add Field</button>
+      <div class="hint">Add text, <span class="kbd">{{QRCode}}</span> or <span class="kbd">{{Photo}}</span> fields, then drag & resize them on the template.</div>
+      <div class="field-list" id="fieldList" aria-label="Added dynamic fields"></div>
+
+      <div class="props" id="propPanel">
+        <div class="ptitle"><span>Field Properties</span><span class="field-tag" id="propName">-</span></div>
+        <div id="textProps">
+          <div class="prow"><label>Font</label>
+            <select id="pFont">
+              <option>Fraunces</option><option>Inter Tight</option><option>Georgia</option>
+              <option>Times New Roman</option><option>Helvetica</option><option>Arial</option>
+              <option>Courier New</option><option>Garamond</option><option>Palatino</option>
+            </select>
+          </div>
+          <div class="prow"><label>Size</label><input type="number" id="pSize" min="6" max="300" value="36"><label style="width:auto">Color</label><input type="color" id="pColor" value="#1a1714"></div>
+          <div class="prow"><label>Box W</label><input type="number" id="pTextW" min="40" max="4000" value="400"><label style="width:auto">px</label></div>
+          <div class="prow"><label>Style</label>
+            <div class="seg" id="pStyle">
+              <button data-s="bold" title="Bold"><b>B</b></button>
+              <button data-s="italic" title="Italic"><i>I</i></button>
+            </div>
+          </div>
+          <div class="prow"><label>Align</label>
+            <div class="seg" id="pAlign">
+              <button data-a="left">L</button><button data-a="center" class="on">C</button><button data-a="right">R</button>
+            </div>
+          </div>
+          <div class="hint">Text wraps to multiple lines within the box width. Increase <b>Box W</b> for wider single-line text.</div>
+        </div>
+        <div id="sizeProps" style="display:none">
+          <div class="prow"><label>Width</label><input type="number" id="pBoxW" min="20" max="1000" value="120"><label style="width:auto">px</label></div>
+          <div class="hint">QR / image scales to this width.</div>
+        </div>
+        <button class="del-field" id="delField">Delete field</button>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-h"><span class="step-n">3</span><h3>Recipient Data</h3></div>
+      <button class="btn" id="exportLayout"><span class="ic">EXP</span> Download sample file</button>
+
+      <div class="drop" id="xlsxDrop" style="margin-top:12px">
+        <div class="big">XLS</div>
+        <div class="t">Drop or click to upload</div>
+        <div class="s">XLSX / XLS / CSV</div>
+      </div>
+      <input type="file" id="xlsxInput" accept=".xlsx,.xls,.csv" hidden>
+
+      <div class="hint" style="margin-top:10px;display:flex;align-items:center;gap:8px">
+        <span style="opacity:.6">Reuse a saved design?</span>
+        <a href="#" id="layoutExportLink" style="color:var(--gold-deep);font-weight:600;text-decoration:none">Save JSON</a>
+        <span style="opacity:.4">/</span>
+        <a href="#" id="layoutImportLink" style="color:var(--gold-deep);font-weight:600;text-decoration:none">Load JSON</a>
+      </div>
+      <input type="file" id="importLayout" accept="application/json,.json" hidden>
+    </div>
+
+  </aside>
+
+  <!-- ============ STAGE ============ -->
+  <main class="stage">
+
+    <div class="stage-head">
+      <span class="lbl">Certificate Designer</span>
+      <span class="pill" id="dimPill">no template</span>
+      <span class="pill" id="fieldPill">0 fields</span>
+      <div class="spacer"></div>
+      <span class="pill" id="previewPill">preview off</span>
+    </div>
+
+    <section class="generate-panel" aria-labelledby="generateTitle">
+      <div class="step-h"><span class="step-n">4</span><h3 id="generateTitle">Generate</h3></div>
+      <div class="generate-actions">
+        <button class="btn" id="previewBtn" disabled><span class="ic">VIEW</span> Preview Selected Row</button>
+        <button class="btn dark" id="genBtn" disabled><span class="ic">RUN</span> Generate Certificates</button>
+        <button class="btn accent" id="zipBtn" disabled><span class="ic">ZIP</span> Download ZIP</button>
+        <div class="progress" id="prog">
+          <div class="bar"><i id="progBar"></i></div>
+          <div class="ptxt" id="progTxt">Working...</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="canvas-wrap" id="canvasWrap">
+      <div class="empty-canvas" id="emptyCanvas">
+        <div>
+          <div class="e1">Your canvas awaits</div>
+          <div class="e2">Upload a template image to begin placing fields.</div>
+        </div>
+      </div>
+      <div class="canvas-frame" id="canvasFrame" style="display:none">
+        <canvas id="cv"></canvas>
+      </div>
+    </div>
+
+    <!-- Excel section -->
+    <div id="dataSection" style="display:none">
+      <hr class="divider">
+      <div class="stage-head">
+        <span class="lbl">Recipient Data</span>
+        <span class="pill" id="rowPill">0 rows</span>
+        <div class="spacer"></div>
+        <span class="pill">click a row to select for preview</span>
+      </div>
+
+      <div class="stage-head" style="margin-bottom:8px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-deep)">Field Mapping &nbsp;/&nbsp; Spreadsheet column to certificate field</span>
+      </div>
+      <div id="mapping" style="margin-bottom:16px"></div>
+
+      <div class="tablewrap" id="tableWrap"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Add-field modal -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <h4 id="modalTitle">Add a Field</h4>
+    <p>Name the field exactly as you'd like it referenced. It appears on the certificate as <span class="kbd">{{name}}</span>.</p>
+    <input type="text" id="fieldNameInput" placeholder="e.g. Name, Rank, Date..." autocomplete="off">
+    <div class="quick" id="quickChips"></div>
+    <div class="field-type-options" id="fieldTypeInput" role="radiogroup" aria-label="Field type">
+      <label class="field-type-option" title="Regular text from a spreadsheet column." aria-label="Text field: regular text from a spreadsheet column.">
+        <input type="radio" name="fieldType" value="text" checked>
+        <span>Text field</span>
+      </label>
+      <label class="field-type-option" title="Creates a QR code from the mapped column value." aria-label="QR Code: creates a QR code from the mapped column value.">
+        <input type="radio" name="fieldType" value="qr">
+        <span>QR Code</span>
+      </label>
+      <label class="field-type-option" title="Loads an image from a URL in the mapped column." aria-label="Photo / Image: loads an image from a URL in the mapped column.">
+        <input type="radio" name="fieldType" value="photo">
+        <span>Photo / Image</span>
+      </label>
+    </div>
+
+    <div class="mbtns">
+      <button class="btn" id="modalCancel">Cancel</button>
+      <button class="btn" id="modalAddAnother"><span class="ic">+</span> Add Another</button>
+      <button class="btn dark" id="modalAdd">Submit</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="ic">MSG</span><span id="toastMsg"></span></div>
+
+<script src="certificate-generator.js"></script>
+</body>
+</html>
