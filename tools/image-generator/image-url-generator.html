@@ -11,6 +11,7 @@
 
 <style>
 .app-sidebar {
+  display: none;
   position: fixed;
   inset: 0 auto 0 0;
   width: 232px;
@@ -22,7 +23,6 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
-}
 .app-navbar-logo {
   display: flex;
   align-items: center;
@@ -288,7 +288,8 @@ header.app::before{
 }
 @media(max-width:760px){
   body{padding-left:0;padding-top:72px}
-  .app-sidebar{
+.app-sidebar {
+  display: none;
     inset:0 0 auto 0;
     width:100%;
     height:72px;
@@ -307,10 +308,9 @@ header.app::before{
   .thumb{width:72px}
   .actions{grid-template-columns:1fr}
   .toast{left:50%}
-}
 </style>
-<link rel="stylesheet" href="base-theme.css">
-<script src="base-theme.js"></script>
+<link rel="stylesheet" href="../../core/base-theme.css">
+<script src="../../core/base-theme.js"></script>
 </head>
 <body>
 

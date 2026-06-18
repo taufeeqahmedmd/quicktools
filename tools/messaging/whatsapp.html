@@ -12,6 +12,11 @@
 <style>
 /* ===== APP SHELL SIDEBAR ===== */
 .app-sidebar {
+  display: none;
+    display: none;
+  }
+.app-sidebar {
+  display: none;
   position: fixed;
   inset: 0 auto 0 0;
   width: 232px;
@@ -23,7 +28,6 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
-}
 .app-navbar-logo {
   display: flex;
   align-items: center;
@@ -35,7 +39,6 @@
   font-size: 15px;
   font-weight: 700;
   letter-spacing: .7px;
-}
 .app-logo-mark {
   width: 34px;
   height: 34px;
@@ -618,7 +621,8 @@ h3 {
 
 @media (max-width: 760px) {
   body { padding: 88px 16px 24px; }
-  .app-sidebar {
+.app-sidebar {
+  display: none;
     inset: 0 0 auto 0;
     width: 100%;
     height: 72px;
@@ -632,11 +636,10 @@ h3 {
   .app-navbar-logo { min-width: max-content; }
   .app-nav-links { display: flex; gap: 4px; }
   .app-nav-item { min-width: max-content; }
-}
 
 </style>
-<link rel="stylesheet" href="base-theme.css">
-<script src="base-theme.js"></script>
+<link rel="stylesheet" href="../../core/base-theme.css">
+<script src="../../core/base-theme.js"></script>
 </head>
 
 <body>

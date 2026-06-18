@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tools Access</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter Tight', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0d0e10 0%, #16181c 100%);
+      color: #e8e9eb;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    h1 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 48px;
+      font-weight: 500;
+      margin: 0 0 10px;
+      color: #c6ff3d;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #9ba2ab;
+      margin: 0;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .tool-card {
+      background: #16181c;
+      border: 1px solid #262a30;
+      border-radius: 14px;
+      padding: 28px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .tool-card:hover {
+      border-color: #c6ff3d;
+      box-shadow: 0 0 20px rgba(198, 255, 61, 0.15);
+      transform: translateY(-4px);
+    }
+
+    .tool-icon {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .tool-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #e8e9eb;
+    }
+
+    .tool-description {
+      font-size: 14px;
+      color: #9ba2ab;
+      margin: 0;
+      flex: 1;
+    }
+
+    .tool-link {
+      display: inline-block;
+      margin-top: auto;
+      padding: 10px 0;
+      color: #c6ff3d;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .tool-card:hover .tool-link {
+      border-bottom-color: #c6ff3d;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 36px;
+      }
+
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Tools</h1>
+      <p class="subtitle">Direct access to all modules</p>
+    </header>
+
+    <div class="tools-grid">
+      <!-- RFID Management -->
+      <a href="../tools/rfid-management/rfid-coupon.html" class="tool-card">
+        <div class="tool-icon">🔄</div>
+        <div class="tool-name">Mess Management</div>
+        <p class="tool-description">Generate and manage RFID coupons for mess management</p>
+        <span class="tool-link">Open →</span>
+      </a>
+
+      <!-- ID Card -->
+      <a href="../tools/id-card/id-card-registration.html" class="tool-card">
+        <div class="tool-icon">🎫</div>
+        <div class="tool-name">ID Cards</div>
+        <p class="tool-description">Register and generate ID cards for employees</p>
+        <span class="tool-link">Open →</span>
+      </a>
+
+      <!-- Image Generator -->
+      <a href="../tools/image-generator/image-url-generator.html" class="tool-card">
+        <div class="tool-icon">📸</div>
+        <div class="tool-name">Image URLs</div>
+        <p class="tool-description">Generate and manage image URLs</p>
+        <span class="tool-link">Open →</span>
+      </a>
+
+      <!-- WhatsApp -->
+      <a href="../tools/messaging/whatsapp.html" class="tool-card">
+        <div class="tool-icon">💬</div>
+        <div class="tool-name">WhatsApp</div>
+        <p class="tool-description">WhatsApp integration and messaging tools</p>
+        <span class="tool-link">Open →</span>
+      </a>
+
+      <!-- Excel Merger -->
+      <a href="../tools/excel-tools/excel-merger.html" class="tool-card">
+        <div class="tool-icon">📊</div>
+        <div class="tool-name">Excel Merger</div>
+        <p class="tool-description">Merge, split, and combine Excel files and sheets</p>
+        <span class="tool-link">Open →</span>
+      </a>
+
+      <!-- Material Inward -->
+      <a href="../tools/material-inward/" class="tool-card">
+        <div class="tool-icon">📦</div>
+        <div class="tool-name">Material Inward</div>
+        <p class="tool-description">Track and manage material inward registration</p>
+        <span class="tool-link">Open →</span>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

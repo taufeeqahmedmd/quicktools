@@ -61,13 +61,13 @@ body.login-view header,body.login-view .app-sidebar,body.login-view main{
 button,input,select,textarea{font-family:inherit}
 h1,h2,h3{font-family:"Fraunces",serif;letter-spacing:0}
 code,.mono,.pill,.nav-icon{font-family:"JetBrains Mono",monospace}
-.app-sidebar{
+.app-sidebar {
+  display: none;
   position:fixed;inset:0 auto 0 0;width:232px;z-index:1000;
   background:linear-gradient(180deg,#111827,#0f172a);
   border-right:2px solid var(--accent-2);
   box-shadow:2px 0 16px rgba(0,0,0,.18);
   padding:18px 12px;display:flex;flex-direction:column;gap:18px;
-}
 .app-navbar-logo{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 10px;color:var(--accent-2);text-decoration:none;font-size:15px;font-weight:800;letter-spacing:.7px}
 .app-logo-mark{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--accent-2);color:#0f172a;font-size:13px;font-weight:900}
 .app-nav-links{display:grid;gap:4px}
@@ -179,6 +179,13 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute
 .category-rule select{padding:7px 8px}
 .profit{color:var(--accent-2);font-weight:900}
 .loss{color:var(--danger);font-weight:900}
+.status-pending,.status-pendingApproval{color:var(--warn);font-weight:900}
+.status-approved,.status-vendorAccepted,.status-preparing,.status-outForDelivery,.status-delivered{color:var(--accent-2);font-weight:900}
+.status-rejected{color:var(--danger);font-weight:900}
+.request-timeline{display:flex;gap:6px;flex-wrap:wrap}
+.request-timeline .pill{border-radius:8px}
+.request-timeline .done{background:rgba(22,163,74,.14);color:var(--accent-2);border-color:rgba(22,163,74,.3)}
+.request-timeline .current{background:rgba(180,83,9,.14);color:var(--warn);border-color:rgba(180,83,9,.3)}
 .hidden{display:none!important}
 .view{display:none}.view.active{display:block}
 .toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);opacity:0;pointer-events:none;transition:.2s;background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:10px;z-index:9999;font-weight:900;box-shadow:var(--shadow)}
@@ -187,7 +194,7 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute
 .hamburger-btn{display:none;background:none;border:none;color:var(--ink);font-size:24px;cursor:pointer;padding:8px}
 @media(max-width:760px){body{padding-left:0;padding-top:0;font-size:14px}.app-sidebar,#sidebarToggleBtn{display:none!important}header,.wrap{padding-left:12px;padding-right:12px}.wrap{padding-top:14px;gap:12px}.brand{align-items:flex-start}.seal{width:42px;height:42px;border-radius:11px}h1{font-size:25px}.sub{font-size:13px}.top-actions{width:100%;margin-left:0}.tabs{gap:6px}.tab{padding:8px 10px;font-size:13px}.grid{gap:10px}.card{padding:12px;border-radius:10px}.card h2,.card h3{font-size:19px}.metric .k{font-size:11px}.metric .v{font-size:24px}.section-title{align-items:flex-start;flex-direction:column}.range-shell{width:100%;margin-left:0}.range-trigger{min-width:0}.range-popover{position:static;width:100%;min-width:0;margin-top:8px;grid-template-columns:1fr}.range-presets{border-right:0;border-bottom:1px solid var(--line)}.range-calendars{grid-template-columns:1fr}.range-month{border-right:0;border-bottom:1px solid var(--line)}.row{grid-template-columns:1fr}.field,.field.third{grid-column:1/-1}input,select,textarea{font-size:13px;padding:9px 10px}.btn{min-height:36px;padding:8px 10px;font-size:13px}.icon-btn{width:34px;height:34px}.table-wrap{border-radius:9px}table{font-size:12px;min-width:640px}th,td{padding:8px}.pill{font-size:10px;padding:3px 7px}.list-item{padding:9px;font-size:13px}.summary-row{padding:9px}.summary-row strong{font-size:14px}.summary-meta{font-size:12px}.counter-screen{min-height:auto;gap:10px}.tap-box{padding:12px}.result{min-height:190px;min-height:5cm;padding:22px 16px}.result .big{font-size:40px}.result .small{font-size:15px}.toast{left:50%;width:calc(100% - 24px);text-align:center}}
 </style>
-<link rel="stylesheet" href="base-theme.css">
+<link rel="stylesheet" href="../../core/base-theme.css">
 <style>
 body{padding-left:0!important}
 .app-sidebar,#sidebarToggleBtn{display:none!important}
@@ -196,7 +203,7 @@ body{padding-left:0!important}
 .result.rejected, .result.blocked, .result.rejected *, .result.blocked *{color:#fff!important}
 .result.rejected .pill, .result.blocked .pill{color:#fff!important;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28)}
 </style>
-<script src="base-theme.js"></script>
+<script src="../../core/base-theme.js"></script>
 </head>
 <body>
 <button id="sidebarToggleBtn" class="hamburger-btn" aria-label="Toggle navigation menu">☰</button>
@@ -257,6 +264,7 @@ body{padding-left:0!important}
   <nav class="tabs" id="tabs">
     <button class="tab" data-view="dashboard">Dashboard</button>
     <button class="tab" data-view="vendorDashboard">Vendor Dashboard</button>
+    <button class="tab" data-view="foodRequests">Food Requests</button>
     <button class="tab" data-view="counter">RFID Counter</button>
     <button class="tab" data-view="users">Users</button>
     <button class="tab" data-view="recharge">Recharge</button>
@@ -269,6 +277,7 @@ body{padding-left:0!important}
 
   <section class="view active" id="dashboard"></section>
   <section class="view" id="vendorDashboard"></section>
+  <section class="view" id="foodRequests"></section>
   <section class="view" id="counter"></section>
   <section class="view" id="users"></section>
   <section class="view" id="cards"></section>
@@ -330,6 +339,8 @@ let reportPickerOpen = false;
 let reportDraftStart = null;
 let reportPickerMonth = today().slice(0,7) + '-01';
 let rechargeImportResult = null;
+let foodRequestFilters = {status:'', search:''};
+let activeRequestScanId = null;
 
 function uid(prefix){ return prefix + '-' + Math.random().toString(36).slice(2,8).toUpperCase(); }
 function nowISO(){ return new Date().toISOString(); }
@@ -390,6 +401,15 @@ function normalizeState(data){
   data.users = (data.users || []).map(u => ({coupons:{}, wallet:0, ...u, coupons:u.coupons || {}}));
   data.recharges = (data.recharges || []).map(r => normalizeRechargeRecord({remainingAmount:undefined, remainingCoupons:undefined, expired:false, ...r}));
   data.transactions = data.transactions || [];
+  data.foodRequests = (data.foodRequests || []).map(r => ({items:[], audit:[], notifications:[], ...r, items:r.items || [], audit:r.audit || [], notifications:r.notifications || []}));
+  data.foodRequestConfig = {approvalRequired:false, approverRoles:['Admin','Management'], ...data.foodRequestConfig};
+  data.accessControl = data.accessControl || {};
+  Object.keys(data.accessControl).forEach(role=>{
+    if(!data.accessControl[role].foodRequests){
+      const canManage = role === 'Admin' || role === 'Mess Incharge' || role === 'Management';
+      data.accessControl[role].foodRequests = {view:canManage || role === 'Accountant', add:role === 'Admin', edit:canManage, delete:role === 'Admin'};
+    }
+  });
   data.cardHistory = data.cardHistory || [];
   data.portalEmployees = (data.portalEmployees || []).map(e => ({id:uid('PE'), name:'', mobile:'', branch:'', role:'Admin', ...e}));
   data.offlineQueue = data.offlineQueue || [];
@@ -637,20 +657,23 @@ function seedState(){
     ],
     recharges:[],
     transactions:[],
+    foodRequests:[],
+    foodRequestConfig:{approvalRequired:false, approverRoles:['Admin','Management']},
     offlineQueue:[],
     audit:[{at:nowISO(), actor:'system', action:'Seeded demo data'}],
     notifications:[],
     accessControl:{
-      'Admin':{dashboard:{view:true,add:true,edit:true,delete:true},vendorDashboard:{view:true,add:true,edit:true,delete:true},counter:{view:true,add:true,edit:true,delete:true},users:{view:true,add:true,edit:true,delete:true},cards:{view:true,add:true,edit:true,delete:true},recharge:{view:true,add:true,edit:true,delete:true},settings:{view:true,add:true,edit:true,delete:true},accessControl:{view:true,add:true,edit:true,delete:true},reports:{view:true,add:true,edit:true,delete:true}},
-      'Mess Incharge':{dashboard:{view:false,add:false,edit:false,delete:false},vendorDashboard:{view:true,add:true,edit:true,delete:true},counter:{view:true,add:true,edit:true,delete:true},users:{view:false,add:false,edit:false,delete:false},cards:{view:false,add:false,edit:false,delete:false},recharge:{view:false,add:false,edit:false,delete:false},settings:{view:false,add:false,edit:false,delete:false},accessControl:{view:false,add:false,edit:false,delete:false},reports:{view:false,add:false,edit:false,delete:false}},
-      'Accountant':{dashboard:{view:true,add:true,edit:true,delete:true},vendorDashboard:{view:false,add:false,edit:false,delete:false},counter:{view:false,add:false,edit:false,delete:false},users:{view:true,add:true,edit:true,delete:true},cards:{view:true,add:true,edit:true,delete:true},recharge:{view:true,add:true,edit:true,delete:true},settings:{view:false,add:false,edit:false,delete:false},accessControl:{view:false,add:false,edit:false,delete:false},reports:{view:true,add:true,edit:true,delete:true}},
-      'Management':{dashboard:{view:true,add:true,edit:true,delete:true},vendorDashboard:{view:false,add:false,edit:false,delete:false},counter:{view:false,add:false,edit:false,delete:false},users:{view:false,add:false,edit:false,delete:false},cards:{view:true,add:true,edit:true,delete:true},recharge:{view:true,add:true,edit:true,delete:true},settings:{view:false,add:false,edit:false,delete:false},accessControl:{view:false,add:false,edit:false,delete:false},reports:{view:true,add:true,edit:true,delete:true}}
+      'Admin':{dashboard:{view:true,add:true,edit:true,delete:true},vendorDashboard:{view:true,add:true,edit:true,delete:true},foodRequests:{view:true,add:true,edit:true,delete:true},counter:{view:true,add:true,edit:true,delete:true},users:{view:true,add:true,edit:true,delete:true},cards:{view:true,add:true,edit:true,delete:true},recharge:{view:true,add:true,edit:true,delete:true},settings:{view:true,add:true,edit:true,delete:true},accessControl:{view:true,add:true,edit:true,delete:true},reports:{view:true,add:true,edit:true,delete:true}},
+      'Mess Incharge':{dashboard:{view:false,add:false,edit:false,delete:false},vendorDashboard:{view:true,add:true,edit:true,delete:true},foodRequests:{view:true,add:false,edit:true,delete:false},counter:{view:true,add:true,edit:true,delete:true},users:{view:false,add:false,edit:false,delete:false},cards:{view:false,add:false,edit:false,delete:false},recharge:{view:false,add:false,edit:false,delete:false},settings:{view:false,add:false,edit:false,delete:false},accessControl:{view:false,add:false,edit:false,delete:false},reports:{view:false,add:false,edit:false,delete:false}},
+      'Accountant':{dashboard:{view:true,add:true,edit:true,delete:true},vendorDashboard:{view:false,add:false,edit:false,delete:false},foodRequests:{view:true,add:false,edit:false,delete:false},counter:{view:false,add:false,edit:false,delete:false},users:{view:true,add:true,edit:true,delete:true},cards:{view:true,add:true,edit:true,delete:true},recharge:{view:true,add:true,edit:true,delete:true},settings:{view:false,add:false,edit:false,delete:false},accessControl:{view:false,add:false,edit:false,delete:false},reports:{view:true,add:true,edit:true,delete:true}},
+      'Management':{dashboard:{view:true,add:true,edit:true,delete:true},vendorDashboard:{view:false,add:false,edit:false,delete:false},foodRequests:{view:true,add:false,edit:true,delete:false},counter:{view:false,add:false,edit:false,delete:false},users:{view:false,add:false,edit:false,delete:false},cards:{view:true,add:true,edit:true,delete:true},recharge:{view:true,add:true,edit:true,delete:true},settings:{view:false,add:false,edit:false,delete:false},accessControl:{view:false,add:false,edit:false,delete:false},reports:{view:true,add:true,edit:true,delete:true}}
     }
   };
 }
 function categoryName(id){ return (state.categories.find(c=>c.id===id)||{}).name || 'Unknown'; }
-function mealName(id){ return (state.meals.find(m=>m.id===id)||{}).name || 'Unknown'; }
+function mealName(id){ return id === 'food-request' ? 'Admin Food Request' : ((state.meals.find(m=>m.id===id)||{}).name || 'Unknown'); }
 function counterLocation(id){
+  if(id === 'food-request') return 'Admin Request Delivery';
   const counter = state.counters.find(c=>c.id===id);
   return counter ? (counter.location || counter.name) : (id ? 'Unknown location' : 'No counter');
 }
@@ -1016,6 +1039,164 @@ function consumeRechargeCoupon(userId, mealId){
   if(rec.remainingCouponsByMeal) rec.remainingCouponsByMeal[mealId] = recRemainingCoupons(rec, mealId) - 1;
   else rec.remainingCoupons = recRemainingCoupons(rec) - 1;
 }
+function currentActorName(){
+  const employee = findEmployeeById(currentEmployeeId);
+  return employee ? employee.name : 'System';
+}
+function foodRequestTypes(){
+  return [
+    {id:'coffee', name:'Coffee', price:20, vendor:15},
+    {id:'tea', name:'Tea', price:12, vendor:8},
+    {id:'snacks', name:'Snacks', price:35, vendor:28},
+    {id:'breakfast', name:'Breakfast', price:60, vendor:50},
+    {id:'lunch', name:'Lunch', price:120, vendor:100},
+    {id:'dinner', name:'Dinner', price:110, vendor:92},
+    {id:'custom', name:'Custom Item', price:0, vendor:0}
+  ];
+}
+function foodStatusLabel(status){
+  return ({raised:'Request Raised', pendingApproval:'Pending Approval', approved:'Approved', vendorAccepted:'Vendor Accepted', preparing:'Preparing', outForDelivery:'Out for Delivery', delivered:'Delivered', rejected:'Rejected'})[status] || status || 'Request Raised';
+}
+function requestItemsLabel(req){
+  return (req.items || []).map(i=>`${i.qty} x ${i.name}`).join(', ') || '-';
+}
+function requestTotal(req){ return (req.items || []).reduce((sum,i)=>sum + Number(i.qty || 0) * Number(i.price || 0), 0); }
+function requestVendorTotal(req){ return (req.items || []).reduce((sum,i)=>sum + Number(i.qty || 0) * Number(i.vendor || 0), 0); }
+function requestUser(req){ return state.users.find(u=>u.id === req.userId) || null; }
+function requestAddTrail(req, action, note=''){
+  req.audit = req.audit || [];
+  req.audit.unshift({at:nowISO(), actor:currentActorName(), action, note});
+}
+function queueNotification(req, event, message){
+  req.notifications = req.notifications || [];
+  const channels = ['Email','SMS','WhatsApp'];
+  req.notifications.unshift({at:nowISO(), event, message, channels});
+  state.notifications = state.notifications || [];
+  state.notifications.unshift({at:nowISO(), module:'foodRequests', requestId:req.id, event, message, channels});
+}
+function setFoodRequestStatus(req, status, note=''){
+  req.status = status;
+  req.updatedAt = nowISO();
+  if(status === 'approved') req.approvedAt = req.updatedAt;
+  if(status === 'vendorAccepted') req.acceptedAt = req.updatedAt;
+  if(status === 'delivered') req.deliveredAt = req.updatedAt;
+  if(status === 'rejected') req.rejectedAt = req.updatedAt;
+  requestAddTrail(req, foodStatusLabel(status), note);
+}
+function foodRequestWorkflowSteps(req){
+  const base = ['raised'];
+  if(state.foodRequestConfig?.approvalRequired) base.push('pendingApproval','approved');
+  else base.push('approved');
+  return base.concat(['vendorAccepted','preparing','outForDelivery','delivered']);
+}
+function foodRequestTimelineHTML(req){
+  const steps = foodRequestWorkflowSteps(req);
+  const currentIndex = steps.indexOf(req.status);
+  return `<div class="request-timeline">${steps.map((s,i)=>`<span class="pill ${i < currentIndex || req.status === 'delivered' ? 'done' : i === currentIndex ? 'current' : ''}">${esc(foodStatusLabel(s))}</span>`).join('')}</div>`;
+}
+function createFoodRequestFromForm(){
+  const type = $('frType').value;
+  const typeInfo = foodRequestTypes().find(t=>t.id === type) || foodRequestTypes()[0];
+  const qty = Number($('frQty').value || 0);
+  const user = findUserBySearch($('frUser').value);
+  const when = $('frWhen').value;
+  const location = $('frLocation').value.trim();
+  const customName = $('frCustomItem').value.trim();
+  const unitPrice = Number($('frUnitPrice').value || typeInfo.price || 0);
+  const vendorCost = Number($('frVendorCost').value || typeInfo.vendor || 0);
+  if(!when) return toast('Select request date and time');
+  if(!location) return toast('Enter delivery location');
+  if(!qty || qty < 1) return toast('Enter a valid quantity');
+  if(!user) return toast('Select a valid RFID account to charge');
+  if(unitPrice < 0 || vendorCost < 0) return toast('Rates cannot be negative');
+  const name = type === 'custom' ? customName : typeInfo.name;
+  if(!name) return toast('Enter custom item name');
+  const req = {
+    id:uid('FR'),
+    createdAt:nowISO(),
+    updatedAt:nowISO(),
+    requestedAt:new Date(when).toISOString(),
+    location,
+    department:user.department || 'Unassigned',
+    requestor:currentActorName(),
+    purpose:$('frRemarks').value.trim(),
+    userId:user.id,
+    status:state.foodRequestConfig?.approvalRequired ? 'pendingApproval' : 'approved',
+    items:[{type, name, qty, price:unitPrice, vendor:vendorCost}],
+    rejectionReason:'',
+    audit:[],
+    notifications:[]
+  };
+  requestAddTrail(req, 'Request Raised', req.purpose);
+  if(req.status === 'pendingApproval') queueNotification(req, 'Approval Required', `${req.id} requires approval for ${user.name}`);
+  else queueNotification(req, 'Request Created', `${req.id} was created and sent to vendor`);
+  state.foodRequests.unshift(req);
+  audit('Created food request '+req.id+' for '+user.name);
+  save();
+  toast('Food request created');
+}
+function approveFoodRequest(reqId){
+  const req = state.foodRequests.find(r=>r.id===reqId);
+  if(!req || req.status !== 'pendingApproval') return;
+  setFoodRequestStatus(req, 'approved', 'Approved by '+currentActorName());
+  queueNotification(req, 'Request Approved', `${req.id} approved and sent to vendor`);
+  audit('Approved food request '+req.id);
+  save();
+}
+function rejectFoodRequest(reqId){
+  const req = state.foodRequests.find(r=>r.id===reqId);
+  if(!req || req.status === 'delivered') return;
+  const reason = prompt('Reject reason') || '';
+  if(!reason.trim()) return toast('Reject reason required');
+  req.rejectionReason = reason.trim();
+  setFoodRequestStatus(req, 'rejected', req.rejectionReason);
+  queueNotification(req, 'Request Rejected', `${req.id} rejected: ${req.rejectionReason}`);
+  audit('Rejected food request '+req.id);
+  save();
+}
+function vendorMoveFoodRequest(reqId, status){
+  const req = state.foodRequests.find(r=>r.id===reqId);
+  if(!req || ['rejected','delivered'].includes(req.status)) return;
+  setFoodRequestStatus(req, status);
+  const event = status === 'vendorAccepted' ? 'Request Accepted' : foodStatusLabel(status);
+  queueNotification(req, event, `${req.id} is ${foodStatusLabel(status).toLowerCase()}`);
+  audit(event+' for food request '+req.id);
+  save();
+}
+function confirmFoodRequestDelivery(reqId, scan){
+  const req = state.foodRequests.find(r=>r.id===reqId);
+  if(!req) return toast('Request not found');
+  if(req.status !== 'outForDelivery') return toast('Move request to Out for Delivery first');
+  const user = requestUser(req);
+  const clean = String(scan || '').trim();
+  if(!user) return toast('Charge account is missing');
+  if(!clean) return toast('Scan RFID to confirm delivery');
+  if(![user.rfid, user.empNo, String(user.id)].some(v=>String(v || '').toLowerCase() === clean.toLowerCase())){
+    requestAddTrail(req, 'RFID Verification Failed', clean);
+    audit('Failed RFID delivery verification for '+req.id);
+    save();
+    return toast('RFID verification failed. Delivery not completed.');
+  }
+  if(user.status !== 'active') return toast('RFID account is not active');
+  if(isUserValidityExpired(user)){ zeroExpiredUserBalance(user); save(); return toast('RFID account validity expired'); }
+  const amount = requestTotal(req);
+  const vendorAmount = requestVendorTotal(req);
+  if(userHasActiveRecharge(user.id) && availableRechargeAmount(user.id, '') < amount) return toast('Recharge balance is insufficient');
+  if(Number(user.wallet || 0) < amount) return toast('Wallet balance is insufficient');
+  user.wallet = Number(user.wallet || 0) - amount;
+  consumeRechargeAmount(user.id, amount, '');
+  const tx = {id:uid('TX'), at:nowISO(), rfid:user.rfid, counterId:'food-request', userId:user.id, mealId:'food-request', amount, vendorAmount, status:'approved', reason:'Admin food request '+req.id, requestId:req.id, source:'foodRequest'};
+  state.transactions.unshift(tx);
+  req.transactionId = tx.id;
+  req.verifiedRfid = user.rfid;
+  setFoodRequestStatus(req, 'delivered', 'RFID verified for '+user.name);
+  activeRequestScanId = null;
+  queueNotification(req, 'Delivered', `${req.id} delivered and charged ${money(amount)}`);
+  audit('Delivered food request '+req.id+' and charged '+user.name);
+  save();
+  beep('success');
+  toast('Delivered and charged to RFID wallet');
+}
 function updateNavButtonAccessControl(){
   // Get current user's role
   const employee = findEmployeeById(currentEmployeeId);
@@ -1093,6 +1274,7 @@ function render(){
   if(!activeView) return;
   if(activeView === 'dashboard') try{ renderDashboard(); }catch(e){ console.error('Dashboard error:', e); }
   if(activeView === 'vendorDashboard') try{ renderVendorDashboard(); }catch(e){ console.error('Vendor Dashboard error:', e); }
+  if(activeView === 'foodRequests') try{ renderFoodRequests(); }catch(e){ console.error('Food Requests error:', e); }
   if(activeView === 'counter') try{ renderCounter(); }catch(e){ console.error('Counter error:', e); }
   if(activeView === 'users') try{ renderUsers(); }catch(e){ console.error('Users error:', e); }
   if(activeView === 'cards') try{ renderCards(); }catch(e){ console.error('Cards error:', e); }
@@ -1326,6 +1508,8 @@ function renderDashboard(){
   const rangeSales = rangeApproved.reduce((s,t)=>s+Number(t.amount||0),0);
   const rangeVendorCost = rangeApproved.reduce((s,t)=>s+txVendorAmount(t),0);
   const rangeProfit = rangeSales - rangeVendorCost;
+  const pendingRequests = state.foodRequests.filter(r=>['raised','pendingApproval','approved','vendorAccepted','preparing','outForDelivery'].includes(r.status));
+  const rangeDeliveredRequests = state.foodRequests.filter(r=>r.status === 'delivered' && String(r.deliveredAt || r.updatedAt || '').slice(0,10) >= rangeStart && String(r.deliveredAt || r.updatedAt || '').slice(0,10) <= rangeEnd);
   const mealCards = state.meals.map(m=>{
     const mealData = mealUsage.find(mu=>mu.name===m.name);
     const count = mealData?.count || 0;
@@ -1341,6 +1525,8 @@ function renderDashboard(){
       <div class="card span-3 metric"><div class="k">Collections</div><div class="v">${money(rangeCollections)}</div></div>
       <div class="card span-3 metric"><div class="k">Vendor Cost</div><div class="v">${money(rangeVendorCost)}</div></div>
       <div class="card span-3 metric"><div class="k">Profit / Loss</div><div class="v ${profitClass(rangeProfit)}">${money(rangeProfit)}</div></div>
+      <div class="card span-3 metric"><div class="k">Pending Food Requests</div><div class="v">${pendingRequests.length}</div></div>
+      <div class="card span-3 metric"><div class="k">Delivered Food Requests</div><div style="display:flex;gap:12px;justify-content:space-between;align-items:center;"><div class="v">${rangeDeliveredRequests.length}</div><div class="v">${money(rangeDeliveredRequests.reduce((s,r)=>s+requestTotal(r),0))}</div></div></div>
       <div class="card span-12"><div class="section-title"><h2>Usage Reports</h2></div><div class="report-grid"><div class="report-block"><h3>Category Usage</h3>${usageSummaryHTML(categoryUsage)}</div><div class="report-block"><h3>Meal Wise Usage</h3>${usageSummaryHTML(mealUsage)}</div><div class="report-block"><h3>Counter Location Usage</h3>${usageSummaryHTML(locationUsage)}</div></div></div>
     </div>`;
   }catch(error){
@@ -1435,6 +1621,10 @@ function renderVendorDashboard(){
   const rangeEnd = from <= to ? to : from;
   const rangeLabel = rangeStart === rangeEnd ? `${rangeStart}` : `${rangeStart} to ${rangeEnd}`;
   const rangeTx = state.transactions.filter(t=>t.status === 'approved' && t.at.slice(0,10) >= rangeStart && t.at.slice(0,10) <= rangeEnd && assignedCounterIds.includes(t.counterId));
+  const vendorRequestRows = state.foodRequests.filter(r=>!['rejected','delivered'].includes(r.status) && r.status !== 'pendingApproval');
+  const todaysOrders = vendorRequestRows.filter(r=>String(r.requestedAt || '').slice(0,10) === today());
+  const upcomingDeliveries = vendorRequestRows.filter(r=>String(r.requestedAt || '').slice(0,10) >= today()).sort((a,b)=>String(a.requestedAt).localeCompare(String(b.requestedAt)));
+  const deliveredRequestsToday = state.foodRequests.filter(r=>r.status === 'delivered' && String(r.deliveredAt || r.updatedAt || '').slice(0,10) === today());
 
   const mealUsage = state.meals.map(m=>{
     const txs = rangeTx.filter(t=>t.mealId===m.id);
@@ -1461,8 +1651,13 @@ function renderVendorDashboard(){
     $('vendorDashboard').innerHTML = `<div class="grid">
       <div class="card span-12"><div style="display:flex;justify-content:flex-end;gap:12px;">${vendorDashboardRangePickerHTML(rangeStart, rangeEnd)}</div></div>
       <div class="card span-3 metric"><div class="k">Total Coupons & Revenue</div><div style="display:flex;gap:12px;justify-content:space-between;align-items:center;"><div class="v">${rangeTx.length}</div><div class="v">${money(totalVendorRevenue)}</div></div></div>
+      <div class="card span-3 metric"><div class="k">Today's Orders</div><div class="v">${todaysOrders.length}</div></div>
+      <div class="card span-3 metric"><div class="k">Upcoming Deliveries</div><div class="v">${upcomingDeliveries.length}</div></div>
+      <div class="card span-3 metric"><div class="k">Delivered Today</div><div class="v">${deliveredRequestsToday.length}</div></div>
+      <div class="card span-12"><div class="section-title"><h2>Food Request Delivery Queue</h2></div>${foodRequestTableHTML(upcomingDeliveries, role)}</div>
       <div class="card span-12"><div class="section-title"><h2>Meal Wise Usage</h2></div>${usageSummaryHTML(mealUsage, true)}</div>
       ${countersToShow.length > 1 ? `<div class="card span-12"><div class="section-title"><h2>Counter Wise Usage</h2></div>${usageSummaryHTML(counterUsage, true)}</div>` : ''}
+      ${activeRequestScanId ? foodDeliveryModalHTML(activeRequestScanId) : ''}
     </div>`;
   }catch(error){
     console.error('Vendor Dashboard render error:', error);
@@ -1473,7 +1668,143 @@ function renderVendorDashboard(){
     document.querySelectorAll('[data-vendor-range-preset]').forEach(b=>b.onclick=()=>{ applyVendorDashboardPreset(b.dataset.vendorRangePreset); vendorDashboardPickerOpen = false; render(); });
     document.querySelectorAll('[data-vendor-range-date]').forEach(b=>b.onclick=()=>{ chooseVendorDashboardDate(b.dataset.vendorRangeDate); render(); });
     document.querySelectorAll('[data-vendor-range-shift]').forEach(b=>b.onclick=()=>{ vendorDashboardPickerMonth = addMonths(vendorDashboardPickerMonth, Number(b.dataset.vendorRangeShift)); render(); });
+    bindFoodRequestEvents();
   }, 0);
+}
+function foodRequestActionsHTML(req, role){
+  const actions = [];
+  if(req.status === 'pendingApproval' && (role === 'Admin' || (state.foodRequestConfig?.approverRoles || []).includes(role))){
+    actions.push(`<button class="btn good" data-approve-food="${req.id}" type="button">Approve</button>`);
+    actions.push(`<button class="btn danger" data-reject-food="${req.id}" type="button">Reject</button>`);
+  }
+  if(req.status === 'approved'){
+    actions.push(`<button class="btn good" data-food-status="${req.id}:vendorAccepted" type="button">Accept</button>`);
+    actions.push(`<button class="btn danger" data-reject-food="${req.id}" type="button">Reject</button>`);
+  }
+  if(req.status === 'vendorAccepted') actions.push(`<button class="btn" data-food-status="${req.id}:preparing" type="button">Preparing</button>`);
+  if(req.status === 'preparing') actions.push(`<button class="btn" data-food-status="${req.id}:outForDelivery" type="button">Out for Delivery</button>`);
+  if(req.status === 'outForDelivery') actions.push(`<button class="btn primary" data-open-food-scan="${req.id}" type="button">RFID Deliver</button>`);
+  return actions.length ? `<div class="icon-actions" style="flex-wrap:wrap">${actions.join('')}</div>` : `<span class="pill">${esc(foodStatusLabel(req.status))}</span>`;
+}
+function foodRequestTableHTML(rows, role){
+  return `<div class="table-wrap"><table><thead><tr><th>Request</th><th>Schedule</th><th>Items</th><th>Charge Account</th><th>Cost</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows.map(req=>{
+    const user = requestUser(req) || {};
+    return `<tr><td><strong>${esc(req.id)}</strong><br><span class="pill">${esc(req.requestor || '-')}</span><br><small>${esc(req.purpose || '-')}</small></td><td>${new Date(req.requestedAt).toLocaleString()}<br><span class="pill">${esc(req.location)}</span></td><td>${esc(requestItemsLabel(req))}</td><td>${esc(user.name || req.userId || '-')}<br><span class="mono">${esc(user.rfid || '-')}</span><br><small>${esc(req.department || '-')}</small></td><td>${money(requestTotal(req))}<br><span class="pill">Vendor ${money(requestVendorTotal(req))}</span></td><td><span class="status-${esc(req.status)}">${esc(foodStatusLabel(req.status))}</span>${req.rejectionReason ? `<br><small>${esc(req.rejectionReason)}</small>` : ''}<div style="margin-top:8px">${foodRequestTimelineHTML(req)}</div></td><td>${foodRequestActionsHTML(req, role)}</td></tr>`;
+  }).join('') || '<tr><td colspan="7">No food requests found</td></tr>'}</tbody></table></div>`;
+}
+function renderFoodRequests(){
+  const employee = findEmployeeById(currentEmployeeId);
+  const role = employee?.role || 'Unknown';
+  const hasAccess = role === 'Admin' ? true : (state.accessControl?.[role]?.foodRequests?.view === true);
+  if(!hasAccess){
+    $('foodRequests').innerHTML = `<div class="card"><h2>Access Denied</h2><p>Your role (${esc(role)}) does not have access to food requests.</p></div>`;
+    return;
+  }
+  const canCreate = role === 'Admin' || state.accessControl?.[role]?.foodRequests?.add === true;
+  const query = String(foodRequestFilters.search || '').toLowerCase();
+  const status = foodRequestFilters.status || '';
+  const rows = state.foodRequests.filter(req=>{
+    const user = requestUser(req) || {};
+    const haystack = [req.id, req.location, req.requestor, req.department, req.purpose, req.status, requestItemsLabel(req), userSearchTerms(user)].join(' ').toLowerCase();
+    return (!status || req.status === status) && (!query || haystack.includes(query));
+  });
+  const pending = state.foodRequests.filter(r=>['raised','pendingApproval','approved','vendorAccepted','preparing','outForDelivery'].includes(r.status));
+  const delivered = state.foodRequests.filter(r=>r.status === 'delivered');
+  const rangeDelivered = delivered.filter(r=>String(r.deliveredAt || r.updatedAt || '').slice(0,10) === today());
+  const departmentCosts = Object.values(delivered.reduce((map,req)=>{
+    const key = req.department || 'Unassigned';
+    map[key] = map[key] || {name:key, count:0, amount:0, vendor:0, profit:0};
+    map[key].count += 1; map[key].amount += requestTotal(req); map[key].vendor += requestVendorTotal(req); map[key].profit = map[key].amount - map[key].vendor;
+    return map;
+  }, {})).sort((a,b)=>b.amount-a.amount);
+  const requestorCosts = Object.values(delivered.reduce((map,req)=>{
+    const key = req.requestor || 'Unknown';
+    map[key] = map[key] || {name:key, count:0, amount:0, vendor:0, profit:0};
+    map[key].count += 1; map[key].amount += requestTotal(req); map[key].vendor += requestVendorTotal(req); map[key].profit = map[key].amount - map[key].vendor;
+    return map;
+  }, {})).sort((a,b)=>b.amount-a.amount);
+  const accountCosts = Object.values(delivered.reduce((map,req)=>{
+    const user = requestUser(req);
+    const key = user ? user.name : req.userId;
+    map[key] = map[key] || {name:key, count:0, amount:0, vendor:0, profit:0};
+    map[key].count += 1; map[key].amount += requestTotal(req); map[key].vendor += requestVendorTotal(req); map[key].profit = map[key].amount - map[key].vendor;
+    return map;
+  }, {})).sort((a,b)=>b.amount-a.amount);
+  const vendorStats = [
+    {name:'Accepted', count:state.foodRequests.filter(r=>['vendorAccepted','preparing','outForDelivery','delivered'].includes(r.status)).length, amount:state.foodRequests.filter(r=>['vendorAccepted','preparing','outForDelivery','delivered'].includes(r.status)).reduce((s,r)=>s+requestVendorTotal(r),0), vendor:0, profit:0},
+    {name:'Delivered Today', count:rangeDelivered.length, amount:rangeDelivered.reduce((s,r)=>s+requestVendorTotal(r),0), vendor:0, profit:0},
+    {name:'Rejected', count:state.foodRequests.filter(r=>r.status === 'rejected').length, amount:0, vendor:0, profit:0}
+  ];
+  const defaultWhen = new Date(Date.now() + 60 * 60 * 1000).toISOString().slice(0,16);
+  const userOptions = state.users.map(u=>`<option value="${esc(userSearchLabel(u))}"></option>`).join('');
+  const config = state.foodRequestConfig || {};
+  $('foodRequests').innerHTML = `<div class="grid">
+    ${canCreate ? `<div class="card span-12"><div class="section-title"><h2>Raise Food Request</h2><span class="pill">Approval ${config.approvalRequired ? 'enabled' : 'optional/off'}</span></div><div class="row">
+      <div class="field third"><label>Request Date & Time</label><input id="frWhen" type="datetime-local" value="${defaultWhen}"></div>
+      <div class="field third"><label>Delivery Location</label><input id="frLocation" placeholder="Conference Hall, Block A"></div>
+      <div class="field third"><label>Request Type</label><select id="frType">${foodRequestTypes().map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('')}</select></div>
+      <div class="field third"><label>Custom Item</label><input id="frCustomItem" placeholder="Required for custom"></div>
+      <div class="field third"><label>Quantity</label><input id="frQty" type="number" min="1" value="1"></div>
+      <div class="field third"><label>RFID Account/User to Charge</label><input id="frUser" list="foodUsers" placeholder="Name / RFID / Employee No"><datalist id="foodUsers">${userOptions}</datalist></div>
+      <div class="field third"><label>Charge per Unit</label><input id="frUnitPrice" type="number" min="0" value="20"></div>
+      <div class="field third"><label>Vendor Cost per Unit</label><input id="frVendorCost" type="number" min="0" value="15"></div>
+      <div class="field full"><label>Remarks / Purpose</label><textarea id="frRemarks" placeholder="Meeting, visitor hospitality, training session"></textarea></div>
+      <div class="field full"><button class="btn primary" id="createFoodRequest" type="button">Create Request</button></div>
+    </div></div>` : ''}
+    ${role === 'Admin' ? `<div class="card span-12"><div class="section-title"><h2>Approval Configuration</h2><button class="btn" id="saveFoodConfig" type="button">Save</button></div><div class="row"><div class="field third"><label>Approval Flow</label><select id="foodApprovalRequired"><option value="no">Optional / Skip Approval</option><option value="yes">Require Approval</option></select></div><div class="field"><label>Approver Roles</label><input id="foodApproverRoles" value="${esc((config.approverRoles || []).join(', '))}"></div></div></div>` : ''}
+    <div class="card span-3 metric"><div class="k">Pending Requests</div><div class="v">${pending.length}</div></div>
+    <div class="card span-3 metric"><div class="k">Delivered Requests</div><div class="v">${delivered.length}</div></div>
+    <div class="card span-3 metric"><div class="k">Request Cost</div><div class="v">${money(delivered.reduce((s,r)=>s+requestTotal(r),0))}</div></div>
+    <div class="card span-3 metric"><div class="k">Vendor Settlement</div><div class="v">${money(delivered.reduce((s,r)=>s+requestVendorTotal(r),0))}</div></div>
+    <div class="card span-12"><div class="section-title"><h2>Request Queue</h2><div class="toolbar" style="margin-bottom:0"><input id="foodSearch" placeholder="Search request, RFID, location" value="${esc(foodRequestFilters.search)}"><select id="foodStatusFilter"><option value="">All Status</option>${['pendingApproval','approved','vendorAccepted','preparing','outForDelivery','delivered','rejected'].map(s=>`<option value="${s}" ${status===s?'selected':''}>${esc(foodStatusLabel(s))}</option>`).join('')}</select></div></div>${foodRequestTableHTML(rows, role)}</div>
+    <div class="card span-12"><div class="section-title"><h2>Dashboards & Reports</h2></div><div class="report-grid"><div class="report-block"><h3>Cost by Department</h3>${usageSummaryHTML(departmentCosts)}</div><div class="report-block"><h3>Cost by Requestor</h3>${usageSummaryHTML(requestorCosts)}</div><div class="report-block"><h3>RFID Account-wise Cost</h3>${usageSummaryHTML(accountCosts)}</div></div></div>
+    <div class="card span-12"><div class="section-title"><h2>Vendor Performance</h2></div>${usageSummaryHTML(vendorStats, true)}</div>
+    <div class="card span-12"><div class="section-title"><h2>Notification Queue</h2><span class="pill">Email / SMS / WhatsApp</span></div><div class="list">${(state.notifications || []).filter(n=>n.module === 'foodRequests').slice(0,8).map(n=>`<div class="list-item"><span><strong>${esc(n.event)}</strong><br><small>${esc(n.message)}</small></span><span>${new Date(n.at).toLocaleString()}</span></div>`).join('') || '<div class="list-item"><span>No request notifications yet</span><span>-</span></div>'}</div></div>
+    ${activeRequestScanId ? foodDeliveryModalHTML(activeRequestScanId) : ''}
+  </div>`;
+  setTimeout(bindFoodRequestEvents, 0);
+}
+function foodDeliveryModalHTML(reqId){
+  const req = state.foodRequests.find(r=>r.id===reqId);
+  if(!req) return '';
+  const user = requestUser(req) || {};
+  return `<div class="modal-backdrop" id="foodDeliveryModal"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="foodDeliveryTitle"><div class="modal-head"><h2 id="foodDeliveryTitle">RFID Delivery Confirmation</h2><button class="icon-btn delete" id="closeFoodDelivery" type="button" title="Close" aria-label="Close">&#10005;</button></div><div class="list" style="margin-bottom:12px"><div class="list-item"><strong>${esc(req.id)}</strong><span>${esc(requestItemsLabel(req))}</span></div><div class="list-item"><strong>Charge Account</strong><span>${esc(user.name || '-')} / ${esc(user.rfid || '-')}</span></div><div class="list-item"><strong>Amount</strong><span>${money(requestTotal(req))}</span></div></div><div class="field full"><label>Tap / Scan Linked RFID Card</label><input id="foodDeliveryRfid" placeholder="Scan ${esc(user.rfid || 'RFID')}" autofocus></div><button class="btn primary" id="confirmFoodDelivery" type="button">Verify RFID & Mark Delivered</button></div></div>`;
+}
+function refreshFoodRequestSurface(){
+  if(activeView === 'vendorDashboard') renderVendorDashboard();
+  else renderFoodRequests();
+}
+function bindFoodRequestEvents(){
+  if($('frType')) $('frType').onchange = () => {
+    const type = foodRequestTypes().find(t=>t.id === $('frType').value) || foodRequestTypes()[0];
+    $('frUnitPrice').value = type.price;
+    $('frVendorCost').value = type.vendor;
+  };
+  if($('createFoodRequest')) $('createFoodRequest').onclick = createFoodRequestFromForm;
+  if($('foodApprovalRequired')){
+    $('foodApprovalRequired').value = state.foodRequestConfig?.approvalRequired ? 'yes' : 'no';
+    $('saveFoodConfig').onclick = () => {
+      state.foodRequestConfig = {
+        approvalRequired:$('foodApprovalRequired').value === 'yes',
+        approverRoles:$('foodApproverRoles').value.split(',').map(v=>v.trim()).filter(Boolean)
+      };
+      audit('Updated food request approval configuration');
+      save();
+      toast('Approval configuration saved');
+    };
+  }
+  if($('foodSearch')) $('foodSearch').oninput = () => { foodRequestFilters.search = $('foodSearch').value; renderFoodRequests(); };
+  if($('foodStatusFilter')) $('foodStatusFilter').onchange = () => { foodRequestFilters.status = $('foodStatusFilter').value; renderFoodRequests(); };
+  document.querySelectorAll('[data-approve-food]').forEach(b=>b.onclick=()=>approveFoodRequest(b.dataset.approveFood));
+  document.querySelectorAll('[data-reject-food]').forEach(b=>b.onclick=()=>rejectFoodRequest(b.dataset.rejectFood));
+  document.querySelectorAll('[data-food-status]').forEach(b=>b.onclick=()=>{
+    const [id,status] = b.dataset.foodStatus.split(':');
+    vendorMoveFoodRequest(id, status);
+  });
+  document.querySelectorAll('[data-open-food-scan]').forEach(b=>b.onclick=()=>{ activeRequestScanId = b.dataset.openFoodScan; refreshFoodRequestSurface(); });
+  if($('closeFoodDelivery')) $('closeFoodDelivery').onclick = () => { activeRequestScanId = null; refreshFoodRequestSurface(); };
+  if($('confirmFoodDelivery')) $('confirmFoodDelivery').onclick = () => confirmFoodRequestDelivery(activeRequestScanId, $('foodDeliveryRfid').value);
+  if($('foodDeliveryRfid')) $('foodDeliveryRfid').onkeypress = e => { if(e.key === 'Enter') $('confirmFoodDelivery').click(); };
 }
 function renderCounter(){
   const result = lastCounterResult;
@@ -2015,6 +2346,7 @@ function renderAccessControl(){
   const screens = [
     {id:'dashboard',name:'Dashboard'},
     {id:'vendorDashboard',name:'Vendor Dashboard'},
+    {id:'foodRequests',name:'Food Requests'},
     {id:'counter',name:'RFID Counter'},
     {id:'users',name:'Users'},
     {id:'cards',name:'Replace Card'},
@@ -2084,9 +2416,25 @@ function renderReports(){
   const start = (consumptionReportPage - 1) * Number(consumptionReportFilters.pageSize || 10);
   const pageRows = filteredTx.slice(start, start + Number(consumptionReportFilters.pageSize || 10));
   const balanceHeaders = state.meals.map(m=>`<th>${esc(m.name)} Coupons</th>`).join('');
+  const deliveredFoodRequests = state.foodRequests.filter(r=>r.status === 'delivered');
+  const requestWiseCostRows = deliveredFoodRequests.map(req=>({name:req.id+' / '+requestItemsLabel(req), count:1, amount:requestTotal(req), vendor:requestVendorTotal(req), profit:requestTotal(req)-requestVendorTotal(req)}));
+  const departmentFoodCostRows = Object.values(deliveredFoodRequests.reduce((map,req)=>{
+    const key = req.department || 'Unassigned';
+    map[key] = map[key] || {name:key, count:0, amount:0, vendor:0, profit:0};
+    map[key].count += 1; map[key].amount += requestTotal(req); map[key].vendor += requestVendorTotal(req); map[key].profit = map[key].amount - map[key].vendor;
+    return map;
+  }, {})).sort((a,b)=>b.amount-a.amount);
+  const rfidFoodCostRows = Object.values(deliveredFoodRequests.reduce((map,req)=>{
+    const user = requestUser(req);
+    const key = user ? `${user.name} / ${user.rfid}` : req.userId;
+    map[key] = map[key] || {name:key, count:0, amount:0, vendor:0, profit:0};
+    map[key].count += 1; map[key].amount += requestTotal(req); map[key].vendor += requestVendorTotal(req); map[key].profit = map[key].amount - map[key].vendor;
+    return map;
+  }, {})).sort((a,b)=>b.amount-a.amount);
   $('reports').innerHTML = `<div class="grid">
     <div class="card"><div class="section-title"><h2>Consumption Report</h2>${reportRangePickerHTML()}<div class="icon-actions"><button class="btn" id="exportTx">Export Filtered CSV</button><button class="btn" id="exportRecharge">Export Recharge CSV</button><button class="btn" id="syncOffline">Sync Offline Queue (${state.offlineQueue.length})</button></div></div><div class="toolbar"><input id="reportSearch" placeholder="Search RFID, name, student ID, TX, reason" value="${esc(consumptionReportFilters.search)}"><select id="reportCategory" multiple size="${Math.min(Math.max(state.categories.length, 2), 5)}">${state.categories.map(c=>`<option value="${c.id}" ${(consumptionReportFilters.categoryIds || []).includes(c.id)?'selected':''}>${esc(c.name)}</option>`).join('')}</select><select id="reportMeal" multiple size="${Math.min(Math.max(state.meals.length, 2), 5)}">${state.meals.map(m=>`<option value="${m.id}" ${(consumptionReportFilters.mealIds || []).includes(m.id)?'selected':''}>${esc(m.name)}</option>`).join('')}</select><select id="reportCounter" multiple size="${Math.min(Math.max(state.counters.length, 2), 5)}">${state.counters.map(c=>`<option value="${c.id}" ${(consumptionReportFilters.counterIds || []).includes(c.id)?'selected':''}>${esc(c.name)} - ${esc(c.location)}</option>`).join('')}</select><select id="reportStatus"><option value="">All Status</option>${['approved','failed'].map(s=>`<option value="${s}" ${consumptionReportFilters.status===s?'selected':''}>${esc(s)}</option>`).join('')}</select><select id="reportProfit"><option value="">All P/L</option><option value="profit" ${consumptionReportFilters.profit==='profit'?'selected':''}>Profit</option><option value="loss" ${consumptionReportFilters.profit==='loss'?'selected':''}>Loss</option><option value="even" ${consumptionReportFilters.profit==='even'?'selected':''}>No P/L</option></select><select id="reportPageSize">${[10,25,50,100].map(n=>`<option value="${n}" ${Number(consumptionReportFilters.pageSize)===n?'selected':''}>${n} rows</option>`).join('')}</select><button class="btn" id="clearReportFilters" type="button">Clear Filters</button></div>${transactionTable(pageRows)}<div class="pager"><span class="meta">Showing ${filteredTx.length ? start + 1 : 0}-${Math.min(start + Number(consumptionReportFilters.pageSize || 10), filteredTx.length)} of ${filteredTx.length}</span><div class="icon-actions"><button class="btn" id="reportPrev" type="button" ${consumptionReportPage <= 1 ? 'disabled' : ''}>Previous</button><span class="pill">Page ${consumptionReportPage} of ${totalPages}</span><button class="btn" id="reportNext" type="button" ${consumptionReportPage >= totalPages ? 'disabled' : ''}>Next</button></div></div></div>
     <div class="card span-6"><div class="section-title"><h2>Balance Report</h2><button class="btn" id="exportBalance" type="button">Export Balance CSV</button></div><div class="toolbar"><input id="balanceSearch" placeholder="Search RFID, name, student ID" value="${esc(balanceReportFilters.search)}"><select id="balanceCategory" multiple size="${Math.min(Math.max(state.categories.length, 2), 5)}">${state.categories.map(c=>`<option value="${c.id}" ${(balanceReportFilters.categoryIds || []).includes(c.id)?'selected':''}>${esc(c.name)}</option>`).join('')}</select><select id="balanceStatus"><option value="">All Status</option><option value="active" ${balanceReportFilters.status==='active'?'selected':''}>Active</option><option value="blocked" ${balanceReportFilters.status==='blocked'?'selected':''}>Blocked</option><option value="inactive" ${balanceReportFilters.status==='inactive'?'selected':''}>Inactive</option><option value="expired" ${balanceReportFilters.status==='expired'?'selected':''}>Expired</option></select><button class="btn" id="clearBalanceFilters" type="button">Clear Filters</button></div><div class="table-wrap"><table><thead><tr><th>User</th><th>RFID</th><th>Category</th><th>Status</th><th>Expiry</th><th>Unused Wallet</th>${balanceHeaders}<th>Total Coupons</th></tr></thead><tbody>${filteredBalanceUsers().map(balanceReportRowHTML).join('')}</tbody></table></div></div>
+    <div class="card span-6"><div class="section-title"><h2>Food Request Finance</h2><button class="btn" id="exportFoodRequests" type="button">Export Request CSV</button></div><div class="report-grid"><div class="report-block"><h3>Request-wise Cost</h3>${usageSummaryHTML(requestWiseCostRows)}</div><div class="report-block"><h3>Department-wise Cost</h3>${usageSummaryHTML(departmentFoodCostRows)}</div><div class="report-block"><h3>RFID Account-wise Cost</h3>${usageSummaryHTML(rfidFoodCostRows)}</div></div></div>
     <div class="card span-6"><h2>Audit Log</h2><div class="list">${state.audit.slice(0,20).map(a=>`<div class="list-item"><span>${esc(a.action)}</span><span>${new Date(a.at).toLocaleString()}</span></div>`).join('')}</div></div>
   </div>`;
   bindConsumptionReportFilters();
@@ -2103,6 +2451,11 @@ function renderReports(){
   })), 'consumption-report.csv');
   $('exportRecharge').onclick = () => rowsToCSV(rechargeCouponExportRows(state.recharges), 'recharge-report.csv');
   $('exportBalance').onclick = () => rowsToCSV([['User ID','Name','RFID','Employee/Student No.','Mobile','Email','Category','Status','Expiry','Unused Wallet'].concat(state.meals.map(m=>m.name+' Coupons')).concat(['Total Coupons'])].concat(filteredBalanceUsers().map(u=>[u.id,u.name,u.rfid,u.empNo,u.mobile,u.email,categoryName(u.categoryId),userValidityStatus(u).label,u.cardExpiryDate,Number(u.wallet || 0)].concat(state.meals.map(m=>Number((u.coupons || {})[m.id] || 0))).concat([userCouponTotal(u)]))), 'balance-report.csv');
+  if($('exportFoodRequests')) $('exportFoodRequests').onclick = () => rowsToCSV([['Request','Created','Requested For','Delivered','Requestor','Department','RFID Account','Items','Amount','Vendor Amount','Settlement Profit','Transaction','Status']].concat(state.foodRequests.map(req=>{
+    const user = requestUser(req) || {};
+    const amount = requestTotal(req), vendor = requestVendorTotal(req);
+    return [req.id,req.createdAt,req.requestedAt,req.deliveredAt || '',req.requestor || '',req.department || '',user.name || req.userId,requestItemsLabel(req),amount,vendor,amount - vendor,req.transactionId || '',foodStatusLabel(req.status)];
+  })), 'food-request-report.csv');
   $('syncOffline').onclick = () => { state.transactions.unshift(...state.offlineQueue.map(q=>({...q, reason:'Synced from local queue'}))); state.offlineQueue=[]; audit('Synced offline queue'); save(); toast('Offline queue synced'); };
 }
 function userCouponTotal(user){
@@ -2185,6 +2538,7 @@ function renderDocs(){
     {name:'vendor_rates', desc:'Vendor/cost rates per meal per category'},
     {name:'recharges', desc:'Wallet/coupon recharge transactions with selected meals, validity dates'},
     {name:'transactions', desc:'RFID consumption records with approval/rejection status and reason'},
+    {name:'food_requests', desc:'Admin food requests, approval status, delivery RFID verification, and charge transaction link'},
     {name:'counter_devices', desc:'RFID counter machines at various locations'},
     {name:'counter_assignments', desc:'Portal employees assigned to counter devices'},
     {name:'portal_employees', desc:'Staff managing counters (Admin, Accountant, Mess Incharge, Management)'},
@@ -2202,6 +2556,7 @@ function renderDocs(){
     {path:'/api/rates', methods:'GET, PUT', desc:'Update meal rates and vendor rates'},
     {path:'/api/recharges', methods:'GET, POST, PUT, DELETE', desc:'Recharge with multi-meal coupon selection'},
     {path:'/api/transactions', methods:'GET, POST', desc:'RFID consumption records and filtering'},
+    {path:'/api/food-requests', methods:'GET, POST, PUT', desc:'Admin request creation, approval, vendor status updates, RFID delivery confirmation'},
     {path:'/api/rfid-scan', methods:'POST', desc:'Process RFID/Student ID tap with approval/rejection logic'},
     {path:'/api/counters', methods:'GET, POST, PUT, DELETE', desc:'Counter device CRUD with portal employee assignment'},
     {path:'/api/portal-employees', methods:'GET, POST, PUT, DELETE', desc:'Portal staff management (Admin, Accountant, etc.)'},
@@ -2301,7 +2656,7 @@ document.addEventListener('keydown', e=>{
 });
 window.addEventListener('hashchange', ()=>{
   const hash = window.location.hash.slice(1);
-  const validScreens = ['login','dashboard','vendorDashboard','counter','users','cards','recharge','settings','accessControl','reports','docs'];
+  const validScreens = ['login','dashboard','vendorDashboard','foodRequests','counter','users','cards','recharge','settings','accessControl','reports','docs'];
 
   if(hash === 'login'){
     activeView = currentEmployeeId ? 'dashboard' : 'login';
@@ -2345,7 +2700,7 @@ if('serviceWorker' in navigator){
 }
 
 const initialHash = window.location.hash.slice(1);
-const validScreens = ['login','dashboard','vendorDashboard','counter','users','cards','recharge','settings','accessControl','reports','docs'];
+const validScreens = ['login','dashboard','vendorDashboard','foodRequests','counter','users','cards','recharge','settings','accessControl','reports','docs'];
 
 if(initialHash === 'login'){
   activeView = currentEmployeeId ? 'dashboard' : 'login';
@@ -2394,6 +2749,7 @@ setTimeout(()=>{
       console.warn('Active view is empty, force rendering:', activeView);
       if(activeView === 'dashboard') renderDashboard();
       else if(activeView === 'vendorDashboard') renderVendorDashboard();
+      else if(activeView === 'foodRequests') renderFoodRequests();
       else if(activeView === 'counter') renderCounter();
       else if(activeView === 'users') renderUsers();
       else if(activeView === 'cards') renderCards();

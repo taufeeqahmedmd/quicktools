@@ -1,0 +1,291 @@
+{
+  "projectName": "HTML Basics - Tools Suite",
+  "description": "Organized modular toolkit with shared core files",
+  "organization": {
+    "core": {
+      "description": "Shared core files used across all modules",
+      "path": "core/",
+      "files": [
+        {
+          "name": "base-theme.js",
+          "type": "JavaScript",
+          "purpose": "Theme switching and dark/light mode logic"
+        },
+        {
+          "name": "base-theme.css",
+          "type": "CSS",
+          "purpose": "Base theme styles applied globally"
+        },
+        {
+          "name": "app.js",
+          "type": "JavaScript",
+          "purpose": "Main application logic and initialization"
+        },
+        {
+          "name": "styles.css",
+          "type": "CSS",
+          "purpose": "Global CSS styles for the application"
+        }
+      ]
+    },
+    "public": {
+      "description": "Public-facing entry points and assets",
+      "path": "public/",
+      "files": [
+        {
+          "name": "index.html",
+          "type": "HTML",
+          "purpose": "Home page and main dashboard",
+          "dependencies": ["../core/base-theme.js", "../core/base-theme.css"]
+        }
+      ],
+      "subdirectories": [
+        {
+          "name": "admin",
+          "purpose": "Admin-related pages"
+        },
+        {
+          "name": "register",
+          "purpose": "Registration-related pages"
+        },
+        {
+          "name": "uploads",
+          "purpose": "Directory for user-uploaded files"
+        }
+      ]
+    },
+    "tools": {
+      "description": "Independent modular tools",
+      "path": "tools/",
+      "modules": [
+        {
+          "id": "rfid-management",
+          "name": "🔄 RFID Management",
+          "icon": "🔄",
+          "description": "RFID coupon generation and management",
+          "path": "tools/rfid-management/",
+          "entryPoint": "rfid-coupon.html",
+          "files": [
+            {
+              "name": "rfid-coupon.html",
+              "type": "HTML",
+              "purpose": "Main RFID coupon generator interface"
+            },
+            {
+              "name": "rfid-sw.js",
+              "type": "JavaScript",
+              "purpose": "Service worker for offline functionality"
+            },
+            {
+              "name": "rfid-icon.svg",
+              "type": "SVG",
+              "purpose": "Icon asset for RFID module"
+            }
+          ],
+          "dependencies": ["../../core/base-theme.js", "../../core/base-theme.css"],
+          "navigationLink": "Dashboard → Mess Management"
+        },
+        {
+          "id": "excel-tools",
+          "name": "📊 Excel Tools",
+          "icon": "📊",
+          "description": "Excel file manipulation - merge, split, and combine sheets",
+          "path": "tools/excel-tools/",
+          "entryPoint": "excel-merger.html",
+          "features": [
+            "Merge multiple files with header/position matching",
+            "Merge multiple sheets from one file",
+            "Split sheets by column values"
+          ],
+          "files": [
+            {
+              "name": "excel-merger.html",
+              "type": "HTML",
+              "purpose": "Main Excel merger and splitter interface"
+            },
+            {
+              "name": "test-new-features.js",
+              "type": "JavaScript",
+              "purpose": "Test suite for new features"
+            }
+          ],
+          "dependencies": ["../../core/base-theme.js", "../../core/base-theme.css"],
+          "externalDependencies": ["SheetJS (XLSX) from CDN"],
+          "navigationLink": "Dashboard → Excel Merger"
+        },
+        {
+          "id": "id-card",
+          "name": "🎫 ID Card Management",
+          "icon": "🎫",
+          "description": "ID card registration and generation",
+          "path": "tools/id-card/",
+          "entryPoint": "id-card-registration.html",
+          "files": [
+            {
+              "name": "id-card-registration.html",
+              "type": "HTML",
+              "purpose": "ID card registration form and interface"
+            }
+          ],
+          "dependencies": ["../../core/base-theme.js", "../../core/base-theme.css"],
+          "navigationLink": "Dashboard → ID Cards"
+        },
+        {
+          "id": "image-generator",
+          "name": "📸 Image URL Generator",
+          "icon": "📸",
+          "description": "Generate and manage image URLs",
+          "path": "tools/image-generator/",
+          "entryPoint": "image-url-generator.html",
+          "files": [
+            {
+              "name": "image-url-generator.html",
+              "type": "HTML",
+              "purpose": "Image URL generation interface"
+            }
+          ],
+          "dependencies": ["../../core/base-theme.js", "../../core/base-theme.css"],
+          "navigationLink": "Dashboard → Image URLs"
+        },
+        {
+          "id": "messaging",
+          "name": "💬 Messaging",
+          "icon": "💬",
+          "description": "WhatsApp integration and messaging",
+          "path": "tools/messaging/",
+          "entryPoint": "whatsapp.html",
+          "files": [
+            {
+              "name": "whatsapp.html",
+              "type": "HTML",
+              "purpose": "WhatsApp integration interface"
+            }
+          ],
+          "dependencies": ["../../core/base-theme.js", "../../core/base-theme.css"],
+          "navigationLink": "Dashboard → WhatsApp"
+        },
+        {
+          "id": "material-inward",
+          "name": "📦 Material Inward (Separate Project)",
+          "icon": "📦",
+          "description": "Backend application - Now in separate folder",
+          "path": "../material-inward-register/",
+          "entryPoint": "server.js",
+          "status": "Separate Node.js project - ISOLATED",
+          "location": "e:\\Important\\Tools by Claude\\vscode\\material-inward-register\\",
+          "note": "This is a complete backend application and is now isolated from htmlbasics to prevent deployment conflicts"
+        }
+      ]
+    },
+    "config": {
+      "description": "Configuration and setup files",
+      "path": "Root directory",
+      "files": [
+        {
+          "name": "package.json",
+          "type": "JSON",
+          "purpose": "NPM dependencies and scripts"
+        },
+        {
+          "name": ".env",
+          "type": "Text",
+          "purpose": "Environment variables"
+        },
+        {
+          "name": "database.sql",
+          "type": "SQL",
+          "purpose": "Database schema"
+        },
+        {
+          "name": "ecosystem.config.cjs",
+          "type": "JavaScript",
+          "purpose": "PM2 configuration"
+        },
+        {
+          "name": "CNAME",
+          "type": "Text",
+          "purpose": "Domain name for DNS"
+        }
+      ]
+    },
+    "assets": {
+      "description": "Static assets and resources",
+      "path": "assets/",
+      "subdirectories": [
+        {
+          "name": "icons",
+          "purpose": "Icon files and icon library"
+        },
+        {
+          "name": "images",
+          "purpose": "Image assets"
+        },
+        {
+          "name": "fonts",
+          "purpose": "Font files (if any)"
+        }
+      ]
+    }
+  },
+  "statistics": {
+    "totalModules": 6,
+    "totalFiles": 15,
+    "coreFiles": 4,
+    "toolModules": 6,
+    "configFiles": 5
+  },
+  "navigationStructure": {
+    "root": "public/index.html",
+    "links": [
+      {
+        "label": "Home",
+        "href": "index.html"
+      },
+      {
+        "label": "Mess Management",
+        "href": "../tools/rfid-management/rfid-coupon.html"
+      },
+      {
+        "label": "ID Cards",
+        "href": "../tools/id-card/id-card-registration.html"
+      },
+      {
+        "label": "Image URLs",
+        "href": "../tools/image-generator/image-url-generator.html"
+      },
+      {
+        "label": "WhatsApp",
+        "href": "../tools/messaging/whatsapp.html"
+      },
+      {
+        "label": "Excel Merger",
+        "href": "../tools/excel-tools/excel-merger.html"
+      }
+    ]
+  },
+  "pathReferences": {
+    "fromPublicIndex": {
+      "core_files": "../core/",
+      "tools": "../tools/"
+    },
+    "fromToolFiles": {
+      "core_files": "../../core/",
+      "public": "../../public/"
+    }
+  },
+  "suggestions": {
+    "nextSteps": [
+      "Test all navigation links from the home page",
+      "Verify all CSS and JS files load correctly",
+      "Check responsive design across all breakpoints",
+      "Validate that service workers (if any) still function",
+      "Update any hardcoded file paths if needed"
+    ],
+    "addingNewTools": [
+      "Create folder: tools/[your-tool-name]/",
+      "Create HTML file with base-theme references",
+      "Add navigation link to public/index.html",
+      "Test integration with home page"
+    ]
+  }
+}

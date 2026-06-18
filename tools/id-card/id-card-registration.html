@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>Employee ID Card Registration</title>
+<link rel="manifest" href="rfid-manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../core/base-theme.css">
+<style>
+:root{--bg:#f6f7f9;--panel:#fff;--soft:#eef2f6;--ink:#111827;--muted:#64748b;--line:#d9e1ea;--line2:#aeb9c8;--accent:#0f766e;--accent2:#14b8a6;--danger:#b91c1c;--warn:#b45309;--ok:#15803d;--blue:#1d4ed8;--shadow:0 20px 55px -38px rgba(15,23,42,.65)}
+[data-theme=dark]{--bg:#0c0f12;--panel:#15191f;--soft:#1f2730;--ink:#eef2f7;--muted:#9aa7b7;--line:#29323d;--line2:#465464;--accent:#2dd4bf;--accent2:#5eead4;--danger:#f87171;--warn:#fbbf24;--ok:#4ade80;--blue:#93c5fd}
+*{box-sizing:border-box}html,body{margin:0}body{min-height:100vh;background:var(--bg);color:var(--ink);font-family:"Inter Tight",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button,input,select,textarea{font-family:inherit}button{cursor:pointer}a{color:inherit}.mono{font-family:"JetBrains Mono",monospace}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(246,247,249,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}[data-theme=dark] .topbar{background:rgba(12,15,18,.9)}
+.topbar-inner{max-width:1180px;margin:auto;padding:12px;display:flex;gap:10px;align-items:center}.mark{width:40px;height:40px;border-radius:10px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:900}.brand{min-width:0}.brand h1{font-size:19px;margin:0;line-height:1.05}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px;font-weight:700}.top-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+.shell{max-width:1180px;margin:auto;padding:14px 12px 32px;display:grid;gap:14px}.tabs{display:flex;gap:8px;overflow:auto;padding-bottom:2px}.tab{min-height:40px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--muted);font-weight:900;padding:9px 12px;white-space:nowrap}.tab.active{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}.card{grid-column:span 12;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;box-shadow:var(--shadow)}.span-3{grid-column:span 3}.span-4{grid-column:span 4}.span-5{grid-column:span 5}.span-6{grid-column:span 6}.span-7{grid-column:span 7}.span-8{grid-column:span 8}.card h2,.card h3{margin:0 0 10px;font-size:19px}.muted{color:var(--muted)}.small{font-size:12px}.section-title{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.row{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}.field{grid-column:span 6;display:grid;gap:6px}.field.full{grid-column:1/-1}.field.third{grid-column:span 4}label{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}input,select,textarea{width:100%;border:1px solid var(--line2);border-radius:8px;background:var(--soft);color:var(--ink);padding:10px 11px;font-size:14px}textarea{min-height:72px;resize:vertical}.btn{min-height:40px;border:1px solid var(--line2);border-radius:8px;background:var(--panel);color:var(--ink);font-weight:900;padding:9px 12px;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.good{background:var(--ok);border-color:var(--ok);color:#fff}.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff}.btn.warn{background:var(--warn);border-color:var(--warn);color:#fff}.btn.ghost{background:transparent}.btn:disabled{opacity:.5;cursor:not-allowed}.btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.view{display:none}.view.active{display:block}.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;background:var(--soft);color:var(--muted);padding:4px 8px;font-size:11px;font-weight:900;white-space:nowrap}.status-pending{color:var(--warn)}.status-approved{color:var(--ok)}.status-rejected{color:var(--danger)}
+.guides{display:grid;gap:8px}.guide{border:1px solid var(--line);background:var(--soft);border-radius:8px;padding:9px 10px;display:flex;gap:9px;align-items:flex-start}.guide b{color:var(--accent)}.photo-stage{display:grid;gap:12px}.camera-box{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:8px;background:#111;aspect-ratio:3/4;display:grid;place-items:center}.camera-box video,.camera-box canvas,.preview-photo{width:100%;height:100%;object-fit:cover}.capture-crosshair{position:absolute;inset:8%;border:2px dashed rgba(255,255,255,.7);border-radius:50% 50% 45% 45%;pointer-events:none}.preview-frame{width:min(260px,100%);aspect-ratio:3/4;border:1px solid var(--line);border-radius:8px;background:var(--soft);overflow:hidden}.quality-list{display:grid;gap:7px}.quality-item{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:7px}.quality-item:last-child{border-bottom:0}.quality-ok{color:var(--ok);font-weight:900}.quality-bad{color:var(--danger);font-weight:900}.quality-warn{color:var(--warn);font-weight:900}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:9px;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--soft)}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px}td img{width:52px;height:68px;object-fit:cover;border-radius:6px;border:1px solid var(--line)}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.toolbar input,.toolbar select{max-width:240px}.metric{display:grid;gap:3px}.metric .k{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:900}.metric .v{font-size:28px;font-weight:900}.summary-list{display:grid;gap:8px}.summary-row{border:1px solid var(--line);border-radius:8px;background:var(--soft);padding:9px;display:flex;justify-content:space-between;gap:10px}.doc-section{display:grid;gap:12px}.spec-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.spec-box{border:1px solid var(--line);border-radius:8px;background:var(--soft);padding:12px}.spec-box h3{font-size:15px}.code{white-space:pre-wrap;background:#0f172a;color:#e5e7eb;border-radius:8px;padding:12px;overflow:auto;font:12px/1.5 "JetBrains Mono",monospace}.flow{display:grid;gap:8px}.flow-line{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.flow-step{border:1px solid var(--line2);background:var(--panel);border-radius:8px;padding:8px 10px;font-weight:900}.arrow{color:var(--muted);font-weight:900}
+.modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.58);display:grid;place-items:center;padding:14px;z-index:100}.modal{width:min(620px,100%);max-height:calc(100vh - 28px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;box-shadow:0 30px 80px -35px #000}.modal-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}.modal-head h2{margin:0;font-size:20px}.toast{position:fixed;left:50%;bottom:18px;transform:translate(-50%,20px);opacity:0;pointer-events:none;transition:.2s;background:var(--ink);color:var(--bg);padding:11px 14px;border-radius:8px;font-weight:900;z-index:200;max-width:calc(100% - 24px);text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}.hidden,[hidden]{display:none!important}
+@media(max-width:900px){.span-3,.span-4,.span-5,.span-6,.span-7,.span-8{grid-column:span 12}.spec-grid{grid-template-columns:1fr}}
+@media(max-width:680px){
+  body{background:var(--bg);padding-left:0!important}
+  .topbar{position:sticky}
+  .topbar-inner{padding:10px 12px;display:grid;grid-template-columns:38px 1fr;align-items:center;gap:9px}
+  .mark{width:38px;height:38px;border-radius:9px}
+  .brand h1{font-size:17px;line-height:1.08}
+  .brand p{font-size:11px;line-height:1.25;max-width:27ch}
+  .top-actions{grid-column:1/-1;margin-left:0;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .top-actions .btn{width:100%;min-height:36px;padding:8px 10px}
+  .shell{padding:10px max(10px,env(safe-area-inset-left)) calc(24px + env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-right));gap:10px}
+  .tabs{gap:6px;padding:0 0 4px;scroll-snap-type:x proximity}
+  .tab{min-height:38px;padding:8px 10px;font-size:12px;border-radius:8px;scroll-snap-align:start}
+  .grid{grid-template-columns:1fr;gap:10px}
+  .card{grid-column:1/-1;padding:12px;border-radius:8px;box-shadow:0 14px 34px -30px rgba(15,23,42,.55)}
+  .card .card{padding:0;border:0;background:transparent;box-shadow:none}
+  .card h2{font-size:18px}
+  .card h3{font-size:15px;margin-bottom:8px}
+  .section-title{align-items:center;margin-bottom:9px}
+  .section-title .pill{font-size:10px}
+  .row{grid-template-columns:1fr;gap:9px}
+  .field,.field.third{grid-column:1/-1}
+  label{font-size:10px}
+  input,select,textarea{min-height:40px;padding:9px 10px;font-size:14px}
+  .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .btn-row .btn,.photo-stage label.btn{width:100%}
+  .btn{min-height:38px;padding:8px 10px;font-size:13px;border-radius:8px}
+  .guides{gap:7px}
+  .guide{padding:8px 9px;font-size:13px;line-height:1.25}
+  .photo-stage{gap:10px}
+  .camera-box{max-height:62vh;border-radius:8px}
+  .capture-crosshair{inset:10%;border-width:1px}
+  .preview-frame{width:min(210px,62vw);margin:0 auto}
+  .quality-list{font-size:13px}
+  .quality-item{align-items:flex-start}
+  .summary-row{display:grid;grid-template-columns:1fr;gap:3px;font-size:13px}
+  .toolbar{display:grid;grid-template-columns:1fr;gap:8px}
+  .toolbar input,.toolbar select,.toolbar .btn{max-width:none;width:100%}
+  .metric .k{font-size:10px}
+  .metric .v{font-size:24px}
+  .table-wrap{border-radius:8px;margin-inline:-2px}
+  table{min-width:680px;font-size:12px}
+  th,td{padding:8px}
+  td img{width:44px;height:58px}
+  .spec-grid{grid-template-columns:1fr}
+  .spec-box{padding:10px}
+  .flow-line{display:grid;grid-template-columns:1fr;gap:6px}
+  .arrow{display:none}
+  .flow-step{font-size:13px;padding:8px 9px}
+  .code{font-size:11px;padding:10px;max-height:360px}
+  .modal-backdrop{padding:8px;align-items:end}
+  .modal{width:100%;max-height:calc(100dvh - 16px);border-radius:10px 10px 0 0;padding:12px}
+  .modal-head{align-items:flex-start}
+  .modal-head h2{font-size:18px}
+  .toast{bottom:calc(12px + env(safe-area-inset-bottom));font-size:13px}
+}
+@media(max-width:420px){
+  .brand p{display:none}
+  .topbar-inner{grid-template-columns:34px 1fr}
+  .mark{width:34px;height:34px;font-size:13px}
+  .brand h1{font-size:16px}
+  .top-actions{grid-template-columns:1fr 1fr}
+  .btn-row{grid-template-columns:1fr}
+  .preview-frame{width:min(190px,70vw)}
+  .tab{font-size:12px}
+  .pill{white-space:normal}
+}
+</style>
+<script src="../../core/base-theme.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="mark" href="index.html" aria-label="Back to tools">ID</a>
+    <div class="brand">
+      <h1>Employee ID Card Registration</h1>
+      <p>Mobile photo collection, approval, exports, and print-ready packages</p>
+    </div>
+    <div class="top-actions">
+      <button class="btn ghost" type="button" data-theme-toggle><span data-theme-icon>L</span><span data-theme-label>Light</span></button>
+      <button class="btn" id="adminBtn" type="button">Admin</button>
+    </div>
+  </div>
+</header>
+
+<main class="shell">
+  <nav class="tabs" aria-label="ID card system sections">
+    <button class="tab active" data-view-target="employeeView">Employee</button>
+    <button class="tab" data-view-target="adminView" data-admin-only hidden>Admin Dashboard</button>
+    <button class="tab" data-view-target="docsView" data-admin-only hidden>FRS & Technical Design</button>
+  </nav>
+
+  <section id="employeeView" class="view active">
+    <div class="grid">
+      <div class="card span-5">
+        <div class="section-title">
+          <h2>Employee Details</h2>
+          <span class="pill">Step 1</span>
+        </div>
+        <form id="employeeForm" class="row">
+          <div class="field"><label for="employeeId">Employee ID</label><input id="employeeId" required autocomplete="off"></div>
+          <div class="field"><label for="employeeName">Employee Name</label><input id="employeeName" required autocomplete="name"></div>
+          <div class="field"><label for="department">Department</label><input id="department" required list="departmentList"></div>
+          <div class="field"><label for="designation">Designation</label><input id="designation" required></div>
+          <div class="field"><label for="mobile">Mobile Number</label><input id="mobile" required inputmode="tel" pattern="[0-9+ -]{8,16}"></div>
+          <div class="field"><label for="email">Email ID</label><input id="email" required type="email"></div>
+          <div class="field"><label for="bloodGroup">Blood Group</label><select id="bloodGroup"><option value="">Optional</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
+          <div class="field"><label for="dateOfJoining">Date of Joining</label><input id="dateOfJoining" type="date"></div>
+          <datalist id="departmentList"></datalist>
+        </form>
+      </div>
+
+      <div class="card span-7">
+        <div class="section-title">
+          <h2>Photo Capture</h2>
+          <span class="pill">Step 2</span>
+        </div>
+        <div class="grid">
+          <div class="card span-6" style="box-shadow:none">
+            <h3>Photo Guidelines</h3>
+            <div class="guides">
+              <div class="guide"><b>01</b><span>Face should be clearly visible.</span></div>
+              <div class="guide"><b>02</b><span>Plain white or light background preferred.</span></div>
+              <div class="guide"><b>03</b><span>Look directly at the camera.</span></div>
+              <div class="guide"><b>04</b><span>No sunglasses or face coverings.</span></div>
+              <div class="guide"><b>05</b><span>Portrait orientation only.</span></div>
+              <div class="guide"><b>06</b><span>Head and shoulders should be visible.</span></div>
+            </div>
+          </div>
+          <div class="card span-6" style="box-shadow:none">
+            <h3>Input</h3>
+            <div class="photo-stage">
+              <div class="btn-row">
+                <button class="btn primary" id="startCameraBtn" type="button">Use Camera</button>
+                <label class="btn" for="photoUpload">Upload Photo</label>
+                <input id="photoUpload" type="file" accept="image/*" hidden>
+              </div>
+              <div class="camera-box" id="cameraBox">
+                <video id="cameraVideo" playsinline muted class="hidden"></video>
+                <canvas id="rawCanvas" class="hidden"></canvas>
+                <div id="cameraPlaceholder" class="muted">Camera or uploaded photo preview</div>
+                <div class="capture-crosshair"></div>
+              </div>
+              <div class="btn-row">
+                <button class="btn good" id="captureBtn" type="button" disabled>Capture Photo</button>
+                <button class="btn" id="stopCameraBtn" type="button" disabled>Stop Camera</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card span-5">
+        <div class="section-title">
+          <h2>Print Settings</h2>
+          <span class="pill">Configurable</span>
+        </div>
+        <div class="row">
+          <div class="field third"><label for="photoWidth">Width px</label><input id="photoWidth" type="number" min="120" value="300"></div>
+          <div class="field third"><label for="photoHeight">Height px</label><input id="photoHeight" type="number" min="160" value="400"></div>
+          <div class="field third"><label for="photoDpi">DPI</label><input id="photoDpi" type="number" min="72" value="300"></div>
+          <div class="field"><label for="widthMm">Width mm</label><input id="widthMm" type="number" min="10" value="35"></div>
+          <div class="field"><label for="heightMm">Height mm</label><input id="heightMm" type="number" min="10" value="45"></div>
+        </div>
+      </div>
+
+      <div class="card span-7">
+        <div class="section-title">
+          <h2>Processed Photo</h2>
+          <span class="pill">Step 3</span>
+        </div>
+        <div class="grid">
+          <div class="span-5">
+            <div class="preview-frame"><img id="processedPreview" class="preview-photo" alt="Processed photo preview"></div>
+          </div>
+          <div class="span-7">
+            <div id="qualityList" class="quality-list"></div>
+            <div class="btn-row" style="margin-top:12px">
+              <button class="btn" id="reprocessBtn" type="button" disabled>Reprocess</button>
+              <button class="btn warn" id="clearPhotoBtn" type="button" disabled>Re-upload</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">
+          <h2>Preview & Submit</h2>
+          <span class="pill">Final review</span>
+        </div>
+        <div id="submissionPreview" class="summary-list"></div>
+        <div class="btn-row" style="margin-top:12px">
+          <button class="btn primary" id="submitBtn" type="button">Final Submit</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="adminView" class="view">
+    <div class="grid">
+      <div class="card span-3"><div class="metric"><span class="k">Total Employees Registered</span><span class="v" id="mTotal">0</span></div></div>
+      <div class="card span-3"><div class="metric"><span class="k">Pending Approvals</span><span class="v" id="mPending">0</span></div></div>
+      <div class="card span-3"><div class="metric"><span class="k">Approved Records</span><span class="v" id="mApproved">0</span></div></div>
+      <div class="card span-3"><div class="metric"><span class="k">Rejected Records</span><span class="v" id="mRejected">0</span></div></div>
+
+      <div class="card span-8">
+        <div class="section-title">
+          <h2>Employee Management</h2>
+          <span class="pill" id="authPill">Admin locked</span>
+        </div>
+        <div class="toolbar">
+          <input id="adminSearch" placeholder="Search ID, name, department">
+          <select id="statusFilter"><option value="">All statuses</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select>
+          <button class="btn" id="exportCsvBtn" type="button">Export Excel CSV</button>
+          <button class="btn" id="downloadApprovedBtn" type="button">Approved ZIP</button>
+          <button class="btn" id="downloadDeptBtn" type="button">Department ZIP</button>
+          <button class="btn primary" id="printPackageBtn" type="button">Print Package</button>
+        </div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Photo</th><th>Employee</th><th>Department</th><th>Status</th><th>Quality</th><th>Actions</th></tr></thead>
+          <tbody id="submissionRows"></tbody>
+        </table></div>
+      </div>
+
+      <div class="card span-4">
+        <h2>Reports</h2>
+        <h3>Department-wise Summary</h3>
+        <div id="departmentSummary" class="summary-list"></div>
+        <h3 style="margin-top:14px">Audit Logs</h3>
+        <div id="auditList" class="summary-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="docsView" class="view">
+    <div class="grid">
+      <div class="card doc-section">
+        <h2>Complete Functional Requirement Specification</h2>
+        <div class="spec-grid">
+          <div class="spec-box"><h3>Employee Portal</h3><p>Employees enter ID, name, department, designation, mobile, email, optional blood group, and optional joining date. The page supports mobile camera capture and existing image upload, validates the photo, auto-crops to a portrait ID-card ratio, and shows a final confirmation screen before submission.</p></div>
+          <div class="spec-box"><h3>Photo Rules</h3><p>The processor checks image resolution, portrait suitability, blur score, browser face detection availability, face count, and crop confidence. The output is JPG, default 300 x 400 px, 300 DPI target, 35mm x 45mm reference size.</p></div>
+          <div class="spec-box"><h3>Admin Portal</h3><p>Admins search submissions, edit details, approve, reject with remarks, request resubmission, preview photos, export employee data, download approved photos, download department-wise packages, and generate a print-ready ID-card data package.</p></div>
+          <div class="spec-box"><h3>Security</h3><p>Production deployment should use authenticated roles for employee, reviewer, admin, and auditor; object storage signed URLs; encrypted image storage; immutable audit logs; rate limiting; and server-side image validation before approval.</p></div>
+        </div>
+      </div>
+
+      <div class="card doc-section">
+        <h2>User Flow Diagrams</h2>
+        <div class="flow">
+          <div class="flow-line"><span class="flow-step">Employee opens PWA</span><span class="arrow">-></span><span class="flow-step">Reads photo guidelines</span><span class="arrow">-></span><span class="flow-step">Enters details</span><span class="arrow">-></span><span class="flow-step">Captures/uploads photo</span></div>
+          <div class="flow-line"><span class="flow-step">Smart validation</span><span class="arrow">-></span><span class="flow-step">Auto crop + resize</span><span class="arrow">-></span><span class="flow-step">Preview</span><span class="arrow">-></span><span class="flow-step">Submit pending approval</span></div>
+          <div class="flow-line"><span class="flow-step">Admin login</span><span class="arrow">-></span><span class="flow-step">Review queue</span><span class="arrow">-></span><span class="flow-step">Approve or reject</span><span class="arrow">-></span><span class="flow-step">Export print package</span></div>
+        </div>
+      </div>
+
+      <div class="card doc-section">
+        <h2>Database Schema</h2>
+        <div class="code">employee_master(
+  id uuid primary key,
+  employee_code varchar(50) unique not null,
+  full_name varchar(160) not null,
+  department varchar(120) not null,
+  designation varchar(120) not null,
+  mobile varchar(20) not null,
+  email varchar(180) not null,
+  blood_group varchar(5),
+  date_of_joining date,
+  status varchar(20) default 'pending',
+  created_at timestamptz not null,
+  updated_at timestamptz not null
+)
+
+photo_storage(
+  id uuid primary key,
+  employee_id uuid references employee_master(id),
+  original_object_key text not null,
+  processed_object_key text not null,
+  width_px int not null,
+  height_px int not null,
+  dpi int not null,
+  mime_type varchar(40) default 'image/jpeg',
+  face_count int,
+  blur_score numeric,
+  quality_json jsonb,
+  checksum_sha256 text,
+  created_at timestamptz not null
+)
+
+approval_workflow(
+  id uuid primary key,
+  employee_id uuid references employee_master(id),
+  current_status varchar(20) not null,
+  reviewer_user_id uuid references users(id),
+  remarks text,
+  reviewed_at timestamptz
+)
+
+audit_logs(
+  id uuid primary key,
+  actor_user_id uuid references users(id),
+  employee_id uuid references employee_master(id),
+  action varchar(60) not null,
+  old_value jsonb,
+  new_value jsonb,
+  ip_address inet,
+  user_agent text,
+  created_at timestamptz not null
+)
+
+users(
+  id uuid primary key,
+  username varchar(80) unique not null,
+  password_hash text not null,
+  role varchar(30) not null,
+  active boolean default true,
+  created_at timestamptz not null
+)</div>
+      </div>
+
+      <div class="card doc-section">
+        <h2>API Specifications</h2>
+        <div class="code">POST /api/employees/register
+  multipart/form-data: employee fields + original photo
+  response: { id, status, processedPhotoUrl, quality }
+
+POST /api/photos/process
+  body: image file, targetWidth, targetHeight, dpi
+  response: { processedPhotoUrl, faceCount, blurScore, cropBox, quality }
+
+GET /api/admin/submissions?search=&department=&status=
+  response: [{ employee, photo, workflow }]
+
+PATCH /api/admin/submissions/{id}
+  body: editable employee fields
+
+POST /api/admin/submissions/{id}/approve
+  body: { remarks? }
+
+POST /api/admin/submissions/{id}/reject
+  body: { remarks, requestResubmission: true }
+
+GET /api/admin/export/employees.csv
+GET /api/admin/export/photos.zip?status=approved&department=
+GET /api/admin/export/print-package.zip</div>
+      </div>
+
+      <div class="card doc-section">
+        <h2>Responsive UI/UX, Admin, Export, PWA, and Source Structure</h2>
+        <div class="spec-grid">
+          <div class="spec-box"><h3>UI/UX Designs</h3><p>Mobile-first single-column employee form, camera preview with face guide, compact print settings, processed preview, and fixed bottom-friendly action buttons. Desktop expands to two-column review and admin dashboards.</p></div>
+          <div class="spec-box"><h3>Face Detection Logic</h3><p>Use the browser FaceDetector API where available. Server production should use OpenCV, RetinaFace, MediaPipe, or a managed vision API to enforce one-face validation consistently across browsers.</p></div>
+          <div class="spec-box"><h3>Export and Printing</h3><p>Approved photos are exported as JPG files named by employee ID. The print package includes CSV metadata, manifest JSON, audit status, and department folders for direct handoff to ID-card printing software.</p></div>
+          <div class="spec-box"><h3>PWA Approach</h3><p>Cache the app shell, use camera APIs over HTTPS, keep drafts in IndexedDB/localStorage, add background sync for server deployments, and store images in object storage after upload.</p></div>
+        </div>
+        <div class="code">production-ready-source/
+  apps/
+    employee-pwa/
+      src/pages/Register.tsx
+      src/pages/Preview.tsx
+      src/lib/photo-processing.ts
+      src/lib/pwa.ts
+    admin-web/
+      src/pages/Dashboard.tsx
+      src/pages/ReviewQueue.tsx
+      src/lib/exports.ts
+  services/
+    api/
+      modules/employees/
+      modules/photos/
+      modules/approval/
+      modules/audit/
+      modules/export/
+    worker-photo-processing/
+  database/
+    migrations/
+    seed/
+  infrastructure/
+    storage/
+    cdn/
+    monitoring/
+  tests/
+    unit/
+    integration/
+    e2e/</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="modalHost"></div>
+<div id="toast" class="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const STORE_KEY='id-card-submissions-v1';
+const AUDIT_KEY='id-card-audit-v1';
+const AUTH_KEY='id-card-admin-auth-v1';
+const ADMIN_PASS='Admin@123';
+const ADMIN_USER='Admin';
+let stream=null,lastImage=null,processed=null,quality=[];
+
+const state={submissions:load(STORE_KEY,[]),audit:load(AUDIT_KEY,[]),admin:localStorage.getItem(AUTH_KEY)==='1'};
+function load(key,fallback){try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}}
+function save(){localStorage.setItem(STORE_KEY,JSON.stringify(state.submissions));localStorage.setItem(AUDIT_KEY,JSON.stringify(state.audit))}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2300)}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function now(){return new Date().toISOString()}
+function uid(){return 'id_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8)}
+function departments(){return [...new Set(state.submissions.map(s=>s.employee.department).filter(Boolean))].sort()}
+
+document.querySelectorAll('[data-view-target]').forEach(btn=>btn.addEventListener('click',()=>showView(btn.dataset.viewTarget)));
+function showView(id){
+  if(isAdminView(id)&&!state.admin){
+    activateView('employeeView');
+    adminLogin();
+    return;
+  }
+  activateView(id);
+  render();
+}
+function isAdminView(id){return id==='adminView'||id==='docsView'}
+function activateView(id){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.viewTarget===id));
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));
+}
+
+$('adminBtn').addEventListener('click',()=>{state.admin?logoutAdmin():adminLogin()});
+$('startCameraBtn').addEventListener('click',startCamera);
+$('stopCameraBtn').addEventListener('click',stopCamera);
+$('captureBtn').addEventListener('click',capturePhoto);
+$('photoUpload').addEventListener('change',e=>handleFile(e.target.files[0]));
+$('reprocessBtn').addEventListener('click',()=>lastImage&&processImage(lastImage));
+$('clearPhotoBtn').addEventListener('click',clearPhoto);
+$('submitBtn').addEventListener('click',submitRegistration);
+['photoWidth','photoHeight','photoDpi','widthMm','heightMm'].forEach(id=>$(id).addEventListener('input',()=>lastImage&&processImage(lastImage)));
+['adminSearch','statusFilter'].forEach(id=>$(id).addEventListener('input',renderAdmin));
+$('exportCsvBtn').addEventListener('click',()=>requireAdmin()&&downloadCsv());
+$('downloadApprovedBtn').addEventListener('click',()=>requireAdmin()&&downloadPhotoZip());
+$('downloadDeptBtn').addEventListener('click',()=>requireAdmin()&&downloadPhotoZip(prompt('Department name for export')||'',true));
+$('printPackageBtn').addEventListener('click',()=>requireAdmin()&&downloadPrintPackage());
+
+async function startCamera(){
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:1600}},audio:false});
+    $('cameraVideo').srcObject=stream;$('cameraVideo').classList.remove('hidden');$('cameraPlaceholder').classList.add('hidden');
+    await $('cameraVideo').play();$('captureBtn').disabled=false;$('stopCameraBtn').disabled=false;
+  }catch(err){toast('Camera permission denied or unavailable')}
+}
+function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}$('cameraVideo').classList.add('hidden');$('captureBtn').disabled=true;$('stopCameraBtn').disabled=true}
+function capturePhoto(){
+  const v=$('cameraVideo'),c=$('rawCanvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);
+  const img=new Image();img.onload=()=>{lastImage=img;processImage(img)};img.src=c.toDataURL('image/jpeg',.94);
+}
+function handleFile(file){
+  if(!file)return;
+  const img=new Image();img.onload=()=>{lastImage=img;processImage(img)};img.src=URL.createObjectURL(file);
+}
+function clearPhoto(){lastImage=null;processed=null;quality=[];$('processedPreview').removeAttribute('src');renderQuality();renderPreview();$('reprocessBtn').disabled=true;$('clearPhotoBtn').disabled=true}
+
+async function processImage(img){
+  const targetW=Number($('photoWidth').value)||300,targetH=Number($('photoHeight').value)||400;
+  quality=[];
+  const minSide=Math.min(img.naturalWidth,img.naturalHeight);
+  addQuality('Resolution',minSide>=300,`${img.naturalWidth} x ${img.naturalHeight}`,minSide>=300?'ok':'bad');
+  addQuality('Portrait orientation',img.naturalHeight>=img.naturalWidth,'Portrait preferred',img.naturalHeight>=img.naturalWidth?'ok':'warn');
+  const blur=blurScore(img);addQuality('Sharpness',blur>=24,`Blur score ${Math.round(blur)}`,blur>=24?'ok':'bad');
+  let faceBox=null,faceCount=null;
+  if('FaceDetector' in window){
+    try{
+      const detector=new FaceDetector({fastMode:false,maxDetectedFaces:3});
+      const faces=await detector.detect(img);
+      faceCount=faces.length;faceBox=faces[0]?.boundingBox||null;
+      addQuality('Face presence',faceCount>=1,`${faceCount} face(s) detected`,faceCount===1?'ok':'bad');
+      addQuality('Single face only',faceCount===1,'Exactly one face required',faceCount===1?'ok':'bad');
+    }catch{addQuality('Face detector','warn','Browser detector failed; admin review required','warn')}
+  }else{
+    addQuality('Face detector','warn','Not supported in this browser; centered crop used','warn');
+  }
+  const crop=getCrop(img,faceBox,targetW/targetH);
+  const canvas=document.createElement('canvas');canvas.width=targetW;canvas.height=targetH;
+  const ctx=canvas.getContext('2d',{alpha:false});
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,targetW,targetH);
+  ctx.drawImage(img,crop.x,crop.y,crop.w,crop.h,0,0,targetW,targetH);
+  processed={dataUrl:canvas.toDataURL('image/jpeg',.92),width:targetW,height:targetH,dpi:Number($('photoDpi').value)||300,crop,faceCount,blurScore:blur,quality};
+  $('processedPreview').src=processed.dataUrl;$('reprocessBtn').disabled=false;$('clearPhotoBtn').disabled=false;
+  renderQuality();renderPreview();
+}
+function addQuality(name,pass,detail,level){quality.push({name,pass:pass===true,detail,level:level||'ok'})}
+function getCrop(img,face,ratio){
+  const iw=img.naturalWidth,ih=img.naturalHeight;
+  if(face){
+    const cx=face.x+face.width/2,cy=face.y+face.height*.78;
+    let h=Math.min(ih,face.height*3.1),w=h*ratio;
+    if(w>iw){w=iw;h=w/ratio}
+    let x=Math.max(0,Math.min(iw-w,cx-w/2)),y=Math.max(0,Math.min(ih-h,cy-h/2));
+    return{x,y,w,h};
+  }
+  let w=iw,h=iw/ratio;if(h>ih){h=ih;w=h*ratio}
+  return{x:(iw-w)/2,y:(ih-h)/2,w,h};
+}
+function blurScore(img){
+  const c=document.createElement('canvas'),w=96,h=Math.max(96,Math.round(96*img.naturalHeight/img.naturalWidth));c.width=w;c.height=h;
+  const ctx=c.getContext('2d');ctx.drawImage(img,0,0,w,h);
+  const d=ctx.getImageData(0,0,w,h).data,gray=new Float32Array(w*h);
+  for(let i=0,j=0;i<d.length;i+=4,j++)gray[j]=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];
+  let vals=[];for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const i=y*w+x;vals.push(Math.abs(gray[i-w]+gray[i-1]-4*gray[i]+gray[i+1]+gray[i+w]))}
+  const avg=vals.reduce((a,b)=>a+b,0)/vals.length;return vals.reduce((a,b)=>a+(b-avg)**2,0)/vals.length;
+}
+function renderQuality(){
+  $('qualityList').innerHTML=quality.length?quality.map(q=>`<div class="quality-item"><span>${esc(q.name)}<br><span class="muted small">${esc(q.detail)}</span></span><span class="quality-${q.level}">${q.level==='ok'?'PASS':q.level==='bad'?'REJECT':'REVIEW'}</span></div>`).join(''):'<div class="muted">Process a photo to see validation results.</div>';
+}
+function formData(){
+  return {employeeId:$('employeeId').value.trim(),employeeName:$('employeeName').value.trim(),department:$('department').value.trim(),designation:$('designation').value.trim(),mobile:$('mobile').value.trim(),email:$('email').value.trim(),bloodGroup:$('bloodGroup').value,dateOfJoining:$('dateOfJoining').value};
+}
+function renderPreview(){
+  const e=formData();
+  $('submissionPreview').innerHTML=[
+    ['Employee',`${e.employeeId||'-'} - ${e.employeeName||'-'}`],
+    ['Department',`${e.department||'-'} / ${e.designation||'-'}`],
+    ['Contact',`${e.mobile||'-'} / ${e.email||'-'}`],
+    ['Photo',processed?`${processed.width} x ${processed.height}px JPG, ${processed.dpi} DPI target`:'No processed photo yet']
+  ].map(r=>`<div class="summary-row"><strong>${r[0]}</strong><span>${esc(r[1])}</span></div>`).join('');
+}
+document.querySelectorAll('#employeeForm input,#employeeForm select').forEach(el=>el.addEventListener('input',renderPreview));
+function submitRegistration(){
+  const form=$('employeeForm');if(!form.reportValidity())return;
+  if(!processed){toast('Capture or upload a valid photo first');return}
+  if(quality.some(q=>q.level==='bad')){toast('Photo has rejection issues. Re-upload before submitting.');return}
+  const employee=formData(),existing=state.submissions.find(s=>s.employee.employeeId.toLowerCase()===employee.employeeId.toLowerCase());
+  const record={id:existing?.id||uid(),employee,photo:processed,status:'pending',remarks:'',createdAt:existing?.createdAt||now(),updatedAt:now()};
+  if(existing) Object.assign(existing,record); else state.submissions.unshift(record);
+  audit(record.id,'submitted',null,{employeeId:employee.employeeId,status:'pending'});
+  save();form.reset();clearPhoto();render();toast('Submitted for admin approval');
+}
+function adminLogin(){
+  modal(`<div class="modal-head"><h2>Admin Authentication</h2><button class="btn" data-close>Close</button></div>
+  <div class="row"><div class="field full"><label>Username</label><input id="loginUser" type="username" placeholder="username"></div><div class="field full"><label>Password</label><input id="loginPass" type="password" placeholder="password"></div></div>
+  <div class="btn-row" style="margin-top:12px"><button class="btn primary" id="loginGo">Login</button></div>`);
+  $('loginGo').onclick=()=>{if($('loginUser').value===ADMIN_USER&&$('loginPass').value===ADMIN_PASS){state.admin=true;localStorage.setItem(AUTH_KEY,'1');closeModal();activateView('adminView');render();toast('Admin unlocked')}else toast('Invalid admin login')};
+}
+function logoutAdmin(){state.admin=false;localStorage.removeItem(AUTH_KEY);activateView('employeeView');render();toast('Admin locked')}
+function requireAdmin(){if(!state.admin){adminLogin();return false}return true}
+function render(){
+  if(!state.admin&&document.querySelector('.view.active')&&isAdminView(document.querySelector('.view.active').id)) activateView('employeeView');
+  document.querySelectorAll('[data-admin-only]').forEach(el=>{el.hidden=!state.admin});
+  $('adminBtn').textContent=state.admin?'Logout Admin':'Admin Login';
+  $('authPill').textContent=state.admin?'Admin unlocked':'Admin locked';
+  $('authPill').className='pill '+(state.admin?'status-approved':'status-rejected');
+  $('departmentList').innerHTML=departments().map(d=>`<option value="${esc(d)}"></option>`).join('');
+  renderPreview();renderQuality();renderAdmin();
+}
+function renderAdmin(){
+  const q=($('adminSearch').value||'').toLowerCase(),status=$('statusFilter').value;
+  const rows=state.submissions.filter(s=>(!status||s.status===status)&&[s.employee.employeeId,s.employee.employeeName,s.employee.department].join(' ').toLowerCase().includes(q));
+  $('submissionRows').innerHTML=rows.length?rows.map(s=>`<tr>
+    <td><img src="${s.photo.dataUrl}" alt=""></td>
+    <td><strong>${esc(s.employee.employeeId)}</strong><br>${esc(s.employee.employeeName)}<br><span class="muted small">${esc(s.employee.mobile)} | ${esc(s.employee.email)}</span></td>
+    <td>${esc(s.employee.department)}<br><span class="muted small">${esc(s.employee.designation)}</span></td>
+    <td><span class="pill status-${s.status}">${esc(s.status)}</span><br><span class="muted small">${esc(s.remarks||'')}</span></td>
+    <td>${s.photo.quality.map(q=>`<span class="pill">${esc(q.name)}: ${esc(q.level)}</span>`).join(' ')}</td>
+    <td><div class="btn-row"><button class="btn" onclick="review('${s.id}')">Review</button><button class="btn good" onclick="approve('${s.id}')">Approve</button><button class="btn danger" onclick="reject('${s.id}')">Reject</button></div></td>
+  </tr>`).join(''):`<tr><td colspan="6" class="muted">No submissions found.</td></tr>`;
+  $('mTotal').textContent=state.submissions.length;
+  $('mPending').textContent=state.submissions.filter(s=>s.status==='pending').length;
+  $('mApproved').textContent=state.submissions.filter(s=>s.status==='approved').length;
+  $('mRejected').textContent=state.submissions.filter(s=>s.status==='rejected').length;
+  const byDept={};state.submissions.forEach(s=>{const d=s.employee.department||'Unassigned';byDept[d]=byDept[d]||{total:0,pending:0,approved:0,rejected:0};byDept[d].total++;byDept[d][s.status]++});
+  $('departmentSummary').innerHTML=Object.keys(byDept).length?Object.entries(byDept).map(([d,v])=>`<div class="summary-row"><strong>${esc(d)}</strong><span>${v.total} total, ${v.approved} approved, ${v.pending} pending, ${v.rejected} rejected</span></div>`).join(''):'<div class="muted">No records yet.</div>';
+  $('auditList').innerHTML=state.audit.slice(0,8).map(a=>`<div class="summary-row"><strong>${esc(a.action)}</strong><span class="small muted">${new Date(a.at).toLocaleString()}</span></div>`).join('')||'<div class="muted">No audit activity.</div>';
+}
+window.review=function(id){
+  if(!requireAdmin())return;const s=state.submissions.find(x=>x.id===id);
+  modal(`<div class="modal-head"><h2>Photo Review</h2><button class="btn" data-close>Close</button></div>
+  <div class="grid"><div class="span-5"><div class="preview-frame"><img class="preview-photo" src="${s.photo.dataUrl}"></div></div>
+  <div class="span-7"><div class="quality-list">${s.photo.quality.map(q=>`<div class="quality-item"><span>${esc(q.name)}<br><span class="muted small">${esc(q.detail)}</span></span><span class="quality-${q.level}">${esc(q.level)}</span></div>`).join('')}</div></div></div>
+  <div class="row" style="margin-top:12px">${['employeeName','department','designation','mobile','email','bloodGroup','dateOfJoining'].map(k=>`<div class="field"><label>${k}</label><input id="edit_${k}" value="${esc(s.employee[k])}"></div>`).join('')}<div class="field full"><label>Remarks</label><textarea id="reviewRemarks">${esc(s.remarks||'')}</textarea></div></div>
+  <div class="btn-row" style="margin-top:12px"><button class="btn" id="saveEdit">Save</button><button class="btn good" onclick="approve('${id}')">Approve</button><button class="btn danger" onclick="reject('${id}')">Reject</button></div>`);
+  $('saveEdit').onclick=()=>{['employeeName','department','designation','mobile','email','bloodGroup','dateOfJoining'].forEach(k=>s.employee[k]=$('edit_'+k).value.trim());s.remarks=$('reviewRemarks').value.trim();s.updatedAt=now();audit(id,'edited',null,s.employee);save();closeModal();render();toast('Submission updated')};
+}
+window.approve=function(id){if(!requireAdmin())return;const s=state.submissions.find(x=>x.id===id);s.status='approved';s.remarks='Approved for printing';s.updatedAt=now();audit(id,'approved',null,{status:'approved'});save();closeModal();render();toast('Approved')}
+window.reject=function(id){if(!requireAdmin())return;const s=state.submissions.find(x=>x.id===id);const r=prompt('Rejection remarks / resubmission request reason','Please submit a clearer photo with a plain background.');if(r===null)return;s.status='rejected';s.remarks=r;s.updatedAt=now();audit(id,'rejected',null,{status:'rejected',remarks:r});save();closeModal();render();toast('Rejected and marked for resubmission')}
+function audit(employeeId,action,oldValue,newValue){state.audit.unshift({id:uid(),employeeId,actor:state.admin?'admin':'employee',action,oldValue,newValue,at:now()})}
+function modal(html){$('modalHost').innerHTML=`<div class="modal-backdrop"><div class="modal">${html}</div></div>`;document.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeModal)}
+function closeModal(){$('modalHost').innerHTML=''}
+
+function csvRows(records){
+  const head=['Employee ID','Employee Name','Department','Designation','Mobile','Email','Blood Group','Date of Joining','Status','Remarks'];
+  return [head].concat(records.map(s=>[s.employee.employeeId,s.employee.employeeName,s.employee.department,s.employee.designation,s.employee.mobile,s.employee.email,s.employee.bloodGroup,s.employee.dateOfJoining,s.status,s.remarks]));
+}
+function csvText(records){return csvRows(records).map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\r\n')}
+function downloadCsv(records=state.submissions,name='employee-id-card-data.csv'){downloadBlob(new Blob([csvText(records)],{type:'text/csv'}),name)}
+function downloadPhotoZip(department='',deptOnly=false){
+  const records=state.submissions.filter(s=>s.status==='approved'&&(!department||s.employee.department.toLowerCase()===department.toLowerCase()));
+  if(!records.length){toast(deptOnly?'No approved photos in that department':'No approved photos yet');return}
+  const files=records.map(s=>({name:`${clean(s.employee.department)}/${clean(s.employee.employeeId)}_${clean(s.employee.employeeName)}.jpg`,data:dataUrlBytes(s.photo.dataUrl)}));
+  downloadBlob(makeZip(files),deptOnly?`approved-${clean(department)}-photos.zip`:'approved-photos.zip');
+}
+function downloadPrintPackage(){
+  const records=state.submissions.filter(s=>s.status==='approved');if(!records.length){toast('No approved records for print package');return}
+  const files=records.map(s=>({name:`photos/${clean(s.employee.department)}/${clean(s.employee.employeeId)}.jpg`,data:dataUrlBytes(s.photo.dataUrl)}));
+  files.push({name:'employees.csv',data:new TextEncoder().encode(csvText(records))});
+  files.push({name:'manifest.json',data:new TextEncoder().encode(JSON.stringify({generatedAt:now(),photoSpec:{width:Number($('photoWidth').value),height:Number($('photoHeight').value),dpi:Number($('photoDpi').value),format:'jpg'},count:records.length},null,2))});
+  downloadBlob(makeZip(files),'id-card-print-package.zip');
+}
+function clean(v){return String(v||'unknown').replace(/[^a-z0-9_-]+/gi,'_').replace(/^_+|_+$/g,'')||'unknown'}
+function dataUrlBytes(url){const bin=atob(url.split(',')[1]);const arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);return arr}
+function downloadBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function makeZip(files){
+  const local=[],central=[];let offset=0;
+  files.forEach(file=>{const nameBytes=new TextEncoder().encode(file.name),data=file.data,crc=crc32(data),size=data.length;
+    const lh=localZipHeader(crc,size,nameBytes.length);local.push(lh,nameBytes,data);
+    central.push(centralZipHeader(crc,size,nameBytes.length,offset),nameBytes);
+    offset+=lh.length+nameBytes.length+data.length;
+  });
+  const centralSize=central.reduce((n,p)=>n+p.length,0),end=zipEnd(files.length,centralSize,offset);
+  return new Blob([...local,...central,end],{type:'application/zip'});
+}
+function localZipHeader(crc,size,nameLen){const b=new Uint8Array(30),d=new DataView(b.buffer);d.setUint32(0,0x04034b50,true);d.setUint16(4,20,true);d.setUint16(6,0,true);d.setUint16(8,0,true);d.setUint16(10,0,true);d.setUint16(12,0,true);d.setUint32(14,crc,true);d.setUint32(18,size,true);d.setUint32(22,size,true);d.setUint16(26,nameLen,true);d.setUint16(28,0,true);return b}
+function centralZipHeader(crc,size,nameLen,offset){const b=new Uint8Array(46),d=new DataView(b.buffer);d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint16(8,0,true);d.setUint16(10,0,true);d.setUint16(12,0,true);d.setUint16(14,0,true);d.setUint32(16,crc,true);d.setUint32(20,size,true);d.setUint32(24,size,true);d.setUint16(28,nameLen,true);d.setUint16(30,0,true);d.setUint16(32,0,true);d.setUint16(34,0,true);d.setUint16(36,0,true);d.setUint32(38,0,true);d.setUint32(42,offset,true);return b}
+function zipEnd(count,size,offset){const b=new Uint8Array(22),d=new DataView(b.buffer);d.setUint32(0,0x06054b50,true);d.setUint16(8,count,true);d.setUint16(10,count,true);d.setUint32(12,size,true);d.setUint32(16,offset,true);return b}
+function crc32(data){let c=~0;for(const byte of data){c^=byte;for(let k=0;k<8;k++)c=c&1?0xedb88320^(c>>>1):c>>>1}return(~c)>>>0}
+
+render();
+if('serviceWorker' in navigator) navigator.serviceWorker.register('rfid-sw.js').catch(()=>{});
+</script>
+</body>
+</html>
