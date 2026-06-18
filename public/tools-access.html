@@ -214,59 +214,7 @@
     </div>
   </div>
 
-  <script>
-    // Theme toggle functionality
-    const themeToggle = document.getElementById('themeToggle');
-    const htmlElement = document.documentElement;
-    const body = document.body;
-
-    // Check for saved theme preference or default to system preference
-    function initTheme() {
-      const savedTheme = localStorage.getItem('theme-preference');
-      let theme = 'dark'; // Default to dark mode
-
-      if (savedTheme) {
-        theme = savedTheme;
-      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-        theme = 'light';
-      }
-
-      applyTheme(theme);
-    }
-
-    // Apply theme and update button
-    function applyTheme(theme) {
-      if (theme === 'light') {
-        body.classList.add('light-mode');
-        themeToggle.textContent = '☀️';
-        themeToggle.title = 'Switch to dark mode';
-        localStorage.setItem('theme-preference', 'light');
-      } else {
-        body.classList.remove('light-mode');
-        themeToggle.textContent = '🌙';
-        themeToggle.title = 'Switch to light mode';
-        localStorage.setItem('theme-preference', 'dark');
-      }
-    }
-
-    // Toggle theme on button click
-    themeToggle.addEventListener('click', () => {
-      const currentTheme = localStorage.getItem('theme-preference') || 'dark';
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      applyTheme(newTheme);
-    });
-
-    // Initialize theme on page load
-    initTheme();
-
-    // Listen for system theme changes
-    if (window.matchMedia) {
-      window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
-        if (!localStorage.getItem('theme-preference')) {
-          applyTheme(e.matches ? 'light' : 'dark');
-        }
-      });
-    }
-  </script>
+  <link rel="stylesheet" href="../core/base-theme.css">
+  <script src="../core/base-theme.js"></script>
 </body>
 </html>

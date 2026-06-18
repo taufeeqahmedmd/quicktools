@@ -315,14 +315,14 @@ header .sub {
   letter-spacing: 0.5px;
 }
 
-.app-theme-toggle {
+.theme-toggle {
   position: absolute;
   top: 0;
   right: 0;
   width: 44px;
   height: 44px;
   border: 1px solid rgba(176,132,49,0.2);
-  border-radius: 10px;
+  border-radius: 50%;
   background: var(--card-bg);
   color: var(--ink);
   display: flex;
@@ -330,13 +330,13 @@ header .sub {
   justify-content: center;
   cursor: pointer;
   font-size: 20px;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  padding: 0;
 }
 
-.app-theme-toggle:hover {
+.theme-toggle:hover {
   border-color: var(--green-light);
   color: var(--green-light);
-  transform: translateY(-1px);
   box-shadow: 0 0 10px rgba(37,211,102,0.15);
 }
 
