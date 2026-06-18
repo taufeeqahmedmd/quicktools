@@ -10,6 +10,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
   <style>
     :root {
@@ -541,6 +543,61 @@
         </div>
       </div>
     </div>
+
+    <!-- Bulk Upload Section -->
+    <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--border);">
+      <h2 style="font-family: 'Fraunces', Georgia, serif; font-size: 28px; margin: 0 0 10px; color: var(--accent);">Bulk & templates</h2>
+
+      <div class="main-grid">
+        <!-- Bulk Generation -->
+        <div class="section">
+          <div class="section-title">Bulk generation</div>
+          <p style="font-size: 12px; color: var(--text-secondary); margin: 0 0 16px;">Upload a CSV (url, label) to export a ZIP of codes.</p>
+
+          <div class="input-group">
+            <label for="csvFile">Upload CSV File</label>
+            <input type="file" id="csvFile" accept=".csv" />
+            <p style="font-size: 11px; color: var(--text-secondary); margin-top: 8px;">
+              CSV Format: Each row with URL and optional label<br/>
+              Example:<br/>
+              https://example.com,Label 1<br/>
+              https://yourlink.com,Label 2
+            </p>
+          </div>
+
+          <button class="btn btn-primary" id="bulkGenerateBtn">Generate Bulk QR Codes</button>
+
+          <div id="bulkProgress" style="margin-top: 16px; display: none;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span style="font-size: 12px; font-weight: 600;">Progress</span>
+              <span id="progressText" style="font-size: 12px;">0/0</span>
+            </div>
+            <div style="width: 100%; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden;">
+              <div id="progressBar" style="height: 100%; background: #4ade80; width: 0%; transition: width 0.3s ease;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Templates Info -->
+        <div class="section">
+          <div class="section-title">Bulk Download Info</div>
+          <p style="font-size: 12px; color: var(--text-secondary); margin: 0 0 16px;">
+            All QR codes will be downloaded as a ZIP file with organized folders and metadata.
+          </p>
+
+          <div style="background: var(--bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+            <p style="font-size: 11px; margin: 0 0 8px; color: var(--text-secondary);"><strong>Included in ZIP:</strong></p>
+            <ul style="font-size: 11px; color: var(--text-secondary); margin: 0; padding-left: 20px;">
+              <li>PNG files for each QR code</li>
+              <li>CSV file with URLs and labels</li>
+              <li>HTML index for preview</li>
+            </ul>
+          </div>
+
+          <button class="btn btn-primary" id="downloadTemplateBtn" style="margin-top: 16px;">Download Sample CSV</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <link rel="stylesheet" href="../../core/base-theme.css">
@@ -701,6 +758,165 @@
         navigator.clipboard.writeText(canvas.toDataURL());
         alert('QR code copied to clipboard!');
       });
+    });
+
+    // Bulk Upload Functionality
+    const csvFile = document.getElementById('csvFile');
+    const bulkGenerateBtn = document.getElementById('bulkGenerateBtn');
+    const bulkProgress = document.getElementById('bulkProgress');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const downloadTemplateBtn = document.getElementById('downloadTemplateBtn');
+
+    bulkGenerateBtn.addEventListener('click', async () => {
+      const file = csvFile.files[0];
+      if (!file) {
+        alert('Please select a CSV file');
+        return;
+      }
+
+      const text = await file.text();
+      const lines = text.split('\n').filter(line => line.trim());
+
+      if (lines.length === 0) {
+        alert('CSV file is empty');
+        return;
+      }
+
+      const urls = lines.map(line => {
+        const parts = line.split(',');
+        return {
+          url: parts[0].trim(),
+          label: parts[1] ? parts[1].trim() : parts[0].trim().replace(/^https?:\/\//, '')
+        };
+      }).filter(item => item.url);
+
+      if (urls.length === 0) {
+        alert('No valid URLs found in CSV');
+        return;
+      }
+
+      // Show progress
+      bulkProgress.style.display = 'block';
+      bulkGenerateBtn.disabled = true;
+      csvFile.disabled = true;
+
+      const zip = new JSZip();
+      const qrCodes = [];
+
+      // Generate QR codes
+      for (let i = 0; i < urls.length; i++) {
+        const item = urls[i];
+        const container = document.createElement('div');
+        container.style.display = 'none';
+        document.body.appendChild(container);
+
+        // Generate QR code
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            new QRCode(container, {
+              text: item.url,
+              width: parseInt(sizeSlider.value),
+              height: parseInt(sizeSlider.value),
+              colorDark: fgColor.value,
+              colorLight: bgColor.value,
+              correctLevel: QRCode.CorrectLevel.M
+            });
+
+            const canvas = container.querySelector('canvas');
+            if (canvas) {
+              canvas.toBlob(blob => {
+                qrCodes.push({
+                  name: item.label,
+                  blob: blob,
+                  url: item.url
+                });
+                document.body.removeChild(container);
+                resolve();
+              });
+            } else {
+              resolve();
+            }
+          }, 100);
+        });
+
+        // Update progress
+        const progress = ((i + 1) / urls.length) * 100;
+        progressBar.style.width = progress + '%';
+        progressText.textContent = `${i + 1}/${urls.length}`;
+      }
+
+      // Create CSV data
+      let csvData = 'label,url\n';
+      csvData += qrCodes.map(qr => `"${qr.name}","${qr.url}"`).join('\n');
+
+      // Add files to ZIP
+      qrCodes.forEach((qr, index) => {
+        zip.file(`qr-codes/${qr.name}.png`, qr.blob);
+      });
+
+      zip.file('qr-codes/data.csv', csvData);
+
+      // Create HTML index
+      const htmlIndex = `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR Codes</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { color: #333; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+    .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
+    .card img { width: 100%; margin-bottom: 10px; }
+    .card p { margin: 5px 0; word-break: break-all; font-size: 12px; color: #666; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Generated QR Codes</h1>
+    <p>Total: ${qrCodes.length} QR codes generated on ${new Date().toLocaleString()}</p>
+    <div class="grid">
+      ${qrCodes.map(qr => `
+        <div class="card">
+          <img src="${qr.name}.png" alt="${qr.name}">
+          <p><strong>${qr.name}</strong></p>
+          <p><code>${qr.url}</code></p>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+</body>
+</html>
+      `.trim();
+
+      zip.file('index.html', htmlIndex);
+
+      // Generate and download ZIP
+      const blob = await zip.generateAsync({ type: 'blob' });
+      saveAs(blob, `qr-codes-${new Date().getTime()}.zip`);
+
+      // Reset UI
+      bulkGenerateBtn.disabled = false;
+      csvFile.disabled = false;
+      csvFile.value = '';
+      bulkProgress.style.display = 'none';
+      progressBar.style.width = '0%';
+      progressText.textContent = '0/0';
+
+      alert(`Successfully generated ${qrCodes.length} QR codes!`);
+    });
+
+    // Download sample CSV
+    downloadTemplateBtn.addEventListener('click', () => {
+      const csv = `url,label
+https://example.com,Example 1
+https://yourlink.com,Example 2
+https://sample.com,Example 3`;
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      saveAs(blob, 'qr-codes-template.csv');
     });
   </script>
 </body>
