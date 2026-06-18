@@ -3,7 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Creator Studio - Tools & Utilities</title>
+<title>Tools - Direct Access Hub</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #0d0e10;
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    color: #e8e9eb;
+  }
+  .container {
+    text-align: center;
+  }
+  h1 {
+    margin: 0 0 10px;
+    color: #c6ff3d;
+    font-size: 32px;
+  }
+  p {
+    margin: 0 0 20px;
+    color: #9ba2ab;
+    font-size: 14px;
+  }
+</style>
+<script>
+  // Redirect to tools hub (no sidebar, full-width)
+  window.location.replace('./tools-access.html');
+</script>
+</head>
+<body>
+  <div class="container">
+    <h1>Tools Hub</h1>
+    <p>Redirecting to tools access page...</p>
+    <p><a href="tools-access.html" style="color: #c6ff3d; text-decoration: none;">Click here if not redirected</a></p>
+  </div>
+</body>
+</html>
 
 <!-- CDN libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>

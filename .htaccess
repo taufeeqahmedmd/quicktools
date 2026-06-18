@@ -37,18 +37,17 @@
 </IfModule>
 
 # ============================================================
-# REDIRECT ROOT TO TOOLS HUB
+# REDIRECT ROOT TO TOOLS HUB (OPTION B: NO SIDEBAR)
 # ============================================================
 <IfModule mod_rewrite.c>
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^index\.html$ public/tools-access.html [R=301,L]
 
-    # Redirect bare root to tools hub (optional)
-    # Uncomment if you want / to redirect to /public/tools-access.html
-    # RewriteCond %{REQUEST_FILENAME} !-f
-    # RewriteCond %{REQUEST_FILENAME} !-d
-    # RewriteRule ^$ public/tools-access.html [R=301,L]
+    # Redirect bare root to tools hub
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^$ public/tools-access.html [R=301,L]
 </IfModule>
 
 # ============================================================
