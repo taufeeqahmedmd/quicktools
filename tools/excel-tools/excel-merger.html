@@ -992,6 +992,21 @@ footer.foot a:hover { color: var(--accent); }
                 </select>
               </div>
             </div>
+
+            <div style="margin-bottom: 20px;">
+              <label style="display: block; font-size: 12px; color: var(--text-mute); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;">Output Format</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="display: flex; align-items: center; padding: 10px 12px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;">
+                  <input type="radio" id="splitModeWorkbooks" name="splitMode" value="workbooks" checked style="margin-right: 8px; cursor: pointer;">
+                  <label for="splitModeWorkbooks" style="cursor: pointer; font-size: 13px; color: var(--text); margin: 0; flex: 1;">Multiple Workbooks</label>
+                </div>
+                <div style="display: flex; align-items: center; padding: 10px 12px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;">
+                  <input type="radio" id="splitModeSheets" name="splitMode" value="sheets" style="margin-right: 8px; cursor: pointer;">
+                  <label for="splitModeSheets" style="cursor: pointer; font-size: 13px; color: var(--text); margin: 0; flex: 1;">Single Workbook</label>
+                </div>
+              </div>
+              <small style="display: block; margin-top: 6px; color: var(--text-mute);">Choose whether to create separate files or multiple sheets in one file</small>
+            </div>
           </div>
 
           <div class="progress-wrap" id="progressWrapSplit">
@@ -1947,6 +1962,7 @@ splitColumnSelect.addEventListener('change', () => {
 splitSheetBtn.addEventListener('click', async () => {
   const sheetIdx = parseInt(splitSheetSelect.value);
   const colIdx = parseInt(splitColumnSelect.value);
+  const splitMode = document.querySelector('input[name="splitMode"]:checked').value;
 
   if (isNaN(sheetIdx) || isNaN(colIdx)) {
     toast('error', 'Missing selection', 'Select both sheet and column.');
@@ -1982,42 +1998,91 @@ splitSheetBtn.addEventListener('click', async () => {
       groups[splitValue].push(row);
     }
 
-    document.getElementById('progressLabelSplit').textContent = 'Creating workbooks…';
-
-    sheetState.splitBlobs = [];
     const groupNames = Object.keys(groups);
+    sheetState.splitBlobs = [];
+    sheetState.splitMode = splitMode;
 
-    groupNames.forEach((groupName, idx) => {
-      const dataRows = groups[groupName];
-      const aoa = [headers];
-      aoa.push(...dataRows);
+    if (splitMode === 'workbooks') {
+      // Create multiple workbooks (one per group)
+      document.getElementById('progressLabelSplit').textContent = 'Creating workbooks…';
 
-      const outWs = XLSX.utils.aoa_to_sheet(aoa);
+      groupNames.forEach((groupName, idx) => {
+        const dataRows = groups[groupName];
+        const aoa = [headers];
+        aoa.push(...dataRows);
+
+        const outWs = XLSX.utils.aoa_to_sheet(aoa);
+        const outWb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(outWb, outWs, sheetName);
+
+        const wbout = XLSX.write(outWb, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([wbout], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
+
+        sheetState.splitBlobs.push({
+          name: groupName,
+          blob: blob,
+          rowCount: dataRows.length
+        });
+
+        const pct = Math.round((idx / groupNames.length) * 100);
+        document.getElementById('progressFillSplit').style.width = pct + '%';
+        document.getElementById('progressPctSplit').textContent = pct + '%';
+      });
+
+      document.getElementById('progressFillSplit').style.width = '100%';
+      document.getElementById('progressPctSplit').textContent = '100%';
+      document.getElementById('progressLabelSplit').textContent = 'Done.';
+
+      downloadSplitBtn.disabled = false;
+      toast('success', 'Split complete', `Created ${groupNames.length} workbook${groupNames.length > 1 ? 's' : ''}`);
+    } else {
+      // Create single workbook with multiple sheets (one per group)
+      document.getElementById('progressLabelSplit').textContent = 'Creating sheets…';
+
       const outWb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(outWb, outWs, sheetName);
 
+      groupNames.forEach((groupName, idx) => {
+        const dataRows = groups[groupName];
+        const aoa = [headers];
+        aoa.push(...dataRows);
+
+        const outWs = XLSX.utils.aoa_to_sheet(aoa);
+        // Use group name as sheet name, truncate if too long (Excel limit is 31 chars)
+        const sheetDisplayName = (groupName || 'Sheet').substring(0, 31);
+        XLSX.utils.book_append_sheet(outWb, outWs, sheetDisplayName);
+
+        sheetState.splitBlobs.push({
+          name: groupName,
+          rowCount: dataRows.length
+        });
+
+        const pct = Math.round((idx / groupNames.length) * 100);
+        document.getElementById('progressFillSplit').style.width = pct + '%';
+        document.getElementById('progressPctSplit').textContent = pct + '%';
+      });
+
+      // Write single workbook containing all sheets
       const wbout = XLSX.write(outWb, { bookType: 'xlsx', type: 'array' });
       const blob = new Blob([wbout], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
 
-      sheetState.splitBlobs.push({
-        name: groupName,
+      // Store as single blob (but keep structure for consistency)
+      sheetState.splitBlobs = [{
+        name: 'combined',
         blob: blob,
-        rowCount: dataRows.length
-      });
+        rowCount: rows.length - 1
+      }];
 
-      const pct = Math.round((idx / groupNames.length) * 100);
-      document.getElementById('progressFillSplit').style.width = pct + '%';
-      document.getElementById('progressPctSplit').textContent = pct + '%';
-    });
+      document.getElementById('progressFillSplit').style.width = '100%';
+      document.getElementById('progressPctSplit').textContent = '100%';
+      document.getElementById('progressLabelSplit').textContent = 'Done.';
 
-    document.getElementById('progressFillSplit').style.width = '100%';
-    document.getElementById('progressPctSplit').textContent = '100%';
-    document.getElementById('progressLabelSplit').textContent = 'Done.';
-
-    downloadSplitBtn.disabled = false;
-    toast('success', 'Split complete', `Created ${groupNames.length} workbook${groupNames.length > 1 ? 's' : ''}`);
+      downloadSplitBtn.disabled = false;
+      toast('success', 'Split complete', `Created 1 workbook with ${groupNames.length} sheet${groupNames.length > 1 ? 's' : ''}`);
+    }
 
     setTimeout(() => {
       document.getElementById('progressWrapSplit').classList.remove('active');
@@ -2038,8 +2103,22 @@ downloadSplitBtn.addEventListener('click', () => {
     return;
   }
 
-  if (sheetState.splitBlobs.length === 1) {
-    // Single file
+  const splitMode = sheetState.splitMode || 'workbooks';
+
+  if (splitMode === 'sheets' || sheetState.splitBlobs[0].name === 'combined') {
+    // Single workbook with multiple sheets
+    const { blob } = sheetState.splitBlobs[0];
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `split-workbook-${new Date().getTime()}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    toast('success', 'Downloaded', 'Workbook with multiple sheets downloaded');
+  } else if (sheetState.splitBlobs.length === 1) {
+    // Single file from workbooks mode
     const { name, blob } = sheetState.splitBlobs[0];
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -2050,7 +2129,7 @@ downloadSplitBtn.addEventListener('click', () => {
     document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 1500);
   } else {
-    // Multiple files: download as zip (using simple approach: download each individually)
+    // Multiple files: download each individually
     sheetState.splitBlobs.forEach(({ name, blob }) => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
