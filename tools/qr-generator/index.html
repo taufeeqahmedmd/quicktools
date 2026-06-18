@@ -849,6 +849,7 @@ const app = {
     preview.innerHTML = '';
 
     const qrContainer = document.createElement('div');
+    qrContainer.id = 'qr-single-' + Date.now();
     qrContainer.style.cssText = `
       width: 100%;
       display: flex;
@@ -856,27 +857,34 @@ const app = {
       align-items: center;
     `;
 
-    new QRCode({
-      text: url,
-      width: size,
-      height: size,
-      colorDark: fgColor,
-      colorLight: bgColor,
-      correctLevel: QRCode.CorrectLevel[errorLevel],
-      container: qrContainer
-    });
-
-    const title = document.createElement('p');
-    title.textContent = label;
-    title.style.cssText = 'margin-top: 16px; font-weight: 600; color: var(--text-primary);';
-    qrContainer.appendChild(title);
-
     preview.appendChild(qrContainer);
-    document.getElementById('downloadPngBtn').disabled = false;
-    document.getElementById('downloadPdfBtn').disabled = false;
 
-    // Save to history
-    this.addToHistory({ url, label, timestamp: new Date().toISOString() });
+    try {
+      new QRCode({
+        text: url,
+        width: size,
+        height: size,
+        colorDark: fgColor,
+        colorLight: bgColor,
+        correctLevel: QRCode.CorrectLevel[errorLevel],
+        container: document.getElementById(qrContainer.id)
+      });
+
+      const title = document.createElement('p');
+      title.textContent = label;
+      title.style.cssText = 'margin-top: 16px; font-weight: 600; color: var(--text-primary);';
+      qrContainer.appendChild(title);
+
+      document.getElementById('downloadPngBtn').disabled = false;
+      document.getElementById('downloadPdfBtn').disabled = false;
+      this.showToast('QR code generated successfully');
+
+      // Save to history
+      this.addToHistory({ url, label, timestamp: new Date().toISOString() });
+    } catch (error) {
+      this.showToast('Error generating QR code: ' + error.message, 'error');
+      preview.innerHTML = '<p style="color: var(--error);">Error generating QR code</p>';
+    }
   },
 
   parseCsv(file) {
@@ -923,54 +931,102 @@ const app = {
       return;
     }
 
+    if (this.bulkRecords.length === 0) {
+      this.showToast('Please upload a CSV file first', 'error');
+      return;
+    }
+
     document.getElementById('bulkGridPreview').innerHTML = '';
     this.bulkData.qrCards = [];
 
-    this.bulkRecords.forEach(record => {
-      const card = {
-        name: record.name,
-        url: record.url,
-        qr: this.generateQrDataUrl(record.url)
-      };
-      this.bulkData.qrCards.push(card);
+    let generated = 0;
 
-      const cardEl = document.createElement('div');
-      cardEl.className = 'qr-card';
-      cardEl.innerHTML = `
-        <img class="qr-card-header" src="${this.bulkData.headerImage}" alt="Header">
-        <div class="qr-card-body">
-          <div class="qr-code" id="qr-${card.name.replace(/\s+/g, '-')}"></div>
-        </div>
-        <div class="qr-card-footer">${card.name}</div>
-      `;
-      document.getElementById('bulkGridPreview').appendChild(cardEl);
+    this.bulkRecords.forEach((record, index) => {
+      try {
+        const card = {
+          name: record.name,
+          url: record.url,
+          id: record.id
+        };
+        this.bulkData.qrCards.push(card);
 
-      new QRCode({
-        text: record.url,
-        width: 180,
-        height: 180,
-        container: cardEl.querySelector('.qr-code')
-      });
+        const cardEl = document.createElement('div');
+        cardEl.className = 'qr-card';
+        cardEl.id = `card-${record.id}`;
+
+        const img = document.createElement('img');
+        img.className = 'qr-card-header';
+        img.src = this.bulkData.headerImage;
+        img.alt = 'Header';
+
+        const bodyDiv = document.createElement('div');
+        bodyDiv.className = 'qr-card-body';
+
+        const qrDiv = document.createElement('div');
+        qrDiv.className = 'qr-code';
+        qrDiv.id = `qr-${record.id}`;
+
+        bodyDiv.appendChild(qrDiv);
+
+        const footer = document.createElement('div');
+        footer.className = 'qr-card-footer';
+        footer.textContent = record.name;
+
+        cardEl.appendChild(img);
+        cardEl.appendChild(bodyDiv);
+        cardEl.appendChild(footer);
+
+        document.getElementById('bulkGridPreview').appendChild(cardEl);
+
+        new QRCode({
+          text: record.url,
+          width: 180,
+          height: 180,
+          container: document.getElementById(`qr-${record.id}`)
+        });
+
+        generated++;
+      } catch (error) {
+        console.error(`Error generating QR for ${record.name}:`, error);
+      }
     });
 
     document.getElementById('bulkPreviewArea').style.display = 'block';
-    document.getElementById('generatedCount').textContent = this.bulkData.qrCards.length;
+    document.getElementById('generatedCount').textContent = generated;
     document.getElementById('downloadZipPngBtn').disabled = false;
     document.getElementById('downloadZipPdfBtn').disabled = false;
     document.getElementById('downloadCombinedPdfBtn').disabled = false;
 
-    this.showToast(`Generated ${this.bulkData.qrCards.length} QR codes`);
+    this.showToast(`Generated ${generated} QR codes successfully`);
   },
 
   generateQrDataUrl(url) {
-    const canvas = document.createElement('canvas');
-    new QRCode({
-      text: url,
-      width: 200,
-      height: 200,
-      container: canvas
+    return new Promise((resolve, reject) => {
+      const container = document.createElement('div');
+      container.style.display = 'none';
+      document.body.appendChild(container);
+
+      try {
+        new QRCode({
+          text: url,
+          width: 200,
+          height: 200,
+          container: container
+        });
+
+        const canvas = container.querySelector('canvas');
+        if (canvas) {
+          const dataUrl = canvas.toDataURL();
+          document.body.removeChild(container);
+          resolve(dataUrl);
+        } else {
+          reject(new Error('Canvas not found'));
+        }
+      } catch (error) {
+        document.body.removeChild(container);
+        reject(error);
+      }
     });
-    return canvas.toDataURL();
   },
 
   filterBulkPreview(query) {
@@ -982,26 +1038,44 @@ const app = {
   },
 
   downloadSinglePng() {
-    const preview = document.getElementById('singlePreviewArea').querySelector('canvas');
-    if (!preview) return;
+    const canvas = document.getElementById('singlePreviewArea').querySelector('canvas');
+    if (!canvas) {
+      this.showToast('Please generate a QR code first', 'error');
+      return;
+    }
 
-    const link = document.createElement('a');
-    link.href = preview.toDataURL('image/png');
-    link.download = `${this.singleData.label || 'QR'}.png`;
-    link.click();
-    this.showToast('QR code downloaded');
+    try {
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png');
+      link.download = `${this.singleData.label || 'QR'}.png`;
+      link.click();
+      this.showToast('QR code downloaded as PNG');
+    } catch (error) {
+      this.showToast('Error downloading QR code: ' + error.message, 'error');
+    }
   },
 
   downloadSinglePdf() {
     const preview = document.getElementById('singlePreviewArea');
-    html2canvas(preview, { backgroundColor: '#ffffff' }).then(canvas => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF.jsPDF();
-      const imgWidth = 180;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      pdf.addImage(imgData, 'PNG', 15, 15, imgWidth, imgHeight);
-      pdf.save(`${this.singleData.label || 'QR'}.pdf`);
-      this.showToast('PDF downloaded');
+    if (!preview.querySelector('canvas')) {
+      this.showToast('Please generate a QR code first', 'error');
+      return;
+    }
+
+    html2canvas(preview, { backgroundColor: '#ffffff', scale: 2 }).then(canvas => {
+      try {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF.jsPDF();
+        const imgWidth = 180;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        pdf.addImage(imgData, 'PNG', 15, 15, imgWidth, imgHeight);
+        pdf.save(`${this.singleData.label || 'QR'}.pdf`);
+        this.showToast('QR code downloaded as PDF');
+      } catch (error) {
+        this.showToast('Error generating PDF: ' + error.message, 'error');
+      }
+    }).catch(error => {
+      this.showToast('Error capturing QR code: ' + error.message, 'error');
     });
   },
 
