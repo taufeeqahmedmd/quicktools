@@ -8,14 +8,35 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-primary: linear-gradient(135deg, #0d0e10 0%, #16181c 100%);
+      --bg-secondary: #16181c;
+      --text-primary: #e8e9eb;
+      --text-secondary: #9ba2ab;
+      --text-accent: #c6ff3d;
+      --border-color: #262a30;
+      --card-hover-shadow: 0 0 20px rgba(198, 255, 61, 0.15);
+    }
+
+    body.light-mode {
+      --bg-primary: linear-gradient(135deg, #f5f3f0 0%, #eae3d4 100%);
+      --bg-secondary: #fffdf8;
+      --text-primary: #1a1714;
+      --text-secondary: #7d7160;
+      --text-accent: #b08431;
+      --border-color: #d8cdb8;
+      --card-hover-shadow: 0 0 20px rgba(176, 132, 49, 0.15);
+    }
+
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     body {
       font-family: 'Inter Tight', system-ui, sans-serif;
-      background: linear-gradient(135deg, #0d0e10 0%, #16181c 100%);
-      color: #e8e9eb;
+      background: var(--bg-primary);
+      color: var(--text-primary);
       min-height: 100vh;
       padding: 40px 20px;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     .container {
@@ -26,6 +47,34 @@
     header {
       text-align: center;
       margin-bottom: 60px;
+      position: relative;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: all 0.3s ease;
+      padding: 0;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--text-accent);
+      box-shadow: 0 0 10px rgba(198, 255, 61, 0.1);
+    }
+
+    body.light-mode .theme-toggle:hover {
+      box-shadow: 0 0 10px rgba(176, 132, 49, 0.1);
     }
 
     h1 {
@@ -33,12 +82,12 @@
       font-size: 48px;
       font-weight: 500;
       margin: 0 0 10px;
-      color: #c6ff3d;
+      color: var(--text-accent);
     }
 
     .subtitle {
       font-size: 16px;
-      color: #9ba2ab;
+      color: var(--text-secondary);
       margin: 0;
     }
 
@@ -50,8 +99,8 @@
     }
 
     .tool-card {
-      background: #16181c;
-      border: 1px solid #262a30;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
       border-radius: 14px;
       padding: 28px;
       text-decoration: none;
@@ -63,8 +112,8 @@
     }
 
     .tool-card:hover {
-      border-color: #c6ff3d;
-      box-shadow: 0 0 20px rgba(198, 255, 61, 0.15);
+      border-color: var(--text-accent);
+      box-shadow: var(--card-hover-shadow);
       transform: translateY(-4px);
     }
 
@@ -76,12 +125,12 @@
     .tool-name {
       font-size: 18px;
       font-weight: 600;
-      color: #e8e9eb;
+      color: var(--text-primary);
     }
 
     .tool-description {
       font-size: 14px;
-      color: #9ba2ab;
+      color: var(--text-secondary);
       margin: 0;
       flex: 1;
     }
@@ -90,7 +139,7 @@
       display: inline-block;
       margin-top: auto;
       padding: 10px 0;
-      color: #c6ff3d;
+      color: var(--text-accent);
       text-decoration: none;
       font-size: 14px;
       font-weight: 500;
@@ -99,7 +148,7 @@
     }
 
     .tool-card:hover .tool-link {
-      border-bottom-color: #c6ff3d;
+      border-bottom-color: var(--text-accent);
     }
 
     @media (max-width: 600px) {
@@ -116,6 +165,7 @@
 <body>
   <div class="container">
     <header>
+      <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode">🌙</button>
       <h1>Tools</h1>
       <p class="subtitle">Direct access to all modules</p>
     </header>
@@ -171,5 +221,60 @@
 
     </div>
   </div>
+
+  <script>
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('themeToggle');
+    const htmlElement = document.documentElement;
+    const body = document.body;
+
+    // Check for saved theme preference or default to system preference
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme-preference');
+      let theme = 'dark'; // Default to dark mode
+
+      if (savedTheme) {
+        theme = savedTheme;
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        theme = 'light';
+      }
+
+      applyTheme(theme);
+    }
+
+    // Apply theme and update button
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        body.classList.add('light-mode');
+        themeToggle.textContent = '☀️';
+        themeToggle.title = 'Switch to dark mode';
+        localStorage.setItem('theme-preference', 'light');
+      } else {
+        body.classList.remove('light-mode');
+        themeToggle.textContent = '🌙';
+        themeToggle.title = 'Switch to light mode';
+        localStorage.setItem('theme-preference', 'dark');
+      }
+    }
+
+    // Toggle theme on button click
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = localStorage.getItem('theme-preference') || 'dark';
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      applyTheme(newTheme);
+    });
+
+    // Initialize theme on page load
+    initTheme();
+
+    // Listen for system theme changes
+    if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme-preference')) {
+          applyTheme(e.matches ? 'light' : 'dark');
+        }
+      });
+    }
+  </script>
 </body>
 </html>
